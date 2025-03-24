@@ -1,0 +1,14 @@
+body {
+  color: $base-font-color;
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  margin: 0 auto;
+  width: 90%
+}
+.bold {
+  font-weight: bold;
+}
+ul.list-decoration-on {
+  list-style-type: disc !important;
+  padding-left: 20px !important;
+}

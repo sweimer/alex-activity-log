@@ -1,0 +1,15 @@
+@mixin hint-block {
+  background: rgb(206, 243, 239);
+  border-bottom: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 12px;
+  width: 100%;
+}
+.hint-block {
+  @include hint-block;
+}
+.hint-block-bottom-border {
+  @include hint-block;
+  border-bottom: 1px solid;
+}

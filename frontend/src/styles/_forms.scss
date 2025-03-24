@@ -1,0 +1,166 @@
+form {
+  margin-top: 20px;
+
+  div.form-data-date-block {
+    margin: 8px;
+
+    label {
+      width: 100%;
+    }
+
+    div.form-data-date-block-input {
+      display: flex;
+      width: 100%;
+
+      input {
+        cursor: pointer;
+        padding: 10px;
+        width: 130px;
+      }
+
+      input[type="date"] {
+        cursor: pointer;
+      }
+
+      .form-data-date-block-hint {
+        width: calc(100% - 100px);
+      }
+    }
+  }
+
+  div.form-data-hint-date {
+
+  }
+
+  div.form-data-textarea-block {
+    margin: 8px;
+
+    label.form-data-textarea-label {
+      width: 100%;
+    }
+
+    div.form-data-textarea-input {
+      display: flex;
+      width: 100%;
+
+      div.form-data-textarea-input-hint {
+        width: 30%;
+        box-sizing: border-box;
+
+        ul {
+          list-style-type: none;
+          padding: 0;
+
+          li.list-top-level {
+            font-size: 16px;
+            font-weight: bold;
+
+            ul {
+              li {
+                font-weight: normal;
+              }
+            }
+          }
+
+          li.draggable {
+            border: 1px solid #000;
+            cursor: grab;
+            margin: 4px;
+            padding: 4px;
+
+            &:hover {
+              background-color: #f0f0f0;
+            }
+
+            &:focus,
+            &:active {
+              cursor: grabbing;
+            }
+          }
+        }
+      }
+
+      input.form-data-textarea-input-input,
+      select.form-data-textarea-input-select,
+      textarea.form-data-textarea-input-textarea {
+        cursor: pointer;
+        padding: 20px;
+        width: 70%;
+        box-sizing: border-box;
+      }
+      input.form-data-textarea-input-input {
+        padding: 20px;
+        white-space: pre-wrap;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-wrap: break-word;
+      }
+      select.form-data-textarea-input-select {
+        min-height: 175px;
+      }
+      textarea.form-data-textarea-input-textarea {
+
+        &.sticky {
+          min-height: 600px;
+          position: fixed;
+          top: 50px;
+          left: 33%;
+          width: 60%;
+        }
+      }
+    }
+  }
+
+  div.form-data-submit-block {
+    margin: 8px;
+    display: flex;
+
+    .form-data-submit_button-block {
+      width: 20%;
+
+      button[type="submit"] {
+        background-color: $base-background-color;
+        border: 1px solid;
+        cursor: pointer;
+        font-size: $base-font-size;
+        margin: 8px 0;
+        padding: 10px;
+        text-align: center;
+      }
+
+      button.form-data-clear-button {
+        background-color: $base-background-color;
+        border: 1px solid;
+        cursor: pointer;
+        font-size: $base-font-size;
+        margin: 8px 4px;
+        padding: 10px;
+        text-align: center;
+      }
+    }
+
+    .form-data-submit_message-block {
+      width: 80%;
+
+      .alert {
+        background-color: $base-background-color;
+        border: 1px solid;
+        margin: 8px 0;
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+div.form-data-results {
+  pre {
+    border: 1px solid;
+    box-sizing: border-box;
+    padding: 0 40px 40px 40px;
+    width: 100%;
+    white-space: pre-wrap;
+  }
+}
