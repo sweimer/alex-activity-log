@@ -76,7 +76,7 @@ function ActivityForm() {
             setDateMessage('This is a Wednesday. Did you add a SHOWER this week?');
         }
         else if (selectedDate.getDay() === 5) {
-            setDateMessage('This is a Friday. Did you add 2 SHOWERs, 1 CHORE and 1 CAD this week?');
+            setDateMessage('This is a Friday. Did you add 2 SHOWERs, 1 CHORE and 1 CAD this week? Did you write about CHOICE and INTERACTION this week?');
         } else if (selectedDate.getDay() === 6) {
             setDateMessage('This is a Saturday. Add an OUTING line item for today.');
         } else {
@@ -140,6 +140,8 @@ function ActivityForm() {
                                 <li>FIRE DRILL at least 1 time a month.</li>
                                 <li>SHOWER every Sunday.</li>
                                 <li>SHOWER at least 2 more times a week.</li>
+                                <li>CHOICE several times a week.</li>
+                                <li>INTERACTION several times a month.</li>
                             </ul>
                         </div>
                         <select
@@ -157,6 +159,8 @@ function ActivityForm() {
                             <option value="Behavior Issue">BEHAVIOR ISSUE</option>
                             <option value="Fire Drill">FIRE DRILL</option>
                             <option value="Shower">SHOWER</option>
+                            <option value="Choice">CHOICE</option>
+                            <option value="Interaction">INTERACTION</option>
                         </select>
                     </div>
                 </div>
@@ -192,12 +196,6 @@ function ActivityForm() {
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex woke on her own around 730am and took herself to the bathroom. ')}>
-                                            Alex woke on her own around 730am and took herself to the bathroom.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
                                                 handleDragStart(e, 'Alex woke at 600am, went to bathroom, and went back to bed. ')}>
                                             Alex woke at 600am, went to bathroom, and went back to bed.
                                         </li>
@@ -206,6 +204,12 @@ function ActivityForm() {
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'Alex woke back up at 730am. ')}>
                                             Alex woke back up at 730am.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Alex woke on her own around 730am and took herself to the bathroom. ')}>
+                                            Alex woke on her own around 730am and took herself to the bathroom.
                                         </li>
                                         <li draggable
                                             className="draggable"
@@ -226,8 +230,8 @@ function ActivityForm() {
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief helped Alex brush teeth and hair. ')}>
-                                            Sponsor/Relief helped Alex brush teeth and hair.
+                                                handleDragStart(e, 'Alex picked out an outfit from the ones hanging outside her dresser. ')}>
+                                            CHOICE: Alex picked the pink dress with black tights from the outfits hanging outside her dresser.
                                         </li>
                                         <li draggable
                                             className="draggable"
@@ -238,21 +242,15 @@ function ActivityForm() {
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief helped Alex brush teeth and hair. ')}>
+                                            Sponsor/Relief helped Alex brush teeth and hair.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
                                                 handleDragStart(e, 'Sponsor/Relief helped Alex pick out an outfit from the ones hanging outside her dresser. ')}>
                                             Sponsor/Relief helped Alex pick out an outfit from the ones hanging outside
                                             her dresser.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex picked out an outfit from the ones hanging outside her dresser. ')}>
-                                            Alex picked out an outfit from the ones hanging outside her dresser.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex picked a pink dress with a black tights and got dressed. ')}>
-                                            Alex picked a pink dress with a black tights and got dressed.
                                         </li>
                                         <li draggable
                                             className="draggable"
@@ -272,7 +270,8 @@ function ActivityForm() {
                                             className="draggable"
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'Alex cleaned her room and organized her shelves. Sponsor/Relief checked on Alex until she completed her chores. ')}>
-                                            CHORE: Alex cleaned her room and organized her shelves. Sponsor/Relief checked on Alex until she completed her chores.
+                                            CHORE: Alex cleaned her room and organized her shelves. Sponsor/Relief
+                                            checked on Alex until she completed her chores.
                                         </li>
                                     </ul>
                                 </li>
@@ -281,22 +280,23 @@ function ActivityForm() {
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared cereal, monitored Alex as she ate and administered AM meds. ')}>
-                                            Sponsor/Relief prepared cereal, monitored Alex as she ate and administered
-                                            AM meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
                                                 handleDragStart(e, 'Sponsor/Relief asked Alex if she wanted cereal or oats for breakfast. Alex picked Oats. ')}>
-                                            Sponsor/Relief asked Alex if she wanted cereal or oats for breakfast. Alex
+                                            CHOICE: Sponsor/Relief asked Alex if she wanted cereal or oats for
+                                            breakfast. Alex
                                             picked Oats.
                                         </li>
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'Alex wanted cereal for breakfast. ')}>
-                                            Alex wanted cereal for breakfast.
+                                            CHOICE: Alex said she wanted cereal for breakfast.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief prepared cereal, monitored Alex as she ate and administered AM meds. ')}>
+                                            Sponsor/Relief prepared cereal, monitored Alex as she ate and administered
+                                            AM meds.
                                         </li>
                                         <li draggable
                                             className="draggable"
@@ -332,7 +332,7 @@ function ActivityForm() {
                                             className="draggable"
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'While eating. Sponsor, Relief and Alex discussed the menu for the upcoming week and made a small shopping list. ')}>
-                                            While eating. Sponsor, Relief and Alex discussed the menu for the upcoming
+                                            MENU PLANNING: While eating. Sponsor, Relief and Alex discussed the menu for the upcoming
                                             week and made a small shopping list.
                                         </li>
                                         <li draggable
@@ -390,14 +390,14 @@ function ActivityForm() {
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped Sponsor cook home-made granola. ')}>
-                                            Alex helped Sponsor cook home-made granola.
+                                                handleDragStart(e, 'Alex helped clear the table. ')}>
+                                            Alex helped clear the table.
                                         </li>
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped clear the table. ')}>
-                                            Alex helped clear the table.
+                                                handleDragStart(e, 'Alex helped Sponsor cook home-made granola. ')}>
+                                            CHORE: Alex helped Sponsor cook home-made granola.
                                         </li>
                                     </ul>
                                 </li>
@@ -448,98 +448,92 @@ function ActivityForm() {
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
-                                                handleDragStart(e, 'Kiearra returned at 330pm. ')}>
-                                            Kiearra returned at 330pm.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'While with Kiearra, Alex had her fingernails done, went to a movie and ate lunch at the movie theater. ')}>
-                                            OUTING: While with Kiearra, Alex had her fingernails done, went to a movie and ate lunch at the movie theater.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped Sponsor put away some laundry. ')}>
-                                            Alex helped Sponsor put away some laundry.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser. ')}>
-                                            Sponsor/Relief and Alex picked out outfits for the upcoming week at
-                                            Diversity and hung them outside her dresser.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy back home. ')}>
-                                            Sponsor/Relief and Alex took Izzy back home.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. ')}>
-                                            Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the
-                                            list.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped push the cart, load the car and unload the car at home. ')}>
-                                            Alex helped push the cart, load the car and unload the car at home.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy for a quick neighborhood walk. ')}>
-                                            Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles. ')}>
-                                            Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track. ')}>
-                                            Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps
-                                            around the track.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief went to Target. ')}>
-                                            Sponsor/Relief went to Target.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Relief and Alex waited in the car while Sponsor shopped. ')}>
-                                            Relief and Alex waited in the car while Sponsor shopped.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped push the car, load the car and unload the car back home. ')}>
-                                            Alex helped push the car, load the car and unload the car back home.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
                                                 handleDragStart(e, 'Sponsor/Relief asked Alex if she wanted to work on a beading craft. Alex said yes. Sponsor set Alex up with beads in the family room and checked in on her as she worked on it. ')}>
-                                            Sponsor/Relief asked Alex if she wanted to work on a beading craft. Alex
-                                            said yes.
-                                            Sponsor set Alex up with beads in the family room and checked in on her as
+                                            CAD: Sponsor/Relief asked Alex if she wanted to work on a beading craft.
+                                            Alex
+                                            said yes. Sponsor set Alex up with beads in the family room and checked in
+                                            on her as
                                             she worked on it.
                                         </li>
                                         <li draggable
                                             className="draggable"
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'Relief and Alex worked on making pop-together bracelets while watching TV. ')}>
-                                            Relief and Alex worked on making pop-together bracelets while watching TV.
+                                            CAD: Relief and Alex worked on making pop-together bracelets while watching
+                                            TV.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief asked Alex if she wanted to work onan art project on her Leap Pad. Alex said yes. Sponsor/Relief set Alex up with the project and checked in with her while she worked.. ')}>
+                                            CAD: Sponsor/Relief asked Alex if she wanted to work onan art project on her
+                                            Leap Pad. Alex said yes. Sponsor/Relief set Alex up with the project and
+                                            checked in with her while she worked.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Alex helped Sponsor put away some laundry. ')}>
+                                            CHORE: Alex helped Sponsor put away some laundry.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser. ')}>
+                                            CHORE: Sponsor/Relief and Alex picked out outfits for the upcoming week at
+                                            Diversity and hung them outside her dresser.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Kiearra returned at 330pm. While with Kiearra, Alex had her fingernails done, went to a movie and ate lunch at the movie theater.. ')}>
+                                            OUTING: Kiearra returned at 330pm. While with Kiearra, Alex had her
+                                            fingernails done, went to a movie and ate lunch at the movie theater.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy back home. ')}>
+                                            OUTING: Sponsor/Relief and Alex took Izzy back home.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home. ')}>
+                                            OUTING: Sponsor/Relief and Alex went to Wegmans and picked up the groceries
+                                            on the list. Alex helped push the cart, load the car and unload the car at
+                                            home.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy for a quick neighborhood walk. ')}>
+                                            OUTING: Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles. ')}>
+                                            OUTING: Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85
+                                            miles.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track. ')}>
+                                            OUTING: Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to the senior center to chase balls and Alex walked a couple laps around the track. ')}>
+                                            OUTING: Sponsor/Relief and Alex took Izzy to the senior center to chase balls and Alex walked a couple laps around the track.
+                                        </li>
+                                        <li draggable
+                                            className="draggable"
+                                            onDragStart={(e) =>
+                                                handleDragStart(e, 'Sponsor/Relief went to Target. Relief and Alex waited in the car while Sponsor shopped. ')}>
+                                            OUTING: Sponsor/Relief went to Target. Relief and Alex waited in the car while Sponsor shopped.
                                         </li>
                                         <li draggable
                                             className="draggable"
@@ -555,14 +549,8 @@ function ActivityForm() {
                                             className="draggable"
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'Sponsor/Relief helped Alex shower and with ADLs and helped Alex put on PJs. ')}>
-                                            SHOWER: Sponsor/Relief helped Alex shower and with ADLs and helped Alex put on PJs.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex watched TV with family until she was tired and went to bed around 730pm. ')}>
-                                            Alex watched TV with family until she was tired and went to bed around
-                                            730pm.
+                                        SHOWER: Sponsor/Relief helped Alex shower and with ADLs and helped Alex put
+                                            on PJs.
                                         </li>
                                         <li draggable
                                             className="draggable"
@@ -574,8 +562,7 @@ function ActivityForm() {
                                             className="draggable"
                                             onDragStart={(e) =>
                                                 handleDragStart(e, 'AAlex watched TV with family until she was tired and went to bed around 730pm. ')}>
-                                            Alex watched TV with family until she was tired and went to bed around
-                                            730pm.
+                                            Alex watched TV with family until she was tired and went to bed around 730pm.
                                         </li>
                                         <li draggable
                                             className="draggable"
