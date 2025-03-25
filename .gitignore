@@ -10,3 +10,4 @@ backend/package-lock.json
 # production
 frontend/build
 .DS_Store
+.vercel

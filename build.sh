@@ -1,14 +1,20 @@
-#!/bin/sh
+#!/bin/bash
 
-# Check if npm is installed
-if ! command -v npm &> /dev/null
-then
-    echo "npm is not installed. Installing npm..."
-    # Install npm (this assumes you have Node.js installed)
-    curl -L https://www.npmjs.com/install.sh | sh
-fi
-
-# Run the install script
+# From the root, run npm install
 npm install
-# Run the build script
+
+# Navigate to the frontend directory and build the frontend
+cd frontend || exit
+npm install
 npm run build
+
+# Navigate to the backend directory and build the backend
+cd ../backend || exit
+npm install
+npm run build
+
+# Navigate back to root, run npm start
+cd ../ || exit
+npm start
+
+
