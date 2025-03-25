@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const allowedOrigins = ['http://localhost:3000', 'https://alex-activity-log.vercel.app'];
 
 // Initialize express app
 const app = express();
@@ -12,7 +13,13 @@ const port = 5001;
 // Middleware to parse JSON and handle CORS
 app.use(bodyParser.json());
 app.use(cors({
-    origin: "http://localhost:3000", // Allow requests only from React frontend
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["GET", "POST", "OPTIONS"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type"],
 }));
@@ -86,5 +93,5 @@ app.post('/save-log', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+    console.log('Server is running on port 5001');
 });
