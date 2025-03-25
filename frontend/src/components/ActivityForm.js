@@ -22,7 +22,6 @@ const handleButtonClick = () => {
     }
 };
 
-// Function to format a date as 3/20/2024 - THURSDAY
 const formatDate = (date) => {
     const dayOfWeek = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date).toUpperCase();
     const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} - ${dayOfWeek}`;
@@ -30,17 +29,21 @@ const formatDate = (date) => {
 };
 
 function ActivityForm() {
-    const [formData, setFormData] = useState({ date: '', activity: '', tags: [], activities: '' });
+    const [formData, setFormData] = useState({ date: '', activity: '', tags: [], activities: '', other: '' });
     const [message, setMessage] = useState('');
     const [dateMessage, setDateMessage] = useState('');
     const [logEntry, setLogEntry] = useState('');
+    //const [isOtherSelected, setIsOtherSelected] = useState(false);
+    //const [otherTag, setOtherTag] = useState('');
 
     const handleClear = () => {
-        setFormData({ date: '', activity: '', tags: [], activities: '' });
+        setFormData({ date: '', activity: '', tags: [], activities: '', other: '' });
         setMessage('');
         setDateMessage('Hints...');
         setLogEntry('');
-        window.scrollTo(0, 0); // Scroll back to the top
+        //setIsOtherSelected(false);
+        //setOtherTag('');
+        window.scrollTo(0, 0);
     };
 
     useEffect(() => {
@@ -53,13 +56,24 @@ function ActivityForm() {
 
     const handleChange = (e) => {
         const { name, value, options } = e.target;
-        if ((name === 'tags') && options) {
+        if (name === 'tags' && options) {
             const selectedTags = Array.from(options).filter(option => option.selected).map(option => option.value);
             setFormData({ ...formData, [name]: selectedTags });
+
+            const otherInputDiv = document.querySelector('div.form-data-textarea-input-select-other');
+            if (selectedTags.includes('Other')) {
+                otherInputDiv.classList.add('show');
+                otherInputDiv.classList.remove('hide');
+            } else {
+                otherInputDiv.classList.remove('show');
+                otherInputDiv.classList.add('hide');
+            }
         } else {
             setFormData({ ...formData, [name]: value });
             if (name === 'date') {
                 checkDay(value);
+            } else if (name === 'other') {
+                setFormData({ ...formData, other: value });
             }
         }
     };
@@ -91,7 +105,10 @@ function ActivityForm() {
             setMessage(response.data.message);
 
             const formattedDate = formatDate(new Date(formData.date + 'T00:00:00'));
-            const logEntry = `\r\n\r\n${formData.tags.length > 0 ? `NOTE FOR HEATHER: ${formData.tags.join('. ')}. \r\n` : ''}${formattedDate}\r\n${formData.activities}  `;
+            const tagsWithoutOther = formData.tags.filter(tag => tag !== 'Other');
+            const noteForHeather = tagsWithoutOther.length > 0 || formData.tags.includes('Other') ? `NOTE FOR HEATHER: ${tagsWithoutOther.join('. ')}. ` : '';
+            const otherText = formData.other ? `${formData.other} \r\n` : '';
+            const logEntry = `\r\n\r\n${noteForHeather}${otherText}${formattedDate}\r\n${formData.activities}  `;
             setLogEntry(logEntry);
         } catch (error) {
             if (error.response) {
@@ -161,7 +178,18 @@ function ActivityForm() {
                             <option value="Shower">SHOWER</option>
                             <option value="Choice">CHOICE</option>
                             <option value="Interaction">INTERACTION</option>
+                            <option value="Other">OTHER</option>
                         </select>
+                    </div>
+                    <div className={"form-data-textarea-input-select-other"}>
+                        <label htmlFor="other">Other:</label>
+                        <input className={"form-data-textarea-input-select-other-input"}
+                               name="other"
+                               value={formData.other}
+                               type="text"
+                               id="other"
+                               onChange={handleChange}
+                        ></input>
                     </div>
                 </div>
 

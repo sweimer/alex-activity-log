@@ -109,6 +109,44 @@ form {
         }
       }
     }
+
+    @keyframes slideDown {
+      from {
+        max-height: 0;
+        opacity: 0;
+      }
+      to {
+        max-height: 500px; // Adjust as needed
+        opacity: 1;
+      }
+    }
+    div.form-data-textarea-input-select-other {
+      box-sizing: border-box;
+      margin-top: 8px;
+      width: 100%;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+
+      &.show {
+        animation: slideDown 0.5s forwards;
+      }
+      &.hide {
+        animation: slideUp 1.5s forwards;
+      }
+
+      label {
+        width: 10%;
+      }
+
+      input {
+        padding: 10px;
+        width: 100%;
+        display: flex;
+        box-sizing: border-box;
+      }
+    }
   }
 
   div.form-data-submit-block {
