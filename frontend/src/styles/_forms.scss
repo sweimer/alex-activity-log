@@ -44,7 +44,7 @@ form {
       width: 100%;
 
       div.form-data-textarea-input-hint {
-        width: 30%;
+        width: 60%;
         box-sizing: border-box;
 
         ul {
@@ -85,7 +85,7 @@ form {
       textarea.form-data-textarea-input-textarea {
         cursor: pointer;
         padding: 20px;
-        width: 70%;
+        width: 40%;
         box-sizing: border-box;
       }
       input.form-data-textarea-input-input {
@@ -104,8 +104,8 @@ form {
           min-height: 600px;
           position: fixed;
           top: 50px;
-          left: 33%;
-          width: 60%;
+          left: 60%;
+          width: 35%;
         }
       }
     }
