@@ -200,5 +200,11 @@ div.form-data-results {
     padding: 0 40px 40px 40px;
     width: 100%;
     white-space: pre-wrap;
+
+    .form-data-results-footer {
+      display: flex;
+      justify-content: space-between;
+      margin: 80px 0 20px 0;
+    }
   }
 }

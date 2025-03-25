@@ -36,6 +36,14 @@ function ActivityForm() {
     //const [isOtherSelected, setIsOtherSelected] = useState(false);
     //const [otherTag, setOtherTag] = useState('');
 
+    // Function to determine the sponsor based on the ratio of 5 days to 3 days
+    const getSponsor = () => {
+        const currentDate = new Date();
+        const dayOfYear = Math.floor((currentDate - new Date(currentDate.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        const cycleDay = dayOfYear % 8; // 8-day cycle
+        return cycleDay < 5 ? "Heather Weimer, Sponsor" : "Scott Weimer, Relief";
+    };
+
     const handleClear = () => {
         setFormData({ date: '', activity: '', tags: [], activities: '', other: '' });
         setMessage('');
@@ -392,7 +400,10 @@ function ActivityForm() {
             </form>
 
             <div className={"form-data-results"}>
-                {logEntry && <pre>{logEntry}</pre>}
+                {logEntry && <pre>
+                    {logEntry}
+                    <div className={"form-data-results-footer"}>{getSponsor()}</div>
+                </pre>}
             </div>
         </div>
     );
