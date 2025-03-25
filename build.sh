@@ -13,8 +13,8 @@ cd ../backend || exit
 npm install
 npm run build
 
-# Navigate back to root, run npm start
+# Navigate back to root
 cd ../ || exit
-npm start
 
-
+# Do not run npm start during the build process
+# npm start
