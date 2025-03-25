@@ -1,4 +1,6 @@
 # dependencies
+node_modules/
+package-lock.json
 frontend/node_modules/
 frontend/package-lock.json
 backend/node_modules/
