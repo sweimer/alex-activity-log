@@ -12,6 +12,7 @@ const port = 5001;
 
 // Middleware to parse JSON and handle CORS
 app.use(bodyParser.json());
+// Ensure CORS is properly configured on the server
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -20,7 +21,7 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: ["GET", "POST", "OPTIONS"], // Allowed HTTP methods
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
 }));
 
