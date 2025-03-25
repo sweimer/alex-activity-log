@@ -134,6 +134,140 @@ function ActivityForm() {
         e.preventDefault();
     };
 
+    const hintListItems = [
+        "CHORE at least 1 time a week.",
+        "CAD at least 1 time a week.",
+        "OUTING every Saturday.",
+        "MEAL PLAN and GROCERY SHOP every Sunday (or other day as needed).",
+        "NEW SKILL at least 1 time a month.",
+        "BEHAVIOR ISSUE at least 1 time a month.",
+        "FIRE DRILL at least 1 time a month.",
+        "SHOWER every Sunday.",
+        "SHOWER at least 2 more times a week.",
+        "CHOICE several times a week.",
+        "INTERACTION several times a month."
+    ];
+
+    const activityListItems = [
+        {
+            category: "Wake",
+            items: [
+                "Alex woke at 600am, went to bathroom, and went back to bed.",
+                "Alex woke back up at 730am.",
+                "Alex woke on her own around 730am and took herself to the bathroom.",
+                "Alex slept in until 830am.",
+                "Sponsor/Relief woke Alex at 730am."
+            ]
+        },
+        {
+            category: "Morning",
+            items: [
+                "CHOICE: Alex picked the pink dress with black tights from the outfits hanging outside her dresser.",
+                "Sponsor/Relief helped Alex get dressed and brush her teeth and hair.",
+                "Sponsor/Relief helped Alex brush teeth and hair.",
+                "Sponsor/Relief helped Alex pick out an outfit from the ones hanging outside her dresser.",
+                "Alex put her shoes on the wrong feet and Sponsor/Relief helped Alex put them on right.",
+                "Alex put her dress on backwards and Sponsor/Relief helped Alex put it on right.",
+                "CHORE: Alex cleaned her room and organized her shelves. Sponsor/Relief checked on Alex until she completed her chores."
+            ]
+        },
+        {
+            category: "Breakfast",
+            items: [
+                "CHOICE: Sponsor/Relief asked Alex if she wanted cereal or oats for breakfast. Alex picked Oats.",
+                "CHOICE: Alex said she wanted cereal for breakfast.",
+                "Sponsor/Relief prepared cereal, monitored Alex as she ate and administered AM meds.",
+                "Sponsor/Relief prepared breakfast.",
+                "Sponsor/Relief already prepared breakfast.",
+                "Sponsor/Relief monitored Alex as she ate and administered AM meds.",
+                "Alex ate Breakfast and was monitored by Sponsor/Relief.",
+                "Sponsor/Relief administer AM meds.",
+                "MENU PLANNING: While eating. Sponsor, Relief and Alex discussed the menu for the upcoming week and made a small shopping list.",
+                "Alex helped clear the table.",
+                "Sponsor/Relief made Alex tea and made sure it was the right temperature.",
+                "Alex drank her tea until the van arrived.",
+                "Alex watched TV until the van arrived.",
+                "Van arrived at 830am to take Alex to Diversity.",
+                "Kiearra arrived at 800am to take Alex out for a girl's day."
+            ]
+        },
+        {
+            category: "MIDDAY",
+            items: [
+                "Alex helped Sponsor put away some laundry.",
+                "Sponsor and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser.",
+                "Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.",
+                "Sponsor/Relief asked Alex if she wanted to work on her new pop-together beads. Alex said Yes and worked on them in the Family room for a while.",
+                "Sponsor/Relief ran a fire drill, helped Alex respond to the alarm and helped Alex evacuate to the meeting place in the front yard.",
+                "Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.",
+                "Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles.",
+                "Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track.",
+                "Sponsor/Relief and Alex took Izzy back home.",
+                "Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home."
+            ]
+        },
+        {
+            category: "LUNCH",
+            items: [
+                "Sponsor/Relief prepared lunch and monitored Alex as she ate.",
+                "Alex watched a little tv while Sponsor/Relief prepared lunch.",
+                "Alex helped Sponsor cook home-made granola.",
+                "Alex helped clear the table."
+            ]
+        },
+        {
+            category: "DINNER",
+            items: [
+                "Sponsor/Relief prepared dinner, monitored Alex as she ate and administered PM meds.",
+                "Sponsor/Relief prepared dinner while Alex watched TV, monitored Alex as she ate and administered PM Meds.",
+                "Sponsor/Relief prepared dinner and monitored Alex as she ate.",
+                "Sponsor/Relief administered PM meds.",
+                "Alex helped clear the table."
+            ]
+        },
+        {
+            category: "AFTERNOON/AFTER SCHOOL",
+            items: [
+                "Van returned at 230pm.",
+                "Kiearra returned at 330pm.",
+                "Alex helped Sponsor put away some laundry.",
+                "Sponsor and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser.",
+                "Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.",
+                "Sponsor/Relief asked Alex if she wanted to work on her new pop-together beads. Alex said Yes and worked on them in the Family room for a while.",
+                "Sponsor/Relief ran a fire drill, helped Alex respond to the alarm and helped Alex evacuate to the meeting place in the front yard.",
+                "Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.",
+                "Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles.",
+                "Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track.",
+                "Sponsor/Relief and Alex took Izzy back home.",
+                "Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home."
+            ]
+        },
+        {
+            category: "EVENING",
+            items: [
+                "Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.",
+                "Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles.",
+                "Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track.",
+                "Sponsor/Relief went to Target.",
+                "Relief and Alex waited in the car while Sponsor shopped.",
+                "Alex helped push the car, load the car and unload the car back home.",
+                "Sponsor/Relief asked Alex if she wanted to work on a beading craft. Alex said yes. Sponsor set Alex up with beads in the family room and checked in on her as she worked on it.",
+                "Relief and Alex worked on making pop-together bracelets while watching TV.",
+                "Sponsor, Relief and Alex watched a movie on TV."
+            ]
+        },
+        {
+            category: "BED",
+            items: [
+                "Sponsor/Relief helped Alex shower and with ADLs and helped Alex put on PJs.",
+                "Alex watched TV with family until she was tired and went to bed around 730pm.",
+                "Sponsor/Relief helped Alex brush teeth and hair and put on PJs.",
+                "Alex watched TV with family until she was tired and went to bed around 730pm.",
+                "Alex went to bed around 730pm"
+            ]
+        },
+    ];
+
     return (
         <div>
             <h1>Alex Activity Log</h1>
@@ -148,17 +282,9 @@ function ActivityForm() {
                             When applicable, select a tag or multiple (command/select) tags to alert Heather that this
                             date has a notable entry.
                             <ul className={"list-decoration-on"}>
-                                <li>CHORE at least 1 time a week.</li>
-                                <li>CAD at least 1 time a week.</li>
-                                <li>OUTING every Saturday.</li>
-                                <li>MEAL PLAN and GROCERY SHOP every Sunday (or other day as needed).</li>
-                                <li>NEW SKILL at least 1 time a month.</li>
-                                <li>BEHAVIOR ISSUE at least 1 time a month.</li>
-                                <li>FIRE DRILL at least 1 time a month.</li>
-                                <li>SHOWER every Sunday.</li>
-                                <li>SHOWER at least 2 more times a week.</li>
-                                <li>CHOICE several times a week.</li>
-                                <li>INTERACTION several times a month.</li>
+                                {hintListItems.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                ))}
                             </ul>
                         </div>
                         <select
@@ -219,403 +345,23 @@ function ActivityForm() {
                         <div className={"form-data-textarea-input-hint hint-block"}>
                             <p className={"bold"}>Drag and Drop</p>
                             <ul>
-                                <li className="list-top-level">Wake
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex woke at 600am, went to bathroom, and went back to bed. ')}>
-                                            Alex woke at 600am, went to bathroom, and went back to bed.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex woke back up at 730am. ')}>
-                                            Alex woke back up at 730am.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex woke on her own around 730am and took herself to the bathroom. ')}>
-                                            Alex woke on her own around 730am and took herself to the bathroom.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex slept in until 830am. ')}>
-                                            Alex slept in until 830am.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief woke Alex at 730am. ')}>
-                                            Sponsor/Relief woke Alex at 730am.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Morning
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex picked out an outfit from the ones hanging outside her dresser. ')}>
-                                            CHOICE: Alex picked the pink dress with black tights from the outfits hanging outside her dresser.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief helped Alex get dressed and brush her teeth and hair. ')}>
-                                            Sponsor/Relief helped Alex get dressed and brush her teeth and hair.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief helped Alex brush teeth and hair. ')}>
-                                            Sponsor/Relief helped Alex brush teeth and hair.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief helped Alex pick out an outfit from the ones hanging outside her dresser. ')}>
-                                            Sponsor/Relief helped Alex pick out an outfit from the ones hanging outside
-                                            her dresser.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex put her shoes on the wrong feet and Sponsor/Relief helped Alex put them on right. ')}>
-                                            Alex put her shoes on the wrong feet and Sponsor/Relief helped Alex put them
-                                            on right.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex put her dress on backwards and Sponsor/Relief helped Alex put it on right. ')}>
-                                            Alex put her dress on backwards and Sponsor/Relief helped Alex put it on
-                                            right.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex cleaned her room and organized her shelves. Sponsor/Relief checked on Alex until she completed her chores. ')}>
-                                            CHORE: Alex cleaned her room and organized her shelves. Sponsor/Relief
-                                            checked on Alex until she completed her chores.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Breakfast
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief asked Alex if she wanted cereal or oats for breakfast. Alex picked Oats. ')}>
-                                            CHOICE: Sponsor/Relief asked Alex if she wanted cereal or oats for
-                                            breakfast. Alex
-                                            picked Oats.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex wanted cereal for breakfast. ')}>
-                                            CHOICE: Alex said she wanted cereal for breakfast.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared cereal, monitored Alex as she ate and administered AM meds. ')}>
-                                            Sponsor/Relief prepared cereal, monitored Alex as she ate and administered
-                                            AM meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared breakfast. ')}>
-                                            Sponsor/Relief prepared breakfast.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief already prepared breakfast. ')}>
-                                            Sponsor/Relief already prepared breakfast.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief monitored Alex as she ate and administered AM meds. ')}>
-                                            Sponsor/Relief monitored Alex as she ate and administered AM meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex ate Breakfast and was monitored by Sponsor/Relief. ')}>
-                                            Alex ate Breakfast and was monitored by Sponsor/Relief.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief administer AM meds. ')}>
-                                            Sponsor/Relief administer AM meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'While eating. Sponsor, Relief and Alex discussed the menu for the upcoming week and made a small shopping list. ')}>
-                                            MENU PLANNING: While eating. Sponsor, Relief and Alex discussed the menu for the upcoming
-                                            week and made a small shopping list.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped clear the table. ')}>
-                                            Alex helped clear the table.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief made Alex tea and made sure it was the right temperature. ')}>
-                                            Sponsor/Relief made Alex tea and made sure it was the right temperature.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex drank her tea until the van arrived. ')}>
-                                            Alex drank her tea until the van arrived.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex watched TV until the van arrived. ')}>
-                                            Alex watched TV until the van arrived.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Van arrived at 830am to take Alex to Diversity. ')}>
-                                            Van arrived at 830am to take Alex to Diversity.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Kiearra arrived at 800am to take Alex out for a girl\'s day. ')}>
-                                            Kiearra arrived at 800am to take Alex out for a girl's day.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Lunch
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared lunch and monitored Alex as she ate. ')}>
-                                            Sponsor/Relief prepared lunch and monitored Alex as she ate.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex watched a little tv while Sponsor/Relief prepared lunch. ')}>
-                                            Alex watched a little tv while Sponsor/Relief prepared lunch.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped clear the table. ')}>
-                                            Alex helped clear the table.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped Sponsor cook home-made granola. ')}>
-                                            CHORE: Alex helped Sponsor cook home-made granola.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Dinner
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared dinner, monitored Alex as she ate and administered PM meds. ')}>
-                                            Sponsor/Relief prepared dinner, monitored Alex as she ate and administered
-                                            PM meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared dinner while Alex watched TV, monitored Alex as she ate and administered PM Meds. ')}>
-                                            Sponsor/Relief prepared dinner while Alex watched TV, monitored Alex as she
-                                            ate and administered PM Meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief prepared dinner and monitored Alex as she ate. ')}>
-                                            Sponsor/Relief prepared dinner and monitored Alex as she ate.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief administered PM meds. ')}>
-                                            Sponsor/Relief administered PM meds.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped clear the table. ')}>
-                                            Alex helped clear the table.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Afternoon/Evening
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Van returned at 230pm. ')}>
-                                            Van returned at 230pm.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief asked Alex if she wanted to work on a beading craft. Alex said yes. Sponsor set Alex up with beads in the family room and checked in on her as she worked on it. ')}>
-                                            CAD: Sponsor/Relief asked Alex if she wanted to work on a beading craft.
-                                            Alex
-                                            said yes. Sponsor set Alex up with beads in the family room and checked in
-                                            on her as
-                                            she worked on it.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Relief and Alex worked on making pop-together bracelets while watching TV. ')}>
-                                            CAD: Relief and Alex worked on making pop-together bracelets while watching
-                                            TV.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief asked Alex if she wanted to work onan art project on her Leap Pad. Alex said yes. Sponsor/Relief set Alex up with the project and checked in with her while she worked.. ')}>
-                                            CAD: Sponsor/Relief asked Alex if she wanted to work onan art project on her
-                                            Leap Pad. Alex said yes. Sponsor/Relief set Alex up with the project and
-                                            checked in with her while she worked.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex helped Sponsor put away some laundry. ')}>
-                                            CHORE: Alex helped Sponsor put away some laundry.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser. ')}>
-                                            CHORE: Sponsor/Relief and Alex picked out outfits for the upcoming week at
-                                            Diversity and hung them outside her dresser.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Kiearra returned at 330pm. While with Kiearra, Alex had her fingernails done, went to a movie and ate lunch at the movie theater.. ')}>
-                                            OUTING: Kiearra returned at 330pm. While with Kiearra, Alex had her
-                                            fingernails done, went to a movie and ate lunch at the movie theater.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy back home. ')}>
-                                            OUTING: Sponsor/Relief and Alex took Izzy back home.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home. ')}>
-                                            OUTING: Sponsor/Relief and Alex went to Wegmans and picked up the groceries
-                                            on the list. Alex helped push the cart, load the car and unload the car at
-                                            home.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy for a quick neighborhood walk. ')}>
-                                            OUTING: Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles. ')}>
-                                            OUTING: Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85
-                                            miles.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track. ')}>
-                                            OUTING: Sponsor/Relief and Alex took Izzy to the water tower to walk a couple laps around the track.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief and Alex took Izzy to the senior center to chase balls and Alex walked a couple laps around the track. ')}>
-                                            OUTING: Sponsor/Relief and Alex took Izzy to the senior center to chase balls and Alex walked a couple laps around the track.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief went to Target. Relief and Alex waited in the car while Sponsor shopped. ')}>
-                                            OUTING: Sponsor/Relief went to Target. Relief and Alex waited in the car while Sponsor shopped.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor, Relief and Alex watched a movie on TV. ')}>
-                                            Sponsor, Relief and Alex watched a movie on TV.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Bed
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief helped Alex shower and with ADLs and helped Alex put on PJs. ')}>
-                                        SHOWER: Sponsor/Relief helped Alex shower and with ADLs and helped Alex put
-                                            on PJs.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief helped Alex brush teeth and hair and put on PJs. ')}>
-                                            Sponsor/Relief helped Alex brush teeth and hair and put on PJs.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'AAlex watched TV with family until she was tired and went to bed around 730pm. ')}>
-                                            Alex watched TV with family until she was tired and went to bed around 730pm.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex went to bed around 730pm. ')}>
-                                            Alex went to bed around 730pm.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li className="list-top-level">Required
-                                    <ul>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Sponsor/Relief conducted a Fire Drill, helped Alex leave the house when the alarm went off and helped Alex walk to the meeting point in the front yard. ')}>
-                                            FIRE DRILL: Sponsor/Relief conducted a Fire Drill, helped Alex leave the house when the alarm went off and helped Alex walk to the meeting point in the front yard.
-                                        </li>
-                                        <li draggable
-                                            className="draggable"
-                                            onDragStart={(e) =>
-                                                handleDragStart(e, 'Alex had a behavior issue. While in line at the theater, she got irritated and hit herself. Sponsor/Relief stepped Alex out of the line until she could calm down. alex apologized. ')}>
-                                            BEHAVIOR ISSUE: Alex had a behavior issue. While in line at the theater, she got irritated and hit herself. Sponsor/Relief stepped Alex out of the line until she could calm down. alex apologized.
-                                        </li>
-                                    </ul>
-                                </li>
+                                {activityListItems.map((category, index) => (
+                                    <li key={index} className="list-top-level">
+                                        {category.category}
+                                        <ul>
+                                            {category.items.map((item, subIndex) => (
+                                                <li
+                                                    key={subIndex}
+                                                    draggable
+                                                    className="draggable"
+                                                    onDragStart={(e) => handleDragStart(e, item)}
+                                                >
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                         <textarea
@@ -633,10 +379,10 @@ function ActivityForm() {
                 <div className={"form-data-submit-block"}>
                     <div className={"form-data-submit_button-block"}>
                         <button className={"form-data-submit-button"} type="submit" onClick={handleButtonClick}>
-                        Submit
+                            Submit
                         </button>
                         <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
-                            Clear
+                        Clear
                         </button>
                     </div>
                     <div className={"form-data-submit_message-block"}>
