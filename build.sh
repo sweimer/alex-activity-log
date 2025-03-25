@@ -8,5 +8,7 @@ then
     curl -L https://www.npmjs.com/install.sh | sh
 fi
 
+# Run the install script
+npm install
 # Run the build script
 npm run build
