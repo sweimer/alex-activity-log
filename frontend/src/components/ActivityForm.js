@@ -76,12 +76,36 @@ function ActivityForm() {
                 otherInputDiv.classList.remove('show');
                 otherInputDiv.classList.add('hide');
             }
+
+            // Update logEntry with selected tags as header, excluding "Other" and including other text if "Other" is selected
+            setLogEntry(prevLogEntry => {
+                const datePart = prevLogEntry.split('\n\n')[1] || '';
+                const otherText = formData.other ? ` ${formData.other}` : '';
+                const filteredTags = selectedTags.filter(tag => tag !== 'Other');
+                const logEntryHeader = `NOTE TO HEATHER: ${filteredTags.join('. ')}${selectedTags.includes('Other') ? otherText : '. '}`;
+                return `${logEntryHeader}\n\n${datePart}`;
+            });
         } else {
             setFormData({ ...formData, [name]: value });
             if (name === 'date') {
                 checkDay(value);
+
+                // Update logEntry with selected date, preserving the tags if already set
+                const formattedDate = formatDate(new Date(value + 'T00:00:00'));
+                setLogEntry(prevLogEntry => {
+                    const tagsPart = prevLogEntry.split('\n\n')[0] || '';
+                    return `${tagsPart}\n\n${formattedDate}`;
+                });
             } else if (name === 'other') {
                 setFormData({ ...formData, other: value });
+
+                // Update logEntry with other text, preserving the tags and date if already set
+                setLogEntry(prevLogEntry => {
+                    const [tagsPart, datePart] = prevLogEntry.split('\n\n');
+                    const otherText = value ? ` ${value}` : '';
+                    const updatedTagsPart = tagsPart ? `${tagsPart.split('.')[0]}.${otherText}` : '';
+                    return `${updatedTagsPart}\n\n${datePart || ''}`;
+                });
             }
         }
     };
@@ -375,7 +399,7 @@ function ActivityForm() {
                         <textarea
                             className={"form-data-textarea-input-textarea"}
                             name="activities"
-                            value={formData.activities}
+                            value={`${logEntry}\n\n${formData.activities}\n\n${getSponsor()}`}
                             onChange={handleChange}
                             onDrop={(e) => handleDrop(e, 'activities')}
                             onDragOver={handleDragOver}
