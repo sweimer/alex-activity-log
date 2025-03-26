@@ -7,10 +7,6 @@
       "config": {
         "distDir": "public"
       }
-    },
-    {
-      "src": "backend/package.json",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
