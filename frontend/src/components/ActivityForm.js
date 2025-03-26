@@ -326,7 +326,7 @@ function ActivityForm() {
 
     return (
         <div>
-            <h1>Alex Activity Log</h1>
+            <h1>Alex Log</h1>
 
             <form onSubmit={handleSubmit}>
                 <div className={"form-data-date-block"}>
