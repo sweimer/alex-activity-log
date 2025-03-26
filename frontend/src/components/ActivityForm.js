@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 const handleScroll = () => {
-    const textareaDiv = document.querySelector('textarea.form-data-textarea-input-textarea');
+    const textareaDiv = document.querySelector('div.form-data-workspace');
     const resultsDiv = document.querySelector('div.form-data-results');
     const preElement = resultsDiv ? resultsDiv.querySelector('pre') : null;
 
@@ -35,6 +35,14 @@ function ActivityForm() {
     const [logEntry, setLogEntry] = useState('');
     //const [isOtherSelected, setIsOtherSelected] = useState(false);
     //const [otherTag, setOtherTag] = useState('');
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [formData.activities]);
 
     // Function to determine the sponsor based on the ratio of 5 days to 3 days
     const getSponsor = () => {
@@ -82,31 +90,32 @@ function ActivityForm() {
                 const datePart = prevLogEntry.split('\n\n')[1] || '';
                 const otherText = formData.other ? ` ${formData.other}` : '';
                 const filteredTags = selectedTags.filter(tag => tag !== 'Other');
-                const logEntryHeader = `NOTE TO HEATHER: ${filteredTags.join('. ')}${selectedTags.includes('Other') ? otherText : '. '}`;
+                const logEntryHeader = `NOTE TO HEATHER: ${filteredTags.join('. ')}.${selectedTags.includes('Other') ? otherText : ' '}`;
                 return `${logEntryHeader}\n\n${datePart}`;
             });
-        } else {
+        } else if (name === 'date') {
             setFormData({ ...formData, [name]: value });
-            if (name === 'date') {
-                checkDay(value);
+            checkDay(value);
 
-                // Update logEntry with selected date, preserving the tags if already set
-                const formattedDate = formatDate(new Date(value + 'T00:00:00'));
-                setLogEntry(prevLogEntry => {
-                    const tagsPart = prevLogEntry.split('\n\n')[0] || '';
-                    return `${tagsPart}\n\n${formattedDate}`;
-                });
-            } else if (name === 'other') {
-                setFormData({ ...formData, other: value });
+            // Update logEntry with selected date, preserving the tags if already set
+            const formattedDate = formatDate(new Date(value + 'T00:00:00'));
+            setLogEntry(prevLogEntry => {
+                const tagsPart = prevLogEntry.split('\n\n')[0] || '';
+                return `${tagsPart}\n\n${formattedDate}`;
+            });
+        } else if (name === 'other') {
+            setFormData({ ...formData, other: value });
 
-                // Update logEntry with other text, preserving the tags and date if already set
-                setLogEntry(prevLogEntry => {
-                    const [tagsPart, datePart] = prevLogEntry.split('\n\n');
-                    const otherText = value ? ` ${value}` : '';
-                    const updatedTagsPart = tagsPart ? `${tagsPart.split('.')[0]}.${otherText}` : '';
-                    return `${updatedTagsPart}\n\n${datePart || ''}`;
-                });
-            }
+            // Update logEntry with other text, preserving the tags and date if already set
+            setLogEntry(prevLogEntry => {
+                const [tagsPart, datePart] = prevLogEntry.split('\n\n');
+                const otherText = value ? ` ${value}` : '';
+                const updatedTagsPart = tagsPart ? `${tagsPart.split('.')[0]}.${otherText}` : '';
+                return `${updatedTagsPart}\n\n${datePart || ''}`;
+            });
+        } else if (name === 'activities') {
+            // Update formData without modifying logEntry
+            setFormData({ ...formData, [name]: value });
         }
     };
 
@@ -128,6 +137,15 @@ function ActivityForm() {
         } else {
             setDateMessage('Hints...');
         }
+    };
+
+    const handleCopy = () => {
+        const textToCopy = `${logEntry}\n\n${formData.activities}\n\n\n\n${getSponsor()}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            console.log('Text copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -159,7 +177,7 @@ function ActivityForm() {
     const handleDrop = (e, name) => {
         e.preventDefault();
         const text = e.dataTransfer.getData('text/plain');
-        setFormData({ ...formData, [name]: formData[name] + text });
+        setFormData({ ...formData, [name]: formData[name] + text + ' ' });
     };
 
     const handleDragOver = (e) => {
@@ -396,15 +414,30 @@ function ActivityForm() {
                                 ))}
                             </ul>
                         </div>
-                        <textarea
-                            className={"form-data-textarea-input-textarea"}
-                            name="activities"
-                            value={`${logEntry}\n\n${formData.activities}\n\n${getSponsor()}`}
-                            onChange={handleChange}
-                            onDrop={(e) => handleDrop(e, 'activities')}
-                            onDragOver={handleDragOver}
-                            onScroll={handleScroll}
-                        ></textarea>
+
+                        <div className={"form-data-workspace"}>
+                            <div className={"form-data-workspace-copylink"}>
+                                    <button className="form-data-clear-button" type="button" onClick={handleCopy}>
+                                        Copy
+                                    </button>
+                            </div>
+                            <div className={"form-data-workspace-header"}>
+                                {logEntry}
+                            </div>
+                            <textarea
+                                ref={textareaRef}
+                                className={"form-data-textarea-input-textarea"}
+                                name="activities"
+                                value={`${formData.activities}`}
+                                onChange={handleChange}
+                                onDrop={(e) => handleDrop(e, 'activities')}
+                                onDragOver={handleDragOver}
+                                onScroll={handleScroll}
+                            ></textarea>
+                            <div className={"form-data-workspace-footer"}>
+                                {getSponsor()}
+                            </div>
+                        </div>
                     </div>
                 </div>
 

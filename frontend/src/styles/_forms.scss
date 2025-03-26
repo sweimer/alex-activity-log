@@ -1,6 +1,16 @@
 form {
   margin-top: 20px;
 
+  button.form-data-clear-button {
+    background-color: $base-background-color;
+    border: 1px solid #cdcdcd;
+    cursor: pointer;
+    font-size: $base-font-size;
+    margin: 8px 4px;
+    padding: 10px;
+    text-align: center;
+  }
+
   div.form-data-date-block {
     margin: 8px;
 
@@ -63,7 +73,7 @@ form {
           }
 
           li.draggable {
-            border: 1px solid #000;
+            border: 1px solid #cdcdcd;
             cursor: grab;
             margin: 4px;
             padding: 4px;
@@ -81,8 +91,8 @@ form {
       }
 
       input.form-data-textarea-input-input,
-      select.form-data-textarea-input-select,
-      textarea.form-data-textarea-input-textarea {
+      select.form-data-textarea-input-select {
+        border: 1px solid #cdcdcd;
         cursor: pointer;
         padding: 20px;
         width: 40%;
@@ -98,14 +108,34 @@ form {
       select.form-data-textarea-input-select {
         min-height: 175px;
       }
-      textarea.form-data-textarea-input-textarea {
 
+      div.form-data-workspace {
+        border: 1px solid #cdcdcd;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 20px;
+        width: 40%;
+        box-sizing: border-box;
         &.sticky {
           min-height: 450px;
           position: fixed;
           top: 50px;
           left: 60%;
           width: 35%;
+        }
+        div.form-data-workspace-header {
+          margin: 0 0 20px 0;
+        }
+        textarea {
+          border-color: #eeeeee;
+          font-family: "Arial", "Helvetica", sans-serif;
+          font-size: 16px;
+          min-height: 75px;
+          padding: 15px 0;
+          width: calc(100% - 30px);
+        }
+        div.form-data-workspace-footer {
+          margin:10px 0 20px 0;
         }
       }
     }
@@ -158,20 +188,10 @@ form {
 
       button[type="submit"] {
         background-color: $base-background-color;
-        border: 1px solid;
+        border: 1px solid #cdcdcd;
         cursor: pointer;
         font-size: $base-font-size;
         margin: 8px 0;
-        padding: 10px;
-        text-align: center;
-      }
-
-      button.form-data-clear-button {
-        background-color: $base-background-color;
-        border: 1px solid;
-        cursor: pointer;
-        font-size: $base-font-size;
-        margin: 8px 4px;
         padding: 10px;
         text-align: center;
       }
@@ -182,7 +202,7 @@ form {
 
       .alert {
         background-color: $base-background-color;
-        border: 1px solid;
+        border: 1px solid #cdcdcd;
         margin: 8px 0;
         padding: 10px;
         text-align: center;
@@ -195,7 +215,7 @@ form {
 
 div.form-data-results {
   pre {
-    border: 1px solid;
+    border: 1px solid #cdcdcd;
     box-sizing: border-box;
     padding: 0 40px 40px 40px;
     width: 100%;
