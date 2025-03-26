@@ -14,6 +14,28 @@ form {
     background-color: #f0f0f0;
   }
 
+  // CHECKLIST BLOCK
+  div.alex-block-checklist {
+    button.alex-block-checklist-button {
+      margin: 0;
+      width: 100%;
+    }
+    div.alex-block-checklist-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+
+      &.show {
+        max-height: 500px; // Adjust as needed
+        transition: max-height 0.5s ease-in;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+    }
+  }
+
   div.form-data-date-block {
     margin: 8px;
 
