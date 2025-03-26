@@ -364,135 +364,142 @@ function ActivityForm() {
                     )}
                 </div>
 
-                <div className={"form-data-date-block"}>
-                    <label>
-                        Date:
-                    </label>
-                    <div className={"form-data-date-block-input"}>
-                        <input
-                            type="date"
-                            name="date"
-                            value={formData.date}
-                            onChange={handleChange}
-                            required
-                        />
-                        <div className={"form-data-textarea-input-hint hint-block form-data-date-block-hint"}>
+                <div className={"row"}>
+                    <div className={"alex-block-date column"}>
+                        <label>
+                            Date:
+                        </label>
+                        <div className={"form-data-date-block-input"}>
+                            <input
+                                type="date"
+                                name="date"
+                                value={formData.date}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className={"alex-block-hint hint-block form-data-date-block-hint"}>
                             {dateMessage}
                         </div>
                     </div>
+                    <div className={"alex-block-staff column"}>
+                        <label>
+                            Staff:
+                        </label>
+                        <select className={"form-data-workspace-footer-select"}
+                                name="workspacefooter"
+                                value={formData.workspacefooter}
+                                onChange={handleChange}
+                        >
+                            <option value="Heather Weimer, Sponsor">Heather Weimer, Sponsor</option>
+                            <option value="Scott Weimer, Relief">Scott Weimer, Relief</option>
+                        </select>
+                    </div>
+                    <div className={"alex-block-tags column form-data-container-tags"}>
+                        <label className={'form-data-textarea-label'}>
+                            Tags:
+                        </label>
+                        <select
+                            className={"form-data-textarea-input-select"}
+                            name="tags"
+                            value={formData.tags}
+                            onChange={handleChange}
+                            multiple
+                        >
+                            <option value="CHORE">CHORE</option>
+                            <option value="CAD">CAD</option>
+                            <option value="OUTING">OUTING</option>
+                            <option value="MEAL PLAN and GROCERY SHOP">MEAL PLAN and GROCERY SHOP</option>
+                            <option value="NEW SKILL">NEW SKILL</option>
+                            <option value="BEHAVIOR ISSUE">BEHAVIOR ISSUE</option>
+                            <option value="FIRE DRILL">FIRE DRILL</option>
+                            <option value="SHOWER">SHOWER</option>
+                            <option value="CHOICE">CHOICE</option>
+                            <option value="INTERACTION">INTERACTION</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
+
+                        <div className={"form-data-textarea-input-select-other"}>
+                            <label htmlFor="other">Other:</label>
+                            <input className={"form-data-textarea-input-select-other-input"}
+                                   name="other"
+                                   value={formData.other}
+                                   type="text"
+                                   id="other"
+                                   onChange={handleChange}
+                            ></input>
+                        </div>
+                    </div>
                 </div>
 
-                <div className={"form-data-textarea-block form-data-container-tags"}>
-                    <label className={'form-data-textarea-label'}>
-                    Tags:
-                    </label>
-
-                    <select
-                        className={"form-data-textarea-input-select"}
-                        name="tags"
-                        value={formData.tags}
-                        onChange={handleChange}
-                        multiple
-                    >
-                        <option value="CHORE">CHORE</option>
-                        <option value="CAD">CAD</option>
-                        <option value="OUTING">OUTING</option>
-                        <option value="MEAL PLAN and GROCERY SHOP">MEAL PLAN and GROCERY SHOP</option>
-                        <option value="NEW SKILL">NEW SKILL</option>
-                        <option value="BEHAVIOR ISSUE">BEHAVIOR ISSUE</option>
-                        <option value="FIRE DRILL">FIRE DRILL</option>
-                        <option value="SHOWER">SHOWER</option>
-                        <option value="CHOICE">CHOICE</option>
-                        <option value="INTERACTION">INTERACTION</option>
-                        <option value="OTHER">OTHER</option>
-                    </select>
-                </div>
-
-                <div className={"form-data-textarea-input-select-other"}>
-                    <label htmlFor="other">Other:</label>
-                    <input className={"form-data-textarea-input-select-other-input"}
-                           name="other"
-                           value={formData.other}
-                           type="text"
-                           id="other"
-                           onChange={handleChange}
-                    ></input>
-                </div>
 
                 <div className={"form-data-textarea-block form-data-container-activities"}>
-                        <label className={'form-data-textarea-label'}>
-                            Activities:
-                        </label>
-                        <div className={'form-data-textarea-input'}>
-                            <div className={"form-data-textarea-input-hint hint-block"}>
-                                <p className={"bold"}>Drag and Drop</p>
-                                <ul>
-                                    {activityListItems.map((category, index) => (
-                                        <li key={index} className="list-top-level">
-                                            {category.category}
-                                            <ul>
-                                                {category.items.map((item, subIndex) => (
-                                                    <li
-                                                        key={subIndex}
-                                                        draggable
-                                                        className="draggable"
-                                                        onDragStart={(e) => handleDragStart(e, item)}
-                                                    >
-                                                        {item}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                    <label className={'form-data-textarea-label'}>
+                        Activities:
+                    </label>
+                    <div className={'form-data-textarea-input'}>
+                        <div className={"form-data-textarea-input-hint hint-block"}>
+                            <p className={"bold"}>Drag and Drop</p>
+                            <ul>
+                                {activityListItems.map((category, index) => (
+                                    <li key={index} className="list-top-level">
+                                        {category.category}
+                                        <ul>
+                                            {category.items.map((item, subIndex) => (
+                                                <li
+                                                    key={subIndex}
+                                                    draggable
+                                                    className="draggable"
+                                                    onDragStart={(e) => handleDragStart(e, item)}
+                                                >
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                            <div className={"form-data-workspace"}>
-                                <div className={"form-data-workspace-copylink"}>
-                                    <button className="form-data-clear-button" type="button" onClick={handleCopy}>
-                                        Copy
-                                    </button>
-                                    <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
-                                        Clear
-                                    </button>
-                                </div>
-                                <div className={"form-data-workspace-header"}>
-                                    {logEntry}
-                                </div>
-                                <textarea
-                                    ref={textareaRef}
-                                    className={"form-data-textarea-input-textarea"}
-                                    name="activities"
-                                    value={`${formData.activities}`}
-                                    onChange={handleChange}
-                                    onDrop={(e) => handleDrop(e, 'activities')}
-                                    onDragOver={handleDragOver}
-                                    onScroll={handleScroll}
-                                ></textarea>
-                                <div className={"form-data-workspace-footer"}>
-                                    <select className={"form-data-workspace-footer-select"}
-                                            name="workspacefooter"
-                                            value={formData.workspacefooter}
-                                            onChange={handleChange}
-                                    >
-                                        <option value="Heather Weimer, Sponsor">Heather Weimer, Sponsor</option>
-                                        <option value="Scott Weimer, Relief">Scott Weimer, Relief</option>
-                                    </select>
-                                </div>
+                        <div className={"form-data-workspace"}>
+                            <div className={"form-data-workspace-copylink"}>
+                                <button className="form-data-clear-button" type="button" onClick={handleCopy}>
+                                    Copy
+                                </button>
+                                <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
+                                    Clear
+                                </button>
+                            </div>
+                            <div className={"form-data-workspace-header"}>
+                                {logEntry}
+                            </div>
+                            <textarea
+                                ref={textareaRef}
+                                className={"form-data-textarea-input-textarea"}
+                                name="activities"
+                                value={`${formData.activities}`}
+                                onChange={handleChange}
+                                onDrop={(e) => handleDrop(e, 'activities')}
+                                onDragOver={handleDragOver}
+                                onScroll={handleScroll}
+                            ></textarea>
+                            <div className={"form-data-workspace-footer"}>
+
                             </div>
                         </div>
                     </div>
+                </div>
 
                 <div className={"form-data-submit-block"}>
-                        <div className={"form-data-submit_button-block"}>
-                            <button className={"form-data-submit-button"} type="submit" onClick={handleButtonClick}>
-                                Submit
-                            </button>
-                        </div>
-                        <div className={"form-data-submit_message-block"}>
-                            {message && <p className={"alert"}>{message}</p>}
-                        </div>
+                    <div className={"form-data-submit_button-block"}>
+                        <button className={"form-data-submit-button"} type="submit" onClick={handleButtonClick}>
+                            Submit
+                        </button>
                     </div>
+                    <div className={"form-data-submit_message-block"}>
+                        {message && <p className={"alert"}>{message}</p>}
+                    </div>
+                </div>
             </form>
 
             <div className={"form-data-results"}>

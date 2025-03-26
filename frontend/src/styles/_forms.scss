@@ -36,9 +36,13 @@ form {
     }
   }
 
-  div.form-data-date-block {
-    margin: 8px;
+  // HINT BLOCK
+  div.alex-block-hint {
 
+  }
+
+  // DATE BLOCK
+  div.alex-block-date {
     label {
       width: 100%;
     }
@@ -46,16 +50,6 @@ form {
     div.form-data-date-block-input {
       display: flex;
       width: 100%;
-
-      input {
-        cursor: pointer;
-        padding: 10px;
-        width: 130px;
-      }
-
-      input[type="date"] {
-        cursor: pointer;
-      }
 
       .form-data-date-block-hint {
         width: calc(100% - 100px);

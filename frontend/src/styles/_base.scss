@@ -5,6 +5,31 @@ body {
   margin: 0 auto;
   width: 90%
 }
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 14px;
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  label {
+    width: 100%;
+  }
+
+  input,
+  select {
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 8px 0;
+    padding: 10px;
+    width: 100%;
+  }
+}
 .bold {
   font-weight: bold;
 }
