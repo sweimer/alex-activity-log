@@ -323,6 +323,24 @@ function ActivityForm() {
             <h1>Alex Activity Log</h1>
 
             <form onSubmit={handleSubmit}>
+                <div className={"form-data-date-block"}>
+                    <label>
+                        Date:
+                    </label>
+                    <div className={"form-data-date-block-input"}>
+                        <input
+                            type="date"
+                            name="date"
+                            value={formData.date}
+                            onChange={handleChange}
+                            required
+                        />
+                        <div className={"form-data-textarea-input-hint hint-block form-data-date-block-hint"}>
+                            {dateMessage}
+                        </div>
+                    </div>
+                </div>
+
                 <div className={"form-data-textarea-block form-data-container-tags"}>
                     <label className={'form-data-textarea-label'}>
                         Tags:
@@ -369,24 +387,6 @@ function ActivityForm() {
                     </div>
                 </div>
 
-                <div className={"form-data-date-block"}>
-                    <label>
-                        Date:
-                    </label>
-                    <div className={"form-data-date-block-input"}>
-                        <input
-                            type="date"
-                            name="date"
-                            value={formData.date}
-                            onChange={handleChange}
-                            required
-                        />
-                        <div className={"form-data-textarea-input-hint hint-block form-data-date-block-hint"}>
-                            {dateMessage}
-                        </div>
-                    </div>
-                </div>
-
                 <div className={"form-data-textarea-block form-data-container-activities"}>
                     <label className={'form-data-textarea-label'}>
                         Activities:
@@ -417,9 +417,12 @@ function ActivityForm() {
 
                         <div className={"form-data-workspace"}>
                             <div className={"form-data-workspace-copylink"}>
-                                    <button className="form-data-clear-button" type="button" onClick={handleCopy}>
-                                        Copy
-                                    </button>
+                                <button className="form-data-clear-button" type="button" onClick={handleCopy}>
+                                    Copy
+                                </button>
+                                <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
+                                    Clear
+                                </button>
                             </div>
                             <div className={"form-data-workspace-header"}>
                                 {logEntry}
@@ -446,12 +449,9 @@ function ActivityForm() {
                         <button className={"form-data-submit-button"} type="submit" onClick={handleButtonClick}>
                             Submit
                         </button>
-                        <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
-                        Clear
-                        </button>
                     </div>
                     <div className={"form-data-submit_message-block"}>
-                    {message && <p className={"alert"}>{message}</p>}
+                        {message && <p className={"alert"}>{message}</p>}
                     </div>
                 </div>
             </form>
