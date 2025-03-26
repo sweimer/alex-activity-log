@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# From the root, run npm install
-npm install
-
 # Navigate to the frontend directory and build the frontend
-cd frontend || exit
+cd ./frontend || exit
 npm install
 npm run build
 
