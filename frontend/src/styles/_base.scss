@@ -61,15 +61,38 @@ ul.list-decoration-on {
 
   div.bottomnav-panel {
     box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.2);
-    max-height: 80vh;
+    height: 80vh;
     overflow: scroll;
     position: fixed;
     top: 14px;
     width: 85%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background: rgb(206, 243, 239);
 
     ul {
       list-style-type: none;
+    }
+
+    div.alex-block-form {
+      position: relative;
+
+      textarea.alex-block-input {
+        position: fixed;
+        top: 10%;
+        right: 10%;
+        height: 60vh !important;
+        padding: 14px;
+      }
+    }
+
+    div.alex-block-results {
+      padding: 14px;
+      width: 100%;
+
+      textarea.alex-block-results-input {
+        height: 30vh !important;
+        width: 100%;
+        box-sizing: border-box;
+      }
     }
   }
 }

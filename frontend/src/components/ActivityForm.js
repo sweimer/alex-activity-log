@@ -31,7 +31,6 @@ function ActivityForm() {
                 </button>
                 {visiblePanels['form'] && (
                     <div className={"bottomnav-panel"}>
-                        {<div className={"bottomnav-panel"}>
                             <div className={"alex-block-form hint-block"}>
                                 <p className={"bold"}>Drag and Drop</p>
                                 <ul>
@@ -53,8 +52,17 @@ function ActivityForm() {
                                         </li>
                                     ))}
                                 </ul>
+                                <textarea
+                                    ref={textareaRef}
+                                    className={"alex-block-input"}
+                                    name="activities"
+                                    value={`${formData.activities}`}
+                                    onChange={handleChange}
+                                    onDrop={(e) => handleDrop(e, 'activities')}
+                                    onDragOver={handleDragOver}
+                                    onScroll={handleScroll}
+                                ></textarea>
                             </div>
-                        </div>}
                     </div>
                 )}
 
@@ -63,25 +71,26 @@ function ActivityForm() {
                 </button>
                 {visiblePanels['results'] && (
                     <div className={"bottomnav-panel"}>
-                        {<div className={`alex-block-checklist-list hint-block ${isChecklistOpen ? 'show' : ''}`}>
-                                2When applicable, select a tag or multiple (command/select) tags to alert Heather that
-                                this
-                                date has a notable entry.
-                                <ul>
-                                    {checklistListItems.map((item, index) => (
-                                        <li key={index}>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={!!checkedItems[index]}
-                                                    onChange={() => handleCheckboxChange(index)}
-                                                />
-                                                {item}
-                                            </label>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>}
+                        {<div className={`alex-block-results hint-block ${isChecklistOpen ? 'show' : ''}`}>
+                            <div className={"alex-block-input-wrapper"}>
+                                <button className="form-data-clear-button" type="button" onClick={handleCopy}>
+                                    Copy
+                                </button>
+                                <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
+                                    Clear
+                                </button>
+                                <textarea
+                                    ref={textareaRef}
+                                    className={"alex-block-results-input"}
+                                    name="activities"
+                                    value={`${formData.activities}`}
+                                    onChange={handleChange}
+                                    onDrop={(e) => handleDrop(e, 'activities')}
+                                    onDragOver={handleDragOver}
+                                    onScroll={handleScroll}
+                                ></textarea>
+                            </div>
+                        </div>}
                     </div>
                 )}
 
