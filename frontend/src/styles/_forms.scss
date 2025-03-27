@@ -69,11 +69,10 @@ form {
     }
 
     div.form-data-textarea-input {
-      display: flex;
       width: 100%;
 
       div.form-data-textarea-input-hint {
-        width: 60%;
+        width: 100%;
         box-sizing: border-box;
 
         ul {
@@ -114,7 +113,7 @@ form {
         border: 1px solid #cdcdcd;
         cursor: pointer;
         padding: 20px;
-        width: 40%;
+        width: 100%;
         box-sizing: border-box;
       }
       input.form-data-textarea-input-input {
@@ -126,44 +125,6 @@ form {
       }
       select.form-data-textarea-input-select {
         min-height: 175px;
-      }
-
-      div.form-data-workspace {
-        border: 1px solid #cdcdcd;
-        cursor: pointer;
-        font-size: 16px;
-        padding: 20px;
-        width: 40%;
-        box-sizing: border-box;
-        &.sticky {
-          min-height: 450px;
-          position: fixed;
-          top: 50px;
-          left: 60%;
-          width: 35%;
-        }
-        div.form-data-workspace-header {
-          margin: 14px 0;
-        }
-        textarea {
-          border-color: #eeeeee;
-          font-family: "Arial", "Helvetica", sans-serif;
-          font-size: 16px;
-          min-height: 75px;
-          padding: 15px 0;
-          width: calc(100% - 30px);
-        }
-        div.form-data-workspace-footer {
-          margin:10px 0 20px 0;
-
-          select.form-data-workspace-footer-select {
-            border-color: #eeeeee;
-            font-family: "Arial", "Helvetica", sans-serif;
-            font-size: 16px;
-            padding: 15px 0;
-            width: calc(100% - 30px);
-          }
-        }
       }
     }
 
@@ -202,6 +163,45 @@ form {
         width: 100%;
         display: flex;
         box-sizing: border-box;
+      }
+    }
+  }
+
+  div.form-data-workspace {
+    border: 1px solid #cdcdcd;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 20px;
+    width: 40%;
+    box-sizing: border-box;
+    &.sticky {
+      background-color: rgba(0, 0, 0, 0.4);
+      min-height: 450px;
+      position: fixed;
+      top: 50px;
+      left: 60%;
+      width: 35%;
+    }
+    div.form-data-workspace-header {
+      margin: 14px 0;
+    }
+    textarea {
+      border-color: #eeeeee;
+      font-family: "Arial", "Helvetica", sans-serif;
+      font-size: 16px;
+      min-height: 75px;
+      padding: 15px 0;
+      width: calc(100% - 30px);
+    }
+    div.form-data-workspace-footer {
+      margin:10px 0 20px 0;
+
+      select.form-data-workspace-footer-select {
+        border-color: #eeeeee;
+        font-family: "Arial", "Helvetica", sans-serif;
+        font-size: 16px;
+        padding: 15px 0;
+        width: calc(100% - 30px);
       }
     }
   }

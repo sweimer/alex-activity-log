@@ -40,3 +40,36 @@ ul.list-decoration-on {
 .hide {
   display: none;
 }
+
+.bottomnav {
+  position: fixed;
+  bottom: 0;
+  width: 91%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+
+  button.bottomnav-button {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  div.bottomnav-panel {
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.2);
+    max-height: 80vh;
+    overflow: scroll;
+    position: fixed;
+    top: 14px;
+    width: 85%;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    ul {
+      list-style-type: none;
+    }
+  }
+}
