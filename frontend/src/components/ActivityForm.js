@@ -27,102 +27,129 @@ function ActivityForm() {
     const [isChecklistOpen, setIsChecklistOpen] = useState(false);
     const [isHintVisible, setIsHintVisible] = useState(true);
     const [visiblePanels, setVisiblePanels] = useState({});
+    const [selectedStaff, setSelectedStaff] = useState('');
+
+    const BlockActivityForm = () => {
+        return (
+            <div className={"alex-block-form hint-block"}>
+                <p className={"bold"}>Drag and Drop</p>
+                <ul>
+                    {activityListItems.map((category, index) => (
+                        <li key={index} className="list-top-level">
+                            {category.category}
+                            <ul>
+                                {category.items.map((item, subIndex) => (
+                                    <li
+                                        key={subIndex}
+                                        draggable
+                                        className="draggable"
+                                        onDragStart={(e) => handleDragStart(e, item)}
+                                    >
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
+                <textarea
+                    ref={textareaRef}
+                    className={"alex-block-input"}
+                    name="activities"
+                    value={`${formData.activities}`}
+                    onChange={handleChange}
+                    onDrop={(e) => handleDrop(e, 'activities')}
+                    onDragOver={handleDragOver}
+                    onScroll={handleScroll}
+                ></textarea>
+            </div>
+        );
+    }
+    const BlockActivityResults = () => {
+        return (
+            <div className={`alex-block-results hint-block ${isChecklistOpen ? 'show' : ''}`}>
+                <div className={"alex-block-input-wrapper"}>
+                    <div className={"alex-block-input-buttons"}>
+                        <button className="form-data-clear-button" type="button" onClick={handleCopy}>
+                            xxCopy
+                        </button>
+                        <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
+                            Clear
+                        </button>
+                    </div>
+                    <div className={"alex-block-input-header"}>
+                        {logEntry}
+                    </div>
+                    <textarea
+                        ref={textareaRef}
+                        className={"alex-block-results-input"}
+                        name="activities"
+                        value={`${formData.activities}`}
+                        onChange={handleChange}
+                        onDrop={(e) => handleDrop(e, 'activities')}
+                        onDragOver={handleDragOver}
+                        onScroll={handleScroll}
+                    ></textarea>
+                    <div className={"alex-block-input-footer"}>
+                        {selectedStaff}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    const BlockActivityChecklist = () => {
+        return (
+            <div className={"alex-bottomnav-panel"}>
+                {<div className={`alex-block-checklist hint-block ${isChecklistOpen ? 'show' : ''}`}>
+                    When applicable, select a tag or multiple (command/select) tags to alert Heather that this
+                    date has a notable entry.
+                    <ul>
+                        {checklistListItems.map((item, index) => (
+                            <li key={index}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={!!checkedItems[index]}
+                                        onChange={() => handleCheckboxChange(index)}
+                                    />
+                                    {item}
+                                </label>
+                            </li>
+                        ))}
+                    </ul>
+                </div>}
+            </div>
+        );
+    }
 
     const BottomNavigationx = () => {
         return (
-            <div className="bottomnav">
-                <button className={"bottomnav-button bottomnav-form"} onClick={() => toggleVisibility('form')}>
+            <div className="alex-bottomnav">
+                <button className={"alex-bottomnav-button bottomnav-form"} onClick={() => toggleVisibility('form')}>
                     {visiblePanels['form'] ? 'Hide Form' : 'Show Form'}
                 </button>
                 {visiblePanels['form'] && (
-                    <div className={"bottomnav-panel"}>
-                            <div className={"alex-block-form hint-block"}>
-                                <p className={"bold"}>Drag and Drop</p>
-                                <ul>
-                                    {activityListItems.map((category, index) => (
-                                        <li key={index} className="list-top-level">
-                                            {category.category}
-                                            <ul>
-                                                {category.items.map((item, subIndex) => (
-                                                    <li
-                                                        key={subIndex}
-                                                        draggable
-                                                        className="draggable"
-                                                        onDragStart={(e) => handleDragStart(e, item)}
-                                                    >
-                                                        {item}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <textarea
-                                    ref={textareaRef}
-                                    className={"alex-block-input"}
-                                    name="activities"
-                                    value={`${formData.activities}`}
-                                    onChange={handleChange}
-                                    onDrop={(e) => handleDrop(e, 'activities')}
-                                    onDragOver={handleDragOver}
-                                    onScroll={handleScroll}
-                                ></textarea>
-                            </div>
+                    <div className={"alex-bottomnav-panel"}>
+                        <BlockActivityForm/>
                     </div>
                 )}
 
-                <button className={"bottomnav-button bottomnav-results"} onClick={() => toggleVisibility('results')}>
+                <button className={"alex-bottomnav-button bottomnav-results"}
+                        onClick={() => toggleVisibility('results')}>
                     {visiblePanels['results'] ? 'Hide Results' : 'Show Results'}
                 </button>
                 {visiblePanels['results'] && (
-                    <div className={"bottomnav-panel"}>
-                        {<div className={`alex-block-results hint-block ${isChecklistOpen ? 'show' : ''}`}>
-                            <div className={"alex-block-input-wrapper"}>
-                                <button className="form-data-clear-button" type="button" onClick={handleCopy}>
-                                    Copy
-                                </button>
-                                <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
-                                    Clear
-                                </button>
-                                <textarea
-                                    ref={textareaRef}
-                                    className={"alex-block-results-input"}
-                                    name="activities"
-                                    value={`${formData.activities}`}
-                                    onChange={handleChange}
-                                    onDrop={(e) => handleDrop(e, 'activities')}
-                                    onDragOver={handleDragOver}
-                                    onScroll={handleScroll}
-                                ></textarea>
-                            </div>
-                        </div>}
+                    <div className={"alex-bottomnav-panel"}>
+                        <BlockActivityResults/>
                     </div>
                 )}
 
-                <button className={"bottomnav-button bottomnav-checklist"} onClick={() => toggleVisibility('checklist')}>
+                <button className={"alex-bottomnav-button bottomnav-checklist"}
+                        onClick={() => toggleVisibility('checklist')}>
                     {visiblePanels['checklist'] ? 'Hide Checklist' : 'Show Checklist'}
                 </button>
                 {visiblePanels['checklist'] && (
-                    <div className={"bottomnav-panel"}>
-                        {<div className={`alex-block-checklist hint-block ${isChecklistOpen ? 'show' : ''}`}>
-                                When applicable, select a tag or multiple (command/select) tags to alert Heather that this
-                                date has a notable entry.
-                                <ul>
-                                    {checklistListItems.map((item, index) => (
-                                        <li key={index}>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={!!checkedItems[index]}
-                                                    onChange={() => handleCheckboxChange(index)}
-                                                />
-                                                {item}
-                                            </label>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>}
-                    </div>
+                    <BlockActivityChecklist/>
                 )}
             </div>
         );
@@ -281,7 +308,7 @@ function ActivityForm() {
             const tagsWithoutOther = formData.tags.filter(tag => tag !== 'OTHER');
             const noteForHeather = tagsWithoutOther.length > 0 || formData.tags.includes('OTHER') ? `NOTE FOR HEATHER: ${tagsWithoutOther.join('. ')}. ` : '';
             const otherText = formData.other ? `${formData.other} \r\n` : '';
-            const logEntry = `\r\n\r\n${noteForHeather}${otherText}${formattedDate}\r\n${formData.activities}  `;
+            const logEntry = `\r\n\r\n${noteForHeather}${otherText}\r\n\r\n11${formattedDate}\r\n${formData.activities}  `;
             setLogEntry(logEntry);
         } catch (error) {
             if (error.response) {
@@ -301,7 +328,6 @@ function ActivityForm() {
     const toggleHint = () => {
         setIsHintVisible(!isHintVisible);
     };
-
 
     const toggleVisibility = (buttonId) => {
         setVisiblePanels(prevState => ({
@@ -327,17 +353,11 @@ function ActivityForm() {
         <div>
             <h1>Alex Log</h1>
 
-            <div>
-                <h2>Accordion Group Example</h2>
-                <AccordionGroup items={AccordionGroupContentHome}/>
-            </div>
-
             <form onSubmit={handleSubmit}>
-
                 <div className={"row"}>
                     <div className={"alex-block-date column"}>
                         <label>
-                            Date:
+                            Date: {formatDate}
                         </label>
                         <div className={"form-data-date-block-input"}>
                             <input
@@ -354,13 +374,10 @@ function ActivityForm() {
                     </div>
                     <div className={"alex-block-staff column"}>
                         <label>
-                            Staff:
+                            Staff: {selectedStaff}
                         </label>
                         <select className={"alex-block-staff-select"}
-                                name="workspacefooter"
-                                value={formData.workspacefooter}
-                                onChange={handleChange}
-                        >
+                                onChange={(e) => setSelectedStaff(e.target.value)}>
                             {staffListItems.map((staff, index) => (
                                 <option key={index} value={staff}>{staff}</option>
                             ))}
@@ -394,101 +411,12 @@ function ActivityForm() {
                         </div>
                     </div>
                 </div>
-
-                <div className={"form-data-textarea-block form-data-container-activities"}>
-                    <label className={'form-data-textarea-label'}>
-                        Activities:
-                    </label>
-                    <div className={'form-data-textarea-input'}>
-                        <div className={"form-data-textarea-input-hint hint-block"}>
-                            <p className={"bold"}>Drag and Drop</p>
-                            <ul>
-                                {activityListItems.map((category, index) => (
-                                    <li key={index} className="list-top-level">
-                                        {category.category}
-                                        <ul>
-                                            {category.items.map((item, subIndex) => (
-                                                <li
-                                                    key={subIndex}
-                                                    draggable
-                                                    className="draggable"
-                                                    onDragStart={(e) => handleDragStart(e, item)}
-                                                >
-                                                    {item}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className={"form-data-workspace"}>
-                            <div className={"form-data-workspace-copylink"}>
-                                <button className="form-data-clear-button" type="button" onClick={handleCopy}>
-                                    Copy
-                                </button>
-                                <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
-                                    Clear
-                                </button>
-                                <button className={"form-data-submit-button"} type="submit" onClick={handleButtonClick}>
-                                    Submit
-                                </button>
-                            </div>
-                            <div className={"form-data-workspace-header"}>
-                                {logEntry}
-                            </div>
-                            <textarea
-                                ref={textareaRef}
-                                className={"form-data-textarea-input-textarea"}
-                                name="activities"
-                                value={`${formData.activities}`}
-                                onChange={handleChange}
-                                onDrop={(e) => handleDrop(e, 'activities')}
-                                onDragOver={handleDragOver}
-                                onScroll={handleScroll}
-                            ></textarea>
-                            <div className={"form-data-workspace-footer"}>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={"form-data-submit-block"}>
-                    <div className={"form-data-submit_button-block"}>
-
-                    </div>
-                    <div className={"form-data-submit_message-block"}>
-                        {message && <p className={"alert"}>{message}</p>}
-                    </div>
-                </div>
             </form>
 
-            <div className={"form-data-results"}>
-                {logEntry && <pre>
-                    {logEntry}
-                    <div className={"form-data-results-footer"}>{getSponsor()}</div>
-                </pre>}
-            </div>
+            <AccordionGroup items={AccordionGroupContentHome}/>
 
             <div className="alex-block-bottomnav">
-                <BottomNavigation
-                    panels={BottomNavContentHome}
-                    visiblePanels={visiblePanels}
-                    toggleVisibility={toggleVisibility}
-                    handleDragStart={handleDragStart}
-                    handleDrop={handleDrop}
-                    handleDragOver={handleDragOver}
-                    handleChange={handleChange}
-                    handleCopy={handleCopy}
-                    handleClear={handleClear}
-                    textareaRef={textareaRef}
-                    formData={formData}
-                    checkedItems={checkedItems}
-                    handleCheckboxChange={handleCheckboxChange}
-                    isChecklistOpen={isChecklistOpen}
-                />
+                <BottomNavigationx/>
             </div>
         </div>
     );
