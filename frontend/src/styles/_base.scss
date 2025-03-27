@@ -17,7 +17,7 @@ button {
   @include block-shadow;
   cursor: pointer;
   font-size: $base-font-size;
-  margin: 8px 4px;
+  margin: 10px 4px;
   padding: 10px;
   text-align: center;
 }
@@ -41,9 +41,14 @@ textarea {
   margin: 14px;
 
   .column {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    width: 100%;
+
+    @media (min-width: 880px) {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      width: auto;
+    }
   }
 
   label {
@@ -54,6 +59,7 @@ textarea {
   select {
     box-sizing: border-box;
     cursor: pointer;
+    font-size: $base-font-size;
     margin: 8px 0;
     padding: 10px;
     width: 100%;
@@ -70,40 +76,4 @@ textarea {
 ul.list-decoration-on {
   list-style-type: disc !important;
   padding-left: 20px !important;
-}
-
-
-// LIST
-div.alex-block-form {
-  ul {
-    list-style-type: none;
-    padding: 0;
-
-    li.list-top-level {
-      font-size: 16px;
-      font-weight: bold;
-
-      ul {
-        li {
-          font-weight: normal;
-        }
-      }
-    }
-
-    li.draggable {
-      border: 1px solid #cdcdcd;
-      cursor: grab;
-      margin: 4px;
-      padding: 4px;
-
-      &:hover {
-        background-color: #f0f0f0;
-      }
-
-      &:focus,
-      &:active {
-        cursor: grabbing;
-      }
-    }
-  }
 }

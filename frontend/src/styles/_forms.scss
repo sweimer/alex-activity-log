@@ -71,6 +71,7 @@ form {
         cursor: pointer;
         padding: 20px;
         width: 100%;
+
         box-sizing: border-box;
       }
       input.form-data-textarea-input-input {
@@ -81,7 +82,7 @@ form {
         overflow-wrap: break-word;
       }
       select.form-data-textarea-input-select {
-        min-height: 175px;
+        min-height: 250px;
       }
     }
 

@@ -27,8 +27,10 @@ function ActivityForm() {
     const [isChecklistOpen, setIsChecklistOpen] = useState(false);
     const [isHintVisible, setIsHintVisible] = useState(true);
     const [visiblePanels, setVisiblePanels] = useState({});
+    const panelRefs = useRef({}); // Define panelRefs here
     const [selectedStaff, setSelectedStaff] = useState('');
 
+    //CONTENT
     const BlockActivityForm = () => {
         return (
             <div className={"alex-block-form hint-block"}>
@@ -71,7 +73,7 @@ function ActivityForm() {
                 <div className={"alex-block-input-wrapper"}>
                     <div className={"alex-block-input-buttons"}>
                         <button className="form-data-clear-button" type="button" onClick={handleCopy}>
-                            xxCopy
+                            Copy
                         </button>
                         <button className={"form-data-clear-button"} type="button" onClick={handleClear}>
                             Clear
@@ -121,40 +123,44 @@ function ActivityForm() {
             </div>
         );
     }
-
     const BottomNavigationx = () => {
         return (
-            <div className="alex-bottomnav">
-                <button className={"alex-bottomnav-button bottomnav-form"} onClick={() => toggleVisibility('form')}>
-                    {visiblePanels['form'] ? 'Hide Form' : 'Show Form'}
-                </button>
-                {visiblePanels['form'] && (
-                    <div className={"alex-bottomnav-panel"}>
-                        <BlockActivityForm/>
-                    </div>
-                )}
+            <div>
+                <div className="alex-bottomnav">
+                    <button className={"alex-bottomnav-button bottomnav-form"} onClick={() => toggleVisibility('form')}>
+                        {visiblePanels['form'] ? 'Hide Form' : 'Show Form'}
+                    </button>
+                    {visiblePanels['form'] && (
+                        <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['form'] = el)}>
+                            <BlockActivityForm/>
+                        </div>
+                    )}
 
-                <button className={"alex-bottomnav-button bottomnav-results"}
-                        onClick={() => toggleVisibility('results')}>
-                    {visiblePanels['results'] ? 'Hide Results' : 'Show Results'}
-                </button>
-                {visiblePanels['results'] && (
-                    <div className={"alex-bottomnav-panel"}>
-                        <BlockActivityResults/>
-                    </div>
-                )}
+                    <button className={"alex-bottomnav-button bottomnav-results"}
+                            onClick={() => toggleVisibility('results')}>
+                        {visiblePanels['results'] ? 'Hide Results' : 'Show Results'}
+                    </button>
+                    {visiblePanels['results'] && (
+                        <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['results'] = el)}>
+                            <BlockActivityResults/>
+                        </div>
+                    )}
 
-                <button className={"alex-bottomnav-button bottomnav-checklist"}
-                        onClick={() => toggleVisibility('checklist')}>
-                    {visiblePanels['checklist'] ? 'Hide Checklist' : 'Show Checklist'}
-                </button>
-                {visiblePanels['checklist'] && (
-                    <BlockActivityChecklist/>
-                )}
+                    <button className={"alex-bottomnav-button bottomnav-checklist"}
+                            onClick={() => toggleVisibility('checklist')}>
+                        {visiblePanels['checklist'] ? 'Hide Checklist' : 'Show Checklist'}
+                    </button>
+                    {visiblePanels['checklist'] && (
+                        <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['checklist'] = el)}>
+                            <BlockActivityChecklist/>
+                        </div>
+                    )}
+                </div>
             </div>
         );
     };
 
+    //FUNCTIONS
     const checkDay = (date) => {
         const selectedDate = new Date(date + 'T00:00:00');
         const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate();
@@ -165,8 +171,7 @@ function ActivityForm() {
             setDateMessage('This is a Sunday. Add a MEAL PLAN, GROCERY SHOP and SHOWER line item for today.');
         } else if (selectedDate.getDay() === 3) {
             setDateMessage('This is a Wednesday. Did you add a SHOWER this week?');
-        }
-        else if (selectedDate.getDay() === 5) {
+        } else if (selectedDate.getDay() === 5) {
             setDateMessage('This is a Friday. Did you add 2 SHOWERs, 1 CHORE and 1 CAD this week? Did you write about CHOICE and INTERACTION this week?');
         } else if (selectedDate.getDay() === 6) {
             setDateMessage('This is a Saturday. Add an OUTING line item for today.');
@@ -174,26 +179,21 @@ function ActivityForm() {
             setDateMessage('Hints...');
         }
     };
-
     const formatDate = (date) => {
-        const dayOfWeek = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date).toUpperCase();
+        const dayOfWeek = new Intl.DateTimeFormat("en-US", {weekday: "long"}).format(date).toUpperCase();
         const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} - ${dayOfWeek}`;
         return formattedDate;
     };
-
-    // Function to determine the sponsor based on the ratio of 5 days to 3 days
     const getSponsor = () => {
         const selectElement = document.querySelector('select.form-data-workspace-footer-select');
         return selectElement ? selectElement.value : '';
     };
-
     const handleButtonClick = () => {
         const textareaDiv = document.querySelector('textarea.form-data-textarea-input-textarea');
         if (textareaDiv) {
             textareaDiv.classList.remove('sticky');
         }
     };
-
     const handleChange = (e) => {
         const { name, value, options } = e.target;
         if (name === 'tags' && options) {
@@ -242,15 +242,12 @@ function ActivityForm() {
             setFormData({ ...formData, [name]: value });
         }
     };
-
-    // CHECKBOX LIST COMPONENT
     const handleCheckboxChange = (index) => {
         setCheckedItems(prevState => ({
             ...prevState,
             [index]: !prevState[index]
         }));
     };
-
     const handleClear = () => {
         setFormData({ date: '', activity: '', tags: [], activities: '', other: '' });
         setMessage('');
@@ -260,7 +257,11 @@ function ActivityForm() {
         //setOtherTag('');
         window.scrollTo(0, 0);
     };
-
+    const handleClickOutside = (event) => {
+        if (panelRefs.current && !panelRefs.current.contains(event.target)) {
+            setVisiblePanels({});
+        }
+    };
     const handleCopy = () => {
         const textToCopy = `${logEntry}\n\n${formData.activities}\n\n\n\n${getSponsor()}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
@@ -269,21 +270,17 @@ function ActivityForm() {
             console.error('Failed to copy text: ', err);
         });
     };
-
     const handleDragStart = (e, text) => {
         e.dataTransfer.setData('text/plain', text);
     };
-
     const handleDragOver = (e) => {
         e.preventDefault();
     };
-
     const handleDrop = (e, name) => {
         e.preventDefault();
         const text = e.dataTransfer.getData('text/plain');
         setFormData({ ...formData, [name]: formData[name] + text + ' ' });
     };
-
     const handleScroll = () => {
         const textareaDiv = document.querySelector('div.form-data-workspace');
         const resultsDiv = document.querySelector('div.form-data-results');
@@ -297,7 +294,6 @@ function ActivityForm() {
             }
         }
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -319,23 +315,19 @@ function ActivityForm() {
             console.error('Error saving activity log:', error);
         }
     };
-
     const toggleAccordion = () => {
         setIsAccordionOpen(!isAccordionOpen);
         setIsChecklistOpen(!isChecklistOpen);
     };
-
     const toggleHint = () => {
         setIsHintVisible(!isHintVisible);
     };
-
     const toggleVisibility = (buttonId) => {
         setVisiblePanels(prevState => ({
             ...prevState,
             [buttonId]: !prevState[buttonId]
         }));
     };
-
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -346,9 +338,11 @@ function ActivityForm() {
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [formData.activities]);
 
+    //MARKUP
     return (
         <div>
             <h1>Alex Log</h1>

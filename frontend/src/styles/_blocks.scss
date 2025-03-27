@@ -1,0 +1,60 @@
+@import 'variables';
+@import 'mixins';
+
+// BLOCK - FORM
+div.alex-block-form {
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    li.list-top-level {
+      font-size: 16px;
+      font-weight: bold;
+
+      ul {
+        li {
+          font-weight: normal;
+        }
+      }
+    }
+
+    li.draggable {
+      border: 1px solid #cdcdcd;
+      cursor: grab;
+      margin: 4px;
+      padding: 4px;
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+
+      &:focus,
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+}
+
+// BLOCK - INPUT
+div.alex-block-input-wrapper {
+  font-size: $base-font-size-med;
+
+  div.alex-block-input-buttons {
+    margin: 0 0 20px 0;
+  }
+
+  div.alex-block-input-header {
+    font-weight: bold;
+  }
+
+  textarea.alex-block-results-input {
+    font-size: $base-font-size-med;
+    margin: 14px 0;
+    padding: 14px;
+  }
+
+  div.alex-block-input-footer {
+    font-weight: bold;
+  }
+}

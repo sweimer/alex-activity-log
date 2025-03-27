@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - echo Cloning repository...
+      - git clone https://github.com/sweimer/alex-activity-log.git
+      - cd alex-activity-log/frontend
+      - echo Installing dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Building the project...
+      - ./scripts/build.sh
+  post_build:
+    commands:
+      - echo Starting the project...
+      - ./scripts/start.sh
+
+artifacts:
+  base-directory: build
+  files:
+    - '**/*'
+
+cache:
+  paths:
+    - node_modules/**/*
