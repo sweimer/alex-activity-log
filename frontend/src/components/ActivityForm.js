@@ -5,9 +5,14 @@ import axios from 'axios';
 //FONT AWESOME
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+//COMPONENTS
+import AccordionGroup from './AccordionGroup/AccordionGroup.js';
+import AccordionGroupContentHome from './AccordionGroup/content/AccordionGroupContent-Home.js';
+import BottomNavigation from './BottomNav/BottomNav.js';
+import BottomNavContentHome from './BottomNav/content/BottomNavContent-Home.js';
 //LISTS
-import checklistListItems from '../lists/list-checklist.js';
 import activityListItems from '../lists/list-activity.js';
+import checklistListItems from '../lists/list-checklist.js';
 import staffListItems from '../lists/list-staff.js';
 import tagsListItems from '../lists/list-tags.js';
 
@@ -23,7 +28,7 @@ function ActivityForm() {
     const [isHintVisible, setIsHintVisible] = useState(true);
     const [visiblePanels, setVisiblePanels] = useState({});
 
-    const BottomNavigation = () => {
+    const BottomNavigationx = () => {
         return (
             <div className="bottomnav">
                 <button className={"bottomnav-button bottomnav-form"} onClick={() => toggleVisibility('form')}>
@@ -320,38 +325,14 @@ function ActivityForm() {
 
     return (
         <div>
-            <h1>xAlex Log</h1>
+            <h1>Alex Log</h1>
+
+            <div>
+                <h2>Accordion Group Example</h2>
+                <AccordionGroup items={AccordionGroupContentHome}/>
+            </div>
 
             <form onSubmit={handleSubmit}>
-
-                <div className={'alex-block-checklist'}>
-                    <button className={'alex-block-checklist-button'} type="button" onClick={toggleAccordion}>
-                        {isAccordionOpen ? <>
-                            Hide Checklist <FontAwesomeIcon icon={faArrowUp}/></> : <>
-                            Show Checklist <FontAwesomeIcon icon={faArrowDown}/></>
-                        }
-                    </button>
-                    {isAccordionOpen && (
-                        <div className={`alex-block-checklist-list hint-block ${isChecklistOpen ? 'show' : ''}`}>
-                            When applicable, select a tag or multiple (command/select) tags to alert Heather that this
-                            date has a notable entry.
-                            <ul>
-                                {checklistListItems.map((item, index) => (
-                                    <li key={index}>
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                checked={!!checkedItems[index]}
-                                                onChange={() => handleCheckboxChange(index)}
-                                            />
-                                            {item}
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
 
                 <div className={"row"}>
                     <div className={"alex-block-date column"}>
@@ -491,8 +472,23 @@ function ActivityForm() {
                 </pre>}
             </div>
 
-            <div className={"alex-block-bottomnav"}>
-                <BottomNavigation/>
+            <div className="alex-block-bottomnav">
+                <BottomNavigation
+                    panels={BottomNavContentHome}
+                    visiblePanels={visiblePanels}
+                    toggleVisibility={toggleVisibility}
+                    handleDragStart={handleDragStart}
+                    handleDrop={handleDrop}
+                    handleDragOver={handleDragOver}
+                    handleChange={handleChange}
+                    handleCopy={handleCopy}
+                    handleClear={handleClear}
+                    textareaRef={textareaRef}
+                    formData={formData}
+                    checkedItems={checkedItems}
+                    handleCheckboxChange={handleCheckboxChange}
+                    isChecklistOpen={isChecklistOpen}
+                />
             </div>
         </div>
     );

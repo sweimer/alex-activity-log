@@ -1,19 +1,6 @@
 form {
   margin-top: 20px;
 
-  button {
-    background-color: $base-background-color;
-    border: 1px solid #cdcdcd;
-    cursor: pointer;
-    font-size: $base-font-size;
-    margin: 8px 4px;
-    padding: 10px;
-    text-align: center;
-  }
-  button.form-data-clear-button:hover {
-    background-color: #f0f0f0;
-  }
-
   // CHECKLIST BLOCK
   div.alex-block-checklist {
     button.alex-block-checklist-button {

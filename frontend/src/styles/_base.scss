@@ -1,3 +1,7 @@
+@import 'variables';
+@import 'mixins';
+
+// BODY STANDARDS
 body {
   color: $base-font-color;
   font-family: $base-font-family;
@@ -5,6 +9,31 @@ body {
   margin: 0 auto;
   width: 90%
 }
+
+//BUTTON
+button {
+  background-color: $seafoam;
+  border: 1px solid $grey-medium;
+  @include block-shadow;
+  cursor: pointer;
+  font-size: $base-font-size;
+  margin: 8px 4px;
+  padding: 10px;
+  text-align: center;
+}
+button:hover {
+  background-color: $grey-light;
+}
+
+//INPUT STANDARDS
+input,
+textarea {
+  color: $base-font-color;
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+}
+
+// GRID
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -30,69 +59,15 @@ body {
     width: 100%;
   }
 }
+
+// UTILITIES
 .bold {
   font-weight: bold;
-}
-ul.list-decoration-on {
-  list-style-type: disc !important;
-  padding-left: 20px !important;
 }
 .hide {
   display: none;
 }
-
-.bottomnav {
-  position: fixed;
-  bottom: 0;
-  width: 91%;
-  display: flex;
-  justify-content: space-around;
-  background-color: #fff;
-  border-top: 1px solid #ccc;
-  padding: 10px 0;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-
-  button.bottomnav-button {
-    border: none;
-    background: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  div.bottomnav-panel {
-    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.2);
-    height: 80vh;
-    overflow: scroll;
-    position: fixed;
-    top: 14px;
-    width: 85%;
-    background: rgb(206, 243, 239);
-
-    ul {
-      list-style-type: none;
-    }
-
-    div.alex-block-form {
-      position: relative;
-
-      textarea.alex-block-input {
-        position: fixed;
-        top: 10%;
-        right: 10%;
-        height: 60vh !important;
-        padding: 14px;
-      }
-    }
-
-    div.alex-block-results {
-      padding: 14px;
-      width: 100%;
-
-      textarea.alex-block-results-input {
-        height: 30vh !important;
-        width: 100%;
-        box-sizing: border-box;
-      }
-    }
-  }
+ul.list-decoration-on {
+  list-style-type: disc !important;
+  padding-left: 20px !important;
 }

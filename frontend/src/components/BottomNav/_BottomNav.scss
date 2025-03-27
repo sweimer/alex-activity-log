@@ -1,0 +1,57 @@
+@import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
+
+//BOTTOM NAVIGATION
+.alex-bottomnav {
+  background-color: $white;
+  border-top: 1px solid #ccc;
+  @include block-shadow-up;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 91%;
+
+  .alex-bottomnav-panel {
+    @include block-shadow;
+    height: 80vh;
+    overflow: scroll;
+    padding: 20px;
+    position: fixed;
+    top: 14px;
+    left: 10%;
+    width: 80%;
+    background: rgb(206, 243, 239, 0.98);
+
+    ul {
+      list-style-type: none;
+    }
+
+    div.alex-block-form {
+      position: relative;
+
+      textarea.alex-block-input {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 14px;
+        position: fixed;
+        top: 10%;
+        right: 10%;
+        height: 60vh !important;
+        width: 25%;
+      }
+    }
+
+    div.alex-block-results {
+      padding: 14px;
+      width: 100%;
+
+      textarea.alex-block-results-input {
+        height: 30vh !important;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    }
+  }
+}

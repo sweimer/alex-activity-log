@@ -1,3 +1,18 @@
+//BLOCK SHADOW
+@mixin block-shadow {
+  box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.2);
+}
+.block-shadow {
+  @include block-shadow;
+}
+@mixin block-shadow-up {
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+.block-shadow-up {
+  @include block-shadow-up;
+}
+
+// HINT BLOC
 @mixin hint-block {
   background: rgb(206, 243, 239);
   border-bottom: none;
