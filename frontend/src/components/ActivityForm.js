@@ -336,7 +336,7 @@ function ActivityForm() {
     //MARKUP
     return (
         <div>
-            <h1>xAlex Log</h1>
+            <h1>Alex Log</h1>
 
             <form onSubmit={handleSubmit}>
                 <div className={"row"}>
@@ -401,7 +401,9 @@ function ActivityForm() {
                             Activities:
                         </label>
                         <select className={"alex-block-activities-select"}
-                                onChange={(e) => setSelectedActivities(e.target.value)}>
+                                onChange={(e) => setSelectedActivities(e.target.value)}
+                                multiple
+                        >
                             {activityListItems.map((activity, index) => (
                                 <optgroup key={index} label={activity.category}>
                                     {activity.items.map((item, itemIndex) => (
