@@ -250,9 +250,18 @@ function ActivityForm() {
         setMessage('');
         setDateMessage('Hints...');
         setLogEntry('');
-        //setIsOtherSelected(false);
-        //setOtherTag('');
+        setSelectedActivities([]);
+        setSelectedStaff('');
+        setCheckedItems({});
         window.scrollTo(0, 0);
+
+        // Clear selected options in alex-block-activities-select
+        const selectElement = document.querySelector('.alex-block-activities-select');
+        if (selectElement) {
+            Array.from(selectElement.options).forEach(option => {
+                option.selected = false;
+            });
+        }
     };
     const handleCopy = () => {
         const textToCopy = `${logEntry}\n${selectedActivities.join(' ')}\n\n${selectedStaff}`;
