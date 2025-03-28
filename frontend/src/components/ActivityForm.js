@@ -336,7 +336,7 @@ function ActivityForm() {
     //MARKUP
     return (
         <div>
-            <h1>Alex Log</h1>
+            <h1>xAlex Log</h1>
 
             <form onSubmit={handleSubmit}>
                 <div className={"row"}>
