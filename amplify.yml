@@ -11,6 +11,11 @@ frontend:
         - cd ./frontend
         - echo ***Installing FE dependencies***...
         - npm install
+        - cd ../backend
+        - echo ***Installing BE dependencies***...
+        - npm install
+        - cd ../frontend
+        - - echo ***Installing COMPLETE***...
   artifacts:
     baseDirectory: frontend/public
     files:
