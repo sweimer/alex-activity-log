@@ -12,7 +12,7 @@ frontend:
         - echo ***Installing FE dependencies***...
         - npm install
   artifacts:
-    baseDirectory: frontend/build
+    baseDirectory: frontend
     files:
       - '**/*'
   cache:
