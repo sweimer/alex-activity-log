@@ -50,6 +50,10 @@ form {
 
   div.alex-block-tags {
 
+    select {
+      height: 350px;
+    }
+
     div.alex-block-select-other {
       label {
         width: 100%;
@@ -59,6 +63,13 @@ form {
         margin: 8px 0;
         width: 100%;
       }
+    }
+  }
+
+  div.alex-block-activities {
+
+    select {
+      height: 400px;
     }
   }
 }
