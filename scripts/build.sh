@@ -8,7 +8,6 @@ npm run build
 # Navigate to the backend directory and build the backend
 cd ../backend || exit
 npm install
-npm run build
 
 # Navigate back to root
 cd ../ || exit
