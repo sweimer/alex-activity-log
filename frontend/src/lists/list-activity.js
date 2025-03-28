@@ -3,7 +3,7 @@ const activityListItems = [
     {
         category: "WAKE",
         items: [
-            "Alex woke at 600am, went to bathroom, and went back to bed.",
+            "Alex woke at 600am, went to the bathroom, and went back to bed.",
             "Alex woke back up at 730am.",
             "Alex woke on her own around 730am and took herself to the bathroom.",
             "Alex slept in until 830am.",
@@ -35,7 +35,7 @@ const activityListItems = [
             "Sponsor/Relief already prepared breakfast.",
             "Sponsor/Relief monitored Alex as she ate and administered AM meds.",
             "Alex ate Breakfast and was monitored by Sponsor/Relief.",
-            "Sponsor/Relief administer AM meds.",
+            "Sponsor/Relief administered AM meds.",
             "",
             "While eating. Sponsor, Relief and Alex discussed the menu for the upcoming week and made a small shopping list.",
             "",
@@ -47,8 +47,9 @@ const activityListItems = [
             "Van arrived at 830am to take Alex to Diversity.",
             "Van returned at 230pm.",
             "",
-            "Kiearra returned at 330pm.",
             "Kiearra arrived at 800am to take Alex out for a girl's day."
+            "Kiearra and Alex had a manicure, went to a move and had lunch at the theater",
+            "Kiearra returned at 330pm.",
         ]
     },
     {
@@ -67,7 +68,7 @@ const activityListItems = [
             "Alex helped Sponsor put away some laundry.",
             "Sponsor and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser.",
             "",
-            "Sponsor/Relief went to Target.",
+            "Sponsor asked Alex if she wanted to go to Target. Alex said yes. Alex helped push the buggy and carry the bags to the car and into the house.",
             "Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home.",
             "Relief and Alex waited in the car while Sponsor shopped.",
             "Alex helped push the car, load the car and unload the car back home.",
@@ -88,7 +89,7 @@ const activityListItems = [
         ]
     },
     {
-        category: "AFTERNOON/AFTER LUNCH",
+        category: "AFTER LUNCH",
         items: [
             "Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.",
             "Sponsor/Relief and Alex took Izzy to Huguenot Park. Alex walked 1.85 miles.",
@@ -103,7 +104,7 @@ const activityListItems = [
             "Alex helped Sponsor put away some laundry.",
             "Sponsor and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser.",
             "",
-            "Sponsor/Relief went to Target.",
+            "Sponsor asked Alex if she wanted to go to Target. Alex said yes. Alex helped push the buggy and carry the bags to the car and into the house.",
             "Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home.",
             "Relief and Alex waited in the car while Sponsor shopped.",
             "Alex helped push the car, load the car and unload the car back home.",
@@ -140,7 +141,7 @@ const activityListItems = [
             "Alex helped Sponsor put away some laundry.",
             "Sponsor and Alex picked out outfits for the upcoming week at Diversity and hung them outside her dresser.",
             "",
-            "Sponsor/Relief went to Target.",
+            "Sponsor asked Alex if she wanted to go to Target. Alex said yes. Alex helped push the buggy and carry the bags to the car and into the house.",
             "Sponsor/Relief and Alex went to Wegmans and picked up the groceries on the list. Alex helped push the cart, load the car and unload the car at home.",
             "Relief and Alex waited in the car while Sponsor shopped.",
             "Alex helped push the car, load the car and unload the car back home.",
