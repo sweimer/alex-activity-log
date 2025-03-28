@@ -10,24 +10,19 @@ frontend:
         - echo ***REPO CLONED***...
     build:
       commands:
-        - cd ./backend
+        - cd ./frontend
+        - echo ***Installing FE dependencies***...
+        - npm install
+        - cd ../backend
         - echo ***Installing BE dependencies***...
         - npm install
         - cd ../frontend
-        - echo ***Installing FE dependencies***...
-        - npm install
-        - node src/server.js
-        - cd ./frontend
-        - echo ***READY TO BUILD***...
-        - npm run build
-        - cd ../backend
-        - node src/server.js
     post_build:
       commands:
-        - echo ***Starting BE***...
-        - npm start
-        - cd ../frontend
         - echo ***Starting FE***...
+        - npm start
+        - cd ../backend
+        - echo ***Starting BE***...
         - npm start
         - echo ***NPM START SUCCESSFUL***
   artifacts:
