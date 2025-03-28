@@ -13,6 +13,7 @@ frontend:
         - cd ./frontend
         - echo ***Installing FE dependencies***...
         - npm install
+        - npm run build
         - cd ../backend
         - echo ***Installing BE dependencies***...
         - npm install
