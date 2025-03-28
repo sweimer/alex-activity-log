@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # Navigate to the frontend directory and build the frontend
-cd ../frontend || exit
-npm install
 npm run build
 
 # Navigate to the backend directory and build the backend
