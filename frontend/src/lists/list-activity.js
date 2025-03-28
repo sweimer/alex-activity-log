@@ -47,7 +47,7 @@ const activityListItems = [
             "Van arrived at 830am to take Alex to Diversity.",
             "Van returned at 230pm.",
             "",
-            "Kiearra arrived at 800am to take Alex out for a girl's day."
+            "Kiearra arrived at 800am to take Alex out for a girl's day.",
             "Kiearra and Alex had a manicure, went to a move and had lunch at the theater",
             "Kiearra returned at 330pm.",
         ]
