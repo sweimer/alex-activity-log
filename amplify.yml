@@ -16,6 +16,11 @@ frontend:
         - npm install
         - cd ../frontend
         - echo ***Installing COMPLETE***...
+      build:
+        commands:
+          - echo ***Building frontend***...
+          - npm run build
+          - echo ***Build COMPLETE***...
   artifacts:
     baseDirectory: frontend/build
     files:
