@@ -1,0 +1,39 @@
+version: 0.2
+frontend:
+  phases:
+    install:
+      runtime-versions:
+        nodejs: 20
+      commands:
+        - echo Cloning repository...
+        - git clone https://github.com/sweimer/alex-activity-log.git
+        - echo ***REPO CLONED***...
+    build:
+      commands:
+        - cd ./backend
+        - echo ***Installing BE dependencies***...
+        - npm install
+        - cd ../frontend
+        - echo ***Installing FE dependencies***...
+        - npm install
+        - node src/server.js
+        - cd ./frontend
+        - echo ***READY TO BUILD***...
+        - npm run build
+        - cd ../backend
+        - node src/server.js
+    post_build:
+      commands:
+        - echo ***Starting BE***...
+        - npm start
+        - cd ../frontend
+        - echo ***Starting FE***...
+        - npm start
+        - echo ***NPM START SUCCESSFUL***
+  artifacts:
+    baseDirectory: frontend/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules/**/*
