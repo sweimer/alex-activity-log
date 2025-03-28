@@ -1,31 +1,23 @@
 version: 0.2
 frontend:
   phases:
-    install:
+    preBuild:
       runtime-versions:
         nodejs: 20
       commands:
         - echo Cloning repository...
         - git clone https://github.com/sweimer/alex-activity-log.git
         - echo ***REPO CLONED***...
-    build:
-      commands:
         - cd ./frontend
         - echo ***Installing FE dependencies***...
         - npm install
-        - npm run build
         - cd ../backend
         - echo ***Installing BE dependencies***...
         - npm install
         - cd ../frontend
-    post_build:
+    build:
       commands:
-        - echo ***Starting FE***...
-        - npm start
-        - cd ../backend
-        - echo ***Starting BE***...
-        - npm start
-        - echo ***NPM START SUCCESSFUL***
+        - npm run build
   artifacts:
     baseDirectory: frontend/build
     files:
