@@ -17,18 +17,19 @@ import staffListItems from '../lists/list-staff.js';
 import tagsListItems from '../lists/list-tags.js';
 
 function ActivityForm() {
-    const [formData, setFormData] = useState({ date: '', activity: '', tags: [], activities: '', other: '' });
-    const [message, setMessage] = useState('');
-    const [dateMessage, setDateMessage] = useState('');
-    const [logEntry, setLogEntry] = useState('');
-    const textareaRef = useRef(null);
-    const [isAccordionOpen, setIsAccordionOpen] = useState(false);
     const [checkedItems, setCheckedItems] = useState({});
+    const [dateMessage, setDateMessage] = useState('');
+    const [formData, setFormData] = useState({ date: '', activity: '', tags: [], activities: '', other: '' });
+    const [isAccordionOpen, setIsAccordionOpen] = useState(false);
     const [isChecklistOpen, setIsChecklistOpen] = useState(false);
     const [isHintVisible, setIsHintVisible] = useState(true);
-    const [visiblePanels, setVisiblePanels] = useState({});
+    const [logEntry, setLogEntry] = useState('');
+    const [message, setMessage] = useState('');
     const panelRefs = useRef({}); // Define panelRefs here
+    const [selectedActivities, setSelectedActivities] = useState('');
     const [selectedStaff, setSelectedStaff] = useState('');
+    const textareaRef = useRef(null);
+    const [visiblePanels, setVisiblePanels] = useState({});
 
     //CONTENT
     const BlockActivityForm = () => {
@@ -200,7 +201,7 @@ function ActivityForm() {
             const selectedTags = Array.from(options).filter(option => option.selected).map(option => option.value);
             setFormData({ ...formData, [name]: selectedTags });
 
-            const otherInputDiv = document.querySelector('div.form-data-textarea-input-select-other');
+            const otherInputDiv = document.querySelector('div.alex-block-select-other');
             if (selectedTags.includes('OTHER')) {
                 otherInputDiv.classList.add('show');
                 otherInputDiv.classList.remove('hide');
@@ -209,7 +210,6 @@ function ActivityForm() {
                 otherInputDiv.classList.add('hide');
             }
 
-            // Update logEntry with selected tags as header, excluding "Other" and including other text if "Other" is selected
             setLogEntry(prevLogEntry => {
                 const datePart = prevLogEntry.split('\n\n')[1] || '';
                 const otherText = formData.other ? ` ${formData.other}` : '';
@@ -221,7 +221,6 @@ function ActivityForm() {
             setFormData({ ...formData, [name]: value });
             checkDay(value);
 
-            // Update logEntry with selected date, preserving the tags if already set
             const formattedDate = formatDate(new Date(value + 'T00:00:00'));
             setLogEntry(prevLogEntry => {
                 const tagsPart = prevLogEntry.split('\n\n')[0] || '';
@@ -230,7 +229,6 @@ function ActivityForm() {
         } else if (name === 'OTHER') {
             setFormData({ ...formData, other: value });
 
-            // Update logEntry with other text, preserving the tags and date if already set
             setLogEntry(prevLogEntry => {
                 const [tagsPart, datePart] = prevLogEntry.split('\n\n');
                 const otherText = value ? ` ${value}` : '';
@@ -238,7 +236,6 @@ function ActivityForm() {
                 return `${updatedTagsPart}\n\n${datePart || ''}`;
             });
         } else if (name === 'activities') {
-            // Update formData without modifying logEntry
             setFormData({ ...formData, [name]: value });
         }
     };
@@ -256,11 +253,6 @@ function ActivityForm() {
         //setIsOtherSelected(false);
         //setOtherTag('');
         window.scrollTo(0, 0);
-    };
-    const handleClickOutside = (event) => {
-        if (panelRefs.current && !panelRefs.current.contains(event.target)) {
-            setVisiblePanels({});
-        }
     };
     const handleCopy = () => {
         const textToCopy = `${logEntry}\n\n${formData.activities}\n\n\n\n${getSponsor()}`;
@@ -338,14 +330,13 @@ function ActivityForm() {
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [formData.activities]);
 
     //MARKUP
     return (
         <div>
-            <h1>xAlex Log</h1>
+            <h1>Alex Log</h1>
 
             <form onSubmit={handleSubmit}>
                 <div className={"row"}>
@@ -353,7 +344,7 @@ function ActivityForm() {
                         <label>
                             Date: {formatDate}
                         </label>
-                        <div className={"form-data-date-block-input"}>
+                        <div className={"alex-block-date-input"}>
                             <input
                                 type="date"
                                 name="date"
@@ -362,7 +353,7 @@ function ActivityForm() {
                                 required
                             />
                         </div>
-                        <div className={"alex-block-hint hint-block form-data-date-block-hint"}>
+                        <div className={"hint-block"}>
                             {dateMessage}
                         </div>
                     </div>
@@ -377,12 +368,12 @@ function ActivityForm() {
                             ))}
                         </select>
                     </div>
-                    <div className={"alex-block-tags column form-data-container-tags"}>
-                        <label className={'form-data-textarea-label'}>
+                    <div className={"alex-block-tags column"}>
+                        <label className={'alex-block-textarea-label'}>
                             Tags:
                         </label>
                         <select
-                            className={"form-data-textarea-input-select"}
+                            className={"alex-block-select"}
                             name="tags"
                             value={formData.tags}
                             onChange={handleChange}
@@ -393,16 +384,32 @@ function ActivityForm() {
                             ))}
                         </select>
 
-                        <div className={"form-data-textarea-input-select-other"}>
+                        <div className={`alex-block-select-other ${formData.tags.includes('OTHER') ? 'show' : 'hide'}`}>
                             <label htmlFor="other">Other:</label>
-                            <input className={"form-data-textarea-input-select-other-input"}
-                                   name="other"
-                                   value={formData.other}
-                                   type="text"
-                                   id="other"
-                                   onChange={handleChange}
-                            ></input>
+                            <input
+                                className="alex-block-select-other-input"
+                                name="other"
+                                value={formData.other}
+                                type="text"
+                                id="other"
+                                onChange={handleChange}
+                            />
                         </div>
+                    </div>
+                    <div className={"alex-block-activities column"}>
+                        <label>
+                            Activities:
+                        </label>
+                        <select className={"alex-block-activities-select"}
+                                onChange={(e) => setSelectedActivities(e.target.value)}>
+                            {activityListItems.map((activity, index) => (
+                                <optgroup key={index} label={activity.category}>
+                                    {activity.items.map((item, itemIndex) => (
+                                        <option key={itemIndex} value={item}>{item}</option>
+                                    ))}
+                                </optgroup>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </form>

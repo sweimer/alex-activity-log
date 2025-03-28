@@ -1,5 +1,5 @@
 form {
-  margin-top: 20px;
+  margin: 20px 0 120px 0;
 
   // CHECKLIST BLOCK
   div.alex-block-checklist {
@@ -34,11 +34,15 @@ form {
       width: 100%;
     }
 
-    div.form-data-date-block-input {
+    div.alex-block-date-input {
       display: flex;
       width: 100%;
 
-      .form-data-date-block-hint {
+      input {
+        margin: 8px 0 0 0;
+      }
+
+      .alex-block-hint {
         width: calc(100% - 100px);
       }
     }
@@ -51,7 +55,7 @@ form {
   div.form-data-textarea-block {
     margin: 8px;
 
-    label.form-data-textarea-label {
+    label.alex-block-textarea-label {
       width: 100%;
     }
 
@@ -66,7 +70,7 @@ form {
       }
 
       input.form-data-textarea-input-input,
-      select.form-data-textarea-input-select {
+      select.alex-block-select {
         border: 1px solid #cdcdcd;
         cursor: pointer;
         padding: 20px;
@@ -81,7 +85,7 @@ form {
         box-sizing: border-box;
         overflow-wrap: break-word;
       }
-      select.form-data-textarea-input-select {
+      select.alex-block-select {
         min-height: 250px;
       }
     }
@@ -96,7 +100,7 @@ form {
         opacity: 1;
       }
     }
-    div.form-data-textarea-input-select-other {
+    div.alex-block-select-other {
       box-sizing: border-box;
       margin-top: 8px;
       width: 100%;

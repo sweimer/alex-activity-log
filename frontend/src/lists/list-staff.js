@@ -1,6 +1,6 @@
 // list-staff.js
 const staffListItems = [
-    "None",
+    "NONE",
     "Heather Weimer, Sponsor",
     "Scott Weimer, Relief"
 ];
