@@ -11,10 +11,6 @@ frontend:
         - cd ./frontend
         - echo ***Installing FE dependencies***...
         - npm install
-        - cd ../backend
-        - echo ***Installing BE dependencies***...
-        - npm install
-        - cd ../frontend
     build:
       commands:
         - npm run build
