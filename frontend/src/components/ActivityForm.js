@@ -129,33 +129,6 @@ function ActivityForm() {
         );
     }
     const BottomNavigationx = () => {
-        const [visiblePanels, setVisiblePanels] = useState({});
-        const panelRefs = useRef({});
-
-        const handleClickOutside = (event) => {
-            if (panelRefs.current) {
-                const panels = Object.values(panelRefs.current);
-                const isClickOutside = panels.every(panel => panel && !panel.contains(event.target));
-                if (isClickOutside) {
-                    setVisiblePanels({});
-                }
-            }
-        };
-
-        useEffect(() => {
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => {
-                document.removeEventListener('mousedown', handleClickOutside);
-            };
-        }, []);
-
-        const toggleVisibility = (panelId) => {
-            setVisiblePanels(prevState => ({
-                ...prevState,
-                [panelId]: !prevState[panelId]
-            }));
-        };
-
         return (
             <div>
                 <div className="alex-bottomnav">
@@ -166,7 +139,7 @@ function ActivityForm() {
 
                     <button className={"alex-bottomnav-button bottomnav-results"}
                             onClick={() => toggleVisibility('results')}>
-                        {visiblePanels['results'] ? 'Hide Results' : 'Show Results'}
+                        {visiblePanels['results'] ? 'Results' : 'Results'}
                     </button>
                     {visiblePanels['results'] && (
                         <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['results'] = el)}>
@@ -176,7 +149,7 @@ function ActivityForm() {
 
                     <button className={"alex-bottomnav-button bottomnav-checklist"}
                             onClick={() => toggleVisibility('checklist')}>
-                        {visiblePanels['checklist'] ? 'Hide Checklist' : 'Show Checklist'}
+                        {visiblePanels['checklist'] ? 'Checklist' : 'Checklist'}
                     </button>
                     {visiblePanels['checklist'] && (
                         <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['checklist'] = el)}>
@@ -238,11 +211,11 @@ function ActivityForm() {
             }
 
             setLogEntry(prevLogEntry => {
-                const datePart = prevLogEntry.split('\n\n')[1] || '';
+                const datePart = prevLogEntry.split('\n')[1] || '';
                 const otherText = formData.other ? ` ${formData.other}` : '';
                 const filteredTags = selectedTags.filter(tag => tag !== 'OTHER');
                 const logEntryHeader = `NOTE TO HEATHER: ${filteredTags.join('. ')}.${selectedTags.includes('OTHER') ? otherText : ' '}`;
-                return `${logEntryHeader}\n\n${datePart}`;
+                return `${logEntryHeader}\n${datePart}`;
             });
         } else if (name === 'date') {
             setFormData({ ...formData, [name]: value });
@@ -250,17 +223,17 @@ function ActivityForm() {
 
             const formattedDate = formatDate(new Date(value + 'T00:00:00'));
             setLogEntry(prevLogEntry => {
-                const tagsPart = prevLogEntry.split('\n\n')[0] || '';
-                return `${tagsPart}\n\n${formattedDate}`;
+                const tagsPart = prevLogEntry.split('\n')[0] || '';
+                return `${tagsPart}\n${formattedDate}`;
             });
         } else if (name === 'OTHER') {
             setFormData({ ...formData, other: value });
 
             setLogEntry(prevLogEntry => {
-                const [tagsPart, datePart] = prevLogEntry.split('\n\n');
+                const [tagsPart, datePart] = prevLogEntry.split('\n');
                 const otherText = value ? ` ${value}` : '';
                 const updatedTagsPart = tagsPart ? `${tagsPart.split('.')[0]}.${otherText}` : '';
-                return `${updatedTagsPart}\n\n${datePart || ''}`;
+                return `${updatedTagsPart}\n${datePart || ''}`;
             });
         } else if (name === 'activities') {
             setFormData({ ...formData, [name]: value });
@@ -282,7 +255,7 @@ function ActivityForm() {
         window.scrollTo(0, 0);
     };
     const handleCopy = () => {
-        const textToCopy = `${logEntry}\n\n${selectedActivities.join(' ')}\n\n\n\n${selectedStaff}`;
+        const textToCopy = `${logEntry}\n${selectedActivities.join(' ')}\n\n${selectedStaff}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
             console.log('Text copied to clipboard');
         }).catch(err => {
