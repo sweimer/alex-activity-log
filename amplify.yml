@@ -11,9 +11,6 @@ frontend:
         - cd ./frontend
         - echo ***Installing FE dependencies***...
         - npm install
-    build:
-      commands:
-        - npm run build
   artifacts:
     baseDirectory: frontend/build
     files:
