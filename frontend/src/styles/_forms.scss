@@ -48,172 +48,17 @@ form {
     }
   }
 
-  div.form-data-hint-date {
+  div.alex-block-tags {
 
-  }
-
-  div.form-data-textarea-block {
-    margin: 8px;
-
-    label.alex-block-textarea-label {
-      width: 100%;
-    }
-
-    div.form-data-textarea-input {
-      width: 100%;
-
-      div.form-data-textarea-input-hint {
-        width: 100%;
-        box-sizing: border-box;
-
-
-      }
-
-      input.form-data-textarea-input-input,
-      select.alex-block-select {
-        border: 1px solid #cdcdcd;
-        cursor: pointer;
-        padding: 20px;
-        width: 100%;
-
-        box-sizing: border-box;
-      }
-      input.form-data-textarea-input-input {
-        padding: 20px;
-        white-space: pre-wrap;
-        width: 100%;
-        box-sizing: border-box;
-        overflow-wrap: break-word;
-      }
-      select.alex-block-select {
-        min-height: 250px;
-      }
-    }
-
-    @keyframes slideDown {
-      from {
-        max-height: 0;
-        opacity: 0;
-      }
-      to {
-        max-height: 500px; // Adjust as needed
-        opacity: 1;
-      }
-    }
     div.alex-block-select-other {
-      box-sizing: border-box;
-      margin-top: 8px;
-      width: 100%;
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-
-      &.show {
-        animation: slideDown 0.5s forwards;
-      }
-      &.hide {
-        animation: slideUp 1.5s forwards;
-      }
-
       label {
-        width: 10%;
-      }
-
-      input {
-        padding: 10px;
         width: 100%;
-        display: flex;
+      }
+      textarea {
         box-sizing: border-box;
-      }
-    }
-  }
-
-  div.form-data-workspace {
-    border: 1px solid #cdcdcd;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 20px;
-    width: 40%;
-    box-sizing: border-box;
-    &.sticky {
-      background-color: rgba(0, 0, 0, 0.4);
-      min-height: 450px;
-      position: fixed;
-      top: 50px;
-      left: 60%;
-      width: 35%;
-    }
-    div.form-data-workspace-header {
-      margin: 14px 0;
-    }
-    textarea {
-      border-color: #eeeeee;
-      font-family: "Arial", "Helvetica", sans-serif;
-      font-size: 16px;
-      min-height: 75px;
-      padding: 15px 0;
-      width: calc(100% - 30px);
-    }
-    div.form-data-workspace-footer {
-      margin:10px 0 20px 0;
-
-      select.form-data-workspace-footer-select {
-        border-color: #eeeeee;
-        font-family: "Arial", "Helvetica", sans-serif;
-        font-size: 16px;
-        padding: 15px 0;
-        width: calc(100% - 30px);
-      }
-    }
-  }
-
-  div.form-data-submit-block {
-    margin: 8px;
-    display: flex;
-
-    .form-data-submit_button-block {
-      width: 20%;
-
-      button[type="submit"] {
-        background-color: $base-background-color;
-        border: 1px solid #cdcdcd;
-        cursor: pointer;
-        font-size: $base-font-size;
         margin: 8px 0;
-        padding: 10px;
-        text-align: center;
-      }
-    }
-
-    .form-data-submit_message-block {
-      width: 80%;
-
-      .alert {
-        background-color: $base-background-color;
-        border: 1px solid #cdcdcd;
-        margin: 8px 0;
-        padding: 10px;
-        text-align: center;
         width: 100%;
-        box-sizing: border-box;
       }
-    }
-  }
-}
-
-div.form-data-results {
-  pre {
-    border: 1px solid #cdcdcd;
-    box-sizing: border-box;
-    padding: 0 40px 40px 40px;
-    width: 100%;
-    white-space: pre-wrap;
-
-    .form-data-results-footer {
-      display: flex;
-      justify-content: space-between;
-      margin: 80px 0 20px 0;
     }
   }
 }

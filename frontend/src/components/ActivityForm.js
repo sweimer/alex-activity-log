@@ -262,6 +262,12 @@ function ActivityForm() {
                 option.selected = false;
             });
         }
+
+        // Ensure the node is a child before removing it
+        const nodeToRemove = document.querySelector('.node-to-remove');
+        if (nodeToRemove && nodeToRemove.parentNode) {
+            nodeToRemove.parentNode.removeChild(nodeToRemove);
+        }
     };
     const handleCopy = () => {
         const textToCopy = `${logEntry}\n${selectedActivities.join(' ')}\n\n${selectedStaff}`;
@@ -395,7 +401,7 @@ function ActivityForm() {
 
                         <div className={`alex-block-select-other ${formData.tags.includes('OTHER') ? 'show' : 'hide'}`}>
                             <label htmlFor="other">Other:</label>
-                            <input
+                            <textarea
                                 className="alex-block-select-other-input"
                                 name="other"
                                 value={formData.other}
