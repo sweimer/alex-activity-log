@@ -129,17 +129,40 @@ function ActivityForm() {
         );
     }
     const BottomNavigationx = () => {
+        const [visiblePanels, setVisiblePanels] = useState({});
+        const panelRefs = useRef({});
+
+        const handleClickOutside = (event) => {
+            if (panelRefs.current) {
+                const panels = Object.values(panelRefs.current);
+                const isClickOutside = panels.every(panel => panel && !panel.contains(event.target));
+                if (isClickOutside) {
+                    setVisiblePanels({});
+                }
+            }
+        };
+
+        useEffect(() => {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }, []);
+
+        const toggleVisibility = (panelId) => {
+            setVisiblePanels(prevState => ({
+                ...prevState,
+                [panelId]: !prevState[panelId]
+            }));
+        };
+
         return (
             <div>
                 <div className="alex-bottomnav">
-                    <button className={"alex-bottomnav-button bottomnav-form"} onClick={() => toggleVisibility('form')}>
-                        {visiblePanels['form'] ? 'Hide Form' : 'Show Form'}
+                    <button className={"alex-bottomnav-button bottomnav-form"}
+                            onClick={() => window.open("https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT", "_blank")}>
+                        Google Docs
                     </button>
-                    {visiblePanels['form'] && (
-                        <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['form'] = el)}>
-                            <BlockActivityForm/>
-                        </div>
-                    )}
 
                     <button className={"alex-bottomnav-button bottomnav-results"}
                             onClick={() => toggleVisibility('results')}>
@@ -422,8 +445,6 @@ function ActivityForm() {
                     </div>
                 </div>
             </form>
-
-            <AccordionGroup items={AccordionGroupContentHome}/>
 
             <div className="alex-block-bottomnav">
                 <BottomNavigationx/>
