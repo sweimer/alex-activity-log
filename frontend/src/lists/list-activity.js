@@ -1,12 +1,6 @@
 // list-activity.js
 const activityListItems = [
     {
-        category: "NONE",
-        items: [
-            "NONE"
-        ]
-    },
-    {
         category: "WAKE",
         items: [
             "Alex woke at 600am, went to bathroom, and went back to bed.",

@@ -26,7 +26,7 @@ function ActivityForm() {
     const [logEntry, setLogEntry] = useState('');
     const [message, setMessage] = useState('');
     const panelRefs = useRef({}); // Define panelRefs here
-    const [selectedActivities, setSelectedActivities] = useState('');
+    const [selectedActivities, setSelectedActivities] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState('');
     const textareaRef = useRef(null);
     const [visiblePanels, setVisiblePanels] = useState({});
@@ -68,6 +68,25 @@ function ActivityForm() {
             </div>
         );
     }
+    const BlockActivityResultsBlock = () => {
+        return (
+            <div className={"alex-block-input-resultsblock"}>
+                <div className={"alex-block-input-header"}>
+                    {logEntry}
+                </div>
+                <div className={"alex-block-results-input"}>
+                    <ul>
+                        <p>
+                            {selectedActivities.join(' ')}
+                        </p>
+                    </ul>
+                </div>
+                <div className={"alex-block-input-footer"}>
+                    {selectedStaff}
+                </div>
+            </div>
+        );
+    }
     const BlockActivityResults = () => {
         return (
             <div className={`alex-block-results hint-block ${isChecklistOpen ? 'show' : ''}`}>
@@ -80,22 +99,7 @@ function ActivityForm() {
                             Clear
                         </button>
                     </div>
-                    <div className={"alex-block-input-header"}>
-                        {logEntry}
-                    </div>
-                    <textarea
-                        ref={textareaRef}
-                        className={"alex-block-results-input"}
-                        name="activities"
-                        value={`${formData.activities}`}
-                        onChange={handleChange}
-                        onDrop={(e) => handleDrop(e, 'activities')}
-                        onDragOver={handleDragOver}
-                        onScroll={handleScroll}
-                    ></textarea>
-                    <div className={"alex-block-input-footer"}>
-                        {selectedStaff}
-                    </div>
+                    <BlockActivityResultsBlock/>
                 </div>
             </div>
         );
@@ -255,7 +259,7 @@ function ActivityForm() {
         window.scrollTo(0, 0);
     };
     const handleCopy = () => {
-        const textToCopy = `${logEntry}\n\n${formData.activities}\n\n\n\n${getSponsor()}`;
+        const textToCopy = `${logEntry}\n\n${selectedActivities.join(' ')}\n\n\n\n${selectedStaff}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
             console.log('Text copied to clipboard');
         }).catch(err => {
@@ -401,7 +405,10 @@ function ActivityForm() {
                             Activities:
                         </label>
                         <select className={"alex-block-activities-select"}
-                                onChange={(e) => setSelectedActivities(e.target.value)}
+                                onChange={(e) => {
+                                    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+                                    setSelectedActivities(selectedOptions);
+                                }}
                                 multiple
                         >
                             {activityListItems.map((activity, index) => (

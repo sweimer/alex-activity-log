@@ -15,13 +15,13 @@
 
   .alex-bottomnav-panel {
     @include block-shadow;
-    height: 80vh;
+    height: calc(90vh - 150px);
     overflow: scroll;
     padding: 20px;
     position: fixed;
     top: 14px;
-    left: 10%;
-    width: 80%;
+    left: 20px;
+    width: calc(100% - 100px);
     background: rgb(206, 243, 239, 0.98);
 
     ul {
