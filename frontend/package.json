@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "cd ../backend || exit && npm install && cd ../frontend",
+    "build": "cd ../backend || exit && npm install && cd ../frontend && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build"
