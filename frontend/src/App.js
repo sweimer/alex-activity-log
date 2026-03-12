@@ -6,17 +6,14 @@ function App() {
 
     useEffect(() => {
         const sendHeight = () => {
-            const height = document.body.scrollHeight;
+            const height = document.body.getBoundingClientRect().height + 200;
             window.parent.postMessage({ hudxAppHeight: height }, "*");
         };
 
-        // Send initial height
         sendHeight();
 
-        // Send height on resize
         window.addEventListener("resize", sendHeight);
 
-        // Send height when content changes
         const observer = new MutationObserver(sendHeight);
         observer.observe(document.body, { childList: true, subtree: true });
 
