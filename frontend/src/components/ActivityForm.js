@@ -246,10 +246,9 @@ function ActivityForm() {
 
     return (
         <main>
-            {/* TOP NAV */}
             <div className="alex-bottomnav">
-                <h1>Alex Logs</h1>
-                <div>
+                <h1 className="row">Alex Logs</h1>
+                <div className="row">
                     <button
                         onClick={() =>
                             window.open(
@@ -265,7 +264,7 @@ function ActivityForm() {
                     </button>
                 </div>
 
-                <div>
+                <div className="row">
                     <button
                         onClick={() => toggleVisibility('checklist')}
                     >

@@ -54,7 +54,7 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   margin: 14px;
-  width: 100%;
+  width: auto !important;
   gap: 20px;
 
   .column {
