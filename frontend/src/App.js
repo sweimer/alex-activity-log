@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import ActivityForm from './components/ActivityForm';
+import ResultsPage from './pages/ResultsPage';
+
 import './styles/main.scss';
 
 function App() {
@@ -24,9 +28,12 @@ function App() {
     }, []);
 
     return (
-        <div>
-            <ActivityForm/>
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/" element={<ActivityForm />} />
+                <Route path="/results" element={<ResultsPage />} />
+            </Routes>
+        </Router>
     );
 }
 
