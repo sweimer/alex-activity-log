@@ -27,40 +27,19 @@ function ResultsPage() {
                     marginTop: '20px'
                 }}
             >
-                <div
-                    style={{
-                        flex: 1,
-                        background: '#f2f2f2',
-                        padding: '20px',
-                        borderRadius: '8px'
-                    }}
-                >
+                <div className="card">
                     <h2>Column 1</h2>
                     <p>Static test content goes here.</p>
                     <p>Lorem ipsum dolor sit amet.</p>
                 </div>
 
-                <div
-                    style={{
-                        flex: 1,
-                        background: '#e8e8e8',
-                        padding: '20px',
-                        borderRadius: '8px'
-                    }}
-                >
+                <div className="card">
                     <h2>Column 2</h2>
                     <p>More static test content.</p>
                     <p>Consectetur adipiscing elit.</p>
                 </div>
 
-                <div
-                    style={{
-                        flex: 1,
-                        background: '#dedede',
-                        padding: '20px',
-                        borderRadius: '8px'
-                    }}
-                >
+                <div className="card">
                     <h2>Column 3</h2>
                     <p>Even more static test content.</p>
                     <p>Sed do eiusmod tempor.</p>

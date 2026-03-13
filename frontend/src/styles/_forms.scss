@@ -1,5 +1,5 @@
 form {
-  margin: 20px 0 120px 0;
+  margin: 220px 0 20px 0;
 
   // CHECKLIST BLOCK
   div.alex-block-checklist {
@@ -71,5 +71,11 @@ form {
     select {
       height: 400px;
     }
+  }
+}
+
+@media (min-width: 1024px) {
+  form {
+    margin: 120px 0 20px 0;
   }
 }

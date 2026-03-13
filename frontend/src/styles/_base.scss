@@ -74,3 +74,16 @@ ul.list-decoration-on {
   list-style-type: disc !important;
   padding-left: 20px !important;
 }
+
+.card {
+  background: #e8e8e8;
+  padding: 20px;
+  borderRadius: 8px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .card {
+    width: 33.333%;
+  }
+}
