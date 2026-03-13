@@ -2,31 +2,16 @@ import React from 'react';
 
 function ResultsPage() {
     return (
-        <div style={{ padding: '20px' }}>
+        <main>
             <h1>Test Page</h1>
 
             <button
-                style={{
-                    marginBottom: '20px',
-                    padding: '10px 20px',
-                    background: '#444',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                }}
                 onClick={() => window.location.href = "/"}
             >
                 ← Back to Form
             </button>
 
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '20px',
-                    marginTop: '20px'
-                }}
-            >
+            <div className="row">
                 <div className="card">
                     <h2>Column 1</h2>
                     <p>Static test content goes here.</p>
@@ -45,7 +30,7 @@ function ResultsPage() {
                     <p>Sed do eiusmod tempor.</p>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 

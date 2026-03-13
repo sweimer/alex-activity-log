@@ -1,13 +1,20 @@
 @import 'variables';
 @import 'mixins';
 
+* {
+  box-sizing: border-box;
+}
+
 // BODY STANDARDS
 body {
   color: $base-font-color;
   font-family: $base-font-family;
   font-size: $base-font-size;
-  margin: 0 auto;
-  width: 90%
+  width: auto;
+}
+
+main {
+  padding: 20px;
 }
 
 h1 {
@@ -16,17 +23,22 @@ h1 {
 
 //BUTTON
 button {
-  background-color: $seafoam;
-  border: 1px solid $grey-medium;
   @include block-shadow;
+  background: #444444;
+  border: none;
+  border-radius: 6px;
+  color: white;
   cursor: pointer;
   font-size: $base-font-size;
   margin: 10px 4px;
-  padding: 10px;
+  padding: 10px 20px;
   text-align: center;
 }
+button.button-full {
+  width: 100%;
+}
 button:hover {
-  background-color: $grey-light;
+  background-color: #777777;
 }
 
 //INPUT STANDARDS
@@ -41,8 +53,9 @@ textarea {
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
   margin: 14px;
+  width: 100%;
+  gap: 20px;
 
   .column {
     width: 100%;
@@ -78,12 +91,14 @@ ul.list-decoration-on {
 .card {
   background: #e8e8e8;
   padding: 20px;
-  borderRadius: 8px;
-  width: 100%;
+  border-radius: 8px;
+  flex: 1 1 100%;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 1024px) {
   .card {
-    width: 33.333%;
+    flex: 1 1 0;
+    min-width: 0;
   }
 }

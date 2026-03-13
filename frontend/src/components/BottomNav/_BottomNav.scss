@@ -4,13 +4,16 @@
 //BOTTOM NAVIGATION
 .alex-bottomnav {
   background-color: $white;
-  display: flex;
-  justify-content: space-around;
-  margin: 0 0 20px 0;
-  padding: 10px 0;
   position: fixed;
   top: 0;
-  width: 90%;
+  width: 100%;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-sizing: border-box;
+  flex-wrap: wrap;
 
   .alex-bottomnav-panel {
     @include block-shadow;
@@ -99,4 +102,10 @@
 
 form div.alex-block-activities select {
   overflow: scroll;
+}
+
+@media (min-width: 1024px) {
+  .alex-bottomnav {
+    width: 100%;
+  }
 }
