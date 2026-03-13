@@ -246,15 +246,83 @@ function ActivityForm() {
 
     return (
         <div>
-            <h1>Alex Logs</h1>
-            <button
-                className="alex-bottomnav-button bottomnav-test-page"
-                onClick={() => window.location.href = "/results"}
-            >
-                Test Page
-            </button>
+            {/* TOP NAV */}
+            <div className="alex-bottomnav">
+                <h1>Alex Logs</h1>
+                <button
+                    className="alex-bottomnav-button bottomnav-form"
+                    onClick={() =>
+                        window.open(
+                            "https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT",
+                            "_blank"
+                        )
+                    }
+                    style={{
+                        marginBottom: '20px',
+                        padding: '10px 20px',
+                        background: '#444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Google Docs
+                </button>
 
-            <form onSubmit={handleSubmit}>
+                <button
+                    className="alex-bottomnav-button bottomnav-results"
+                    onClick={() => toggleVisibility('results')}
+                    style={{
+                        marginBottom: '20px',
+                        padding: '10px 20px',
+                        background: '#444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Results
+                </button>
+
+                <button
+                    className="alex-bottomnav-button bottomnav-checklist"
+                    onClick={() => toggleVisibility('checklist')}
+                    style={{
+                        marginBottom: '20px',
+                        padding: '10px 20px',
+                        background: '#444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Checklist
+                </button>
+
+                <button
+                    className="alex-bottomnav-button bottomnav-test-page"
+                    onClick={() => window.location.href = "/results"}
+                    style={{
+                        marginBottom: '20px',
+                        padding: '10px 20px',
+                        background: '#444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Test Page
+                </button>
+            </div>
+
+            <form
+                onSubmit={handleSubmit}
+                style={{ margin: "120px 0 20px 0" }}
+            >
                 <div className="row">
 
                     <div className="alex-block-date column">
@@ -342,35 +410,6 @@ function ActivityForm() {
                     <BlockActivityResultsInline />
                 </div>
             )}
-
-            {/* BOTTOM NAV */}
-            <div className="alex-bottomnav">
-                <button
-                    className="alex-bottomnav-button bottomnav-form"
-                    onClick={() =>
-                        window.open(
-                            "https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT",
-                            "_blank"
-                        )
-                    }
-                >
-                    Google Docs
-                </button>
-
-                <button
-                    className="alex-bottomnav-button bottomnav-results"
-                    onClick={() => toggleVisibility('results')}
-                >
-                    Results
-                </button>
-
-                <button
-                    className="alex-bottomnav-button bottomnav-checklist"
-                    onClick={() => toggleVisibility('checklist')}
-                >
-                    Checklist
-                </button>
-            </div>
         </div>
     );
 }

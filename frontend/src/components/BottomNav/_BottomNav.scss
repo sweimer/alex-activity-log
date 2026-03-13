@@ -10,7 +10,9 @@
   justify-content: space-around;
   margin: 0 0 20px 0;
   padding: 10px 0;
-  bottom: 0;
+  position: fixed;
+  top: 0;
+  width: 90%;
 
   .alex-bottomnav-panel {
     @include block-shadow;
