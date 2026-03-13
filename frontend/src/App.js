@@ -11,7 +11,7 @@ function App() {
     useEffect(() => {
         // HUDX Smart Embed: Auto-height Resizing Script (React App)
         function sendHUDXSmartEmbedHeight() {
-            const height = document.body.scrollHeight + 200;
+            const height = document.body.scrollHeight + 40;
             window.parent.postMessage(
                 { hudxSmartEmbedHeight: height },
                 "*"
