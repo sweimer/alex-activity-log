@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-//CONTRIB
 
-//FONT AWESOME
+// FONT AWESOME
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
-//COMPONENTS
+
+// COMPONENTS
 import AccordionGroup from './AccordionGroup/AccordionGroup.js';
 import AccordionGroupContentHome from './AccordionGroup/content/AccordionGroupContent-Home.js';
 import BottomNavigation from './BottomNav/BottomNav.js';
 import BottomNavContentHome from './BottomNav/content/BottomNavContent-Home.js';
-//LISTS
+
+// LISTS
 import activityListItems from '../lists/list-activity.js';
 import checklistListItems from '../lists/list-checklist.js';
 import staffListItems from '../lists/list-staff.js';
@@ -25,13 +26,19 @@ function ActivityForm() {
     const [isHintVisible, setIsHintVisible] = useState(true);
     const [logEntry, setLogEntry] = useState('');
     const [message, setMessage] = useState('');
-    const panelRefs = useRef({}); // Define panelRefs here
+    const panelRefs = useRef({});
     const [selectedActivities, setSelectedActivities] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState('');
     const textareaRef = useRef(null);
     const [visiblePanels, setVisiblePanels] = useState({});
 
-    //CONTENT
+    // ⭐ NEW: ref for scrolling to checklist
+    const checklistRef = useRef(null);
+
+    // -------------------------
+    // CONTENT BLOCKS
+    // -------------------------
+
     const BlockActivityForm = () => {
         return (
             <div className={"alex-block-form hint-block"}>
@@ -55,6 +62,7 @@ function ActivityForm() {
                         </li>
                     ))}
                 </ul>
+
                 <textarea
                     ref={textareaRef}
                     className={"alex-block-input"}
@@ -67,7 +75,8 @@ function ActivityForm() {
                 ></textarea>
             </div>
         );
-    }
+    };
+
     const BlockActivityResultsBlock = () => {
         return (
             <div className={"alex-block-input-resultsblock"}>
@@ -76,9 +85,7 @@ function ActivityForm() {
                 </div>
                 <div className={"alex-block-results-input"}>
                     <ul>
-                        <p>
-                            {selectedActivities.join(' ')}
-                        </p>
+                        <p>{selectedActivities.join(' ')}</p>
                     </ul>
                 </div>
                 <div className={"alex-block-input-footer"}>
@@ -86,7 +93,8 @@ function ActivityForm() {
                 </div>
             </div>
         );
-    }
+    };
+
     const BlockActivityResults = () => {
         return (
             <div className={`alex-block-results hint-block ${isChecklistOpen ? 'show' : ''}`}>
@@ -99,69 +107,73 @@ function ActivityForm() {
                             Clear
                         </button>
                     </div>
-                    <BlockActivityResultsBlock/>
-                </div>
-            </div>
-        );
-    }
-    const BlockActivityChecklist = () => {
-        return (
-            <div className={"alex-bottomnav-panel"}>
-                {<div className={`alex-block-checklist hint-block ${isChecklistOpen ? 'show' : ''}`}>
-                    When applicable, select a tag or multiple (command/select) tags to alert Heather that this
-                    date has a notable entry.
-                    <ul>
-                        {checklistListItems.map((item, index) => (
-                            <li key={index}>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={!!checkedItems[index]}
-                                        onChange={() => handleCheckboxChange(index)}
-                                    />
-                                    {item}
-                                </label>
-                            </li>
-                        ))}
-                    </ul>
-                </div>}
-            </div>
-        );
-    }
-    const BottomNavigationx = () => {
-        return (
-            <div>
-                <div className="alex-bottomnav">
-                    <button className={"alex-bottomnav-button bottomnav-form"}
-                            onClick={() => window.open("https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT", "_blank")}>
-                        Google Docs
-                    </button>
-
-                    <button className={"alex-bottomnav-button bottomnav-results"}
-                            onClick={() => toggleVisibility('results')}>
-                        {visiblePanels['results'] ? 'Results' : 'Results'}
-                    </button>
-                    {visiblePanels['results'] && (
-                        <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['results'] = el)}>
-                            <BlockActivityResults/>
-                        </div>
-                    )}
-
-                    <button className={"alex-bottomnav-button bottomnav-checklist"}
-                            onClick={() => toggleVisibility('checklist')}>
-                        {visiblePanels['checklist'] ? 'Checklist' : 'Checklist'}
-                    </button>
-                    {visiblePanels['checklist'] && (
-                        <div className={"alex-bottomnav-panel"} ref={(el) => (panelRefs.current['checklist'] = el)}>
-                            <BlockActivityChecklist/>
-                        </div>
-                    )}
+                    <BlockActivityResultsBlock />
                 </div>
             </div>
         );
     };
 
-    //FUNCTIONS
+    const BlockActivityChecklist = () => {
+        return (
+            <div className={"alex-block-checklist hint-block"}>
+                When applicable, select a tag or multiple (command/select) tags to alert Heather that this
+                date has a notable entry.
+                <ul>
+                    {checklistListItems.map((item, index) => (
+                        <li key={index}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={!!checkedItems[index]}
+                                    onChange={() => handleCheckboxChange(index)}
+                                />
+                                {item}
+                            </label>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
+
+    const BottomNavigationx = () => {
+        return (
+            <div>
+                <div className="alex-bottomnav">
+                    <button
+                        className={"alex-bottomnav-button bottomnav-form"}
+                        onClick={() =>
+                            window.open(
+                                "https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT",
+                                "_blank"
+                            )
+                        }
+                    >
+                        Google Docs
+                    </button>
+
+                    <button
+                        className={"alex-bottomnav-button bottomnav-results"}
+                        onClick={() => toggleVisibility('results')}
+                    >
+                        Results
+                    </button>
+
+                    <button
+                        className={"alex-bottomnav-button bottomnav-checklist"}
+                        onClick={() => toggleVisibility('checklist')}
+                    >
+                        Checklist
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    // -------------------------
+    // FUNCTIONS
+    // -------------------------
+
     const checkDay = (date) => {
         const selectedDate = new Date(date + 'T00:00:00');
         const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate();
@@ -180,23 +192,15 @@ function ActivityForm() {
             setDateMessage('Hints...');
         }
     };
+
     const formatDate = (date) => {
-        const dayOfWeek = new Intl.DateTimeFormat("en-US", {weekday: "long"}).format(date).toUpperCase();
-        const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} - ${dayOfWeek}`;
-        return formattedDate;
+        const dayOfWeek = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date).toUpperCase();
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} - ${dayOfWeek}`;
     };
-    const getSponsor = () => {
-        const selectElement = document.querySelector('select.form-data-workspace-footer-select');
-        return selectElement ? selectElement.value : '';
-    };
-    const handleButtonClick = () => {
-        const textareaDiv = document.querySelector('textarea.form-data-textarea-input-textarea');
-        if (textareaDiv) {
-            textareaDiv.classList.remove('sticky');
-        }
-    };
+
     const handleChange = (e) => {
         const { name, value, options } = e.target;
+
         if (name === 'tags' && options) {
             const selectedTags = Array.from(options).filter(option => option.selected).map(option => option.value);
             setFormData({ ...formData, [name]: selectedTags });
@@ -217,6 +221,7 @@ function ActivityForm() {
                 const logEntryHeader = `NOTE TO HEATHER: ${filteredTags.join('. ')}.${selectedTags.includes('OTHER') ? otherText : ' '}`;
                 return `${logEntryHeader}\n${datePart}`;
             });
+
         } else if (name === 'date') {
             setFormData({ ...formData, [name]: value });
             checkDay(value);
@@ -226,6 +231,7 @@ function ActivityForm() {
                 const tagsPart = prevLogEntry.split('\n')[0] || '';
                 return `${tagsPart}\n${formattedDate}`;
             });
+
         } else if (name === 'OTHER') {
             setFormData({ ...formData, other: value });
 
@@ -235,16 +241,19 @@ function ActivityForm() {
                 const updatedTagsPart = tagsPart ? `${tagsPart.split('.')[0]}.${otherText}` : '';
                 return `${updatedTagsPart}\n${datePart || ''}`;
             });
+
         } else if (name === 'activities') {
             setFormData({ ...formData, [name]: value });
         }
     };
+
     const handleCheckboxChange = (index) => {
         setCheckedItems(prevState => ({
             ...prevState,
             [index]: !prevState[index]
         }));
     };
+
     const handleClear = () => {
         setFormData({ date: '', activity: '', tags: [], activities: '', other: '' });
         setMessage('');
@@ -255,7 +264,6 @@ function ActivityForm() {
         setCheckedItems({});
         window.scrollTo(0, 0);
 
-        // Clear selected options in alex-block-activities-select
         const selectElement = document.querySelector('.alex-block-activities-select');
         if (selectElement) {
             Array.from(selectElement.options).forEach(option => {
@@ -263,31 +271,31 @@ function ActivityForm() {
             });
         }
 
-        // Ensure the node is a child before removing it
         const nodeToRemove = document.querySelector('.node-to-remove');
         if (nodeToRemove && nodeToRemove.parentNode) {
             nodeToRemove.parentNode.removeChild(nodeToRemove);
         }
     };
+
     const handleCopy = () => {
         const textToCopy = `${logEntry}\n${selectedActivities.join(' ')}\n\n${selectedStaff}`;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            console.log('Text copied to clipboard');
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-        });
+        navigator.clipboard.writeText(textToCopy);
     };
+
     const handleDragStart = (e, text) => {
         e.dataTransfer.setData('text/plain', text);
     };
+
     const handleDragOver = (e) => {
         e.preventDefault();
     };
+
     const handleDrop = (e, name) => {
         e.preventDefault();
         const text = e.dataTransfer.getData('text/plain');
         setFormData({ ...formData, [name]: formData[name] + text + ' ' });
     };
+
     const handleScroll = () => {
         const textareaDiv = document.querySelector('div.form-data-workspace');
         const resultsDiv = document.querySelector('div.form-data-results');
@@ -301,6 +309,7 @@ function ActivityForm() {
             }
         }
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -313,28 +322,35 @@ function ActivityForm() {
             const otherText = formData.other ? `${formData.other} \r\n` : '';
             const logEntry = `\r\n\r\n${noteForHeather}${otherText}\r\n\r\n11${formattedDate}\r\n${formData.activities}  `;
             setLogEntry(logEntry);
+
         } catch (error) {
-            if (error.response) {
-                setMessage(error.response.data.message || 'Error saving activity log');
-            } else {
-                setMessage('Error saving activity log');
-            }
-            console.error('Error saving activity log:', error);
+            setMessage(error.response?.data?.message || 'Error saving activity log');
         }
     };
-    const toggleAccordion = () => {
-        setIsAccordionOpen(!isAccordionOpen);
-        setIsChecklistOpen(!isChecklistOpen);
-    };
-    const toggleHint = () => {
-        setIsHintVisible(!isHintVisible);
-    };
+
+    // ⭐ UPDATED: scroll to checklist when opening
     const toggleVisibility = (buttonId) => {
-        setVisiblePanels(prevState => ({
-            ...prevState,
-            [buttonId]: !prevState[buttonId]
-        }));
+        setVisiblePanels(prevState => {
+            const isOpening = !prevState[buttonId];
+
+            setTimeout(() => {
+                if (buttonId === 'checklist' && isOpening && checklistRef.current) {
+                    const elementTop = checklistRef.current.getBoundingClientRect().top + window.scrollY;
+
+                    window.scrollTo({
+                        top: elementTop + 50,   // ⭐ scroll 50px below the panel
+                        behavior: 'smooth'
+                    });
+                }
+            }, 50);
+
+            return {
+                ...prevState,
+                [buttonId]: isOpening
+            };
+        });
     };
+
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -348,7 +364,10 @@ function ActivityForm() {
         };
     }, [formData.activities]);
 
-    //MARKUP
+    // -------------------------
+    // MARKUP
+    // -------------------------
+
     return (
         <div>
             <h1>Alex Logs</h1>
@@ -356,9 +375,7 @@ function ActivityForm() {
             <form onSubmit={handleSubmit}>
                 <div className={"row"}>
                     <div className={"alex-block-date column"}>
-                        <label>
-                            Date: {formatDate}
-                        </label>
+                        <label>Date: {formatDate}</label>
                         <div className={"alex-block-date-input"}>
                             <input
                                 type="date"
@@ -368,25 +385,23 @@ function ActivityForm() {
                                 required
                             />
                         </div>
-                        <div className={"hint-block"}>
-                            {dateMessage}
-                        </div>
+                        <div className={"hint-block"}>{dateMessage}</div>
                     </div>
+
                     <div className={"alex-block-staff column"}>
-                        <label>
-                            Staff: {selectedStaff}
-                        </label>
-                        <select className={"alex-block-staff-select"}
-                                onChange={(e) => setSelectedStaff(e.target.value)}>
+                        <label>Staff: {selectedStaff}</label>
+                        <select
+                            className={"alex-block-staff-select"}
+                            onChange={(e) => setSelectedStaff(e.target.value)}
+                        >
                             {staffListItems.map((staff, index) => (
                                 <option key={index} value={staff}>{staff}</option>
                             ))}
                         </select>
                     </div>
+
                     <div className={"alex-block-tags column"}>
-                        <label className={'alex-block-textarea-label'}>
-                            Tags:
-                        </label>
+                        <label className={'alex-block-textarea-label'}>Tags:</label>
                         <select
                             className={"alex-block-select"}
                             name="tags"
@@ -411,16 +426,16 @@ function ActivityForm() {
                             />
                         </div>
                     </div>
+
                     <div className={"alex-block-activities column"}>
-                        <label>
-                            Activities:
-                        </label>
-                        <select className={"alex-block-activities-select"}
-                                onChange={(e) => {
-                                    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
-                                    setSelectedActivities(selectedOptions);
-                                }}
-                                multiple
+                        <label>Activities:</label>
+                        <select
+                            className={"alex-block-activities-select"}
+                            onChange={(e) => {
+                                const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+                                setSelectedActivities(selectedOptions);
+                            }}
+                            multiple
                         >
                             {activityListItems.map((activity, index) => (
                                 <optgroup key={index} label={activity.category}>
@@ -434,8 +449,22 @@ function ActivityForm() {
                 </div>
             </form>
 
+            {/* INLINE CHECKLIST PANEL BELOW FORM */}
+            {visiblePanels['checklist'] && (
+                <div className="alex-inline-checklist-panel" ref={checklistRef}>
+                    <BlockActivityChecklist />
+                </div>
+            )}
+
+            {/* INLINE RESULTS PANEL BELOW FORM */}
+            {visiblePanels['results'] && (
+                <div className="alex-inline-results-panel">
+                    <BlockActivityResults />
+                </div>
+            )}
+
             <div className="alex-block-bottomnav">
-                <BottomNavigationx/>
+                <BottomNavigationx />
             </div>
         </div>
     );

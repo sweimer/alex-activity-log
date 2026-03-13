@@ -56,3 +56,45 @@
     }
   }
 }
+
+/* ---------------------------------------------------------
+   INLINE CHECKLIST PANEL (replaces modal behavior)
+   --------------------------------------------------------- */
+
+.alex-inline-checklist-panel {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 20px;
+  margin: -100px 0 120px 0;
+
+  background: rgba(206, 243, 239, 0.15);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  box-shadow: none !important;
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+}
+
+/* ---------------------------------------------------------
+   INLINE RESULTS PANEL (same treatment as checklist)
+   --------------------------------------------------------- */
+
+.alex-inline-results-panel {
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 20px;
+  margin-top: 20px;
+
+  background: rgba(206, 243, 239, 0.15);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  box-shadow: none !important;
+}
