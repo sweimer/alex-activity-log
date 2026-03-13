@@ -9,20 +9,30 @@ import './styles/main.scss';
 function App() {
 
     useEffect(() => {
-        const sendHeight = () => {
-            const height = document.body.getBoundingClientRect().height + 200;
-            window.parent.postMessage({ hudxAppHeight: height }, "*");
-        };
+        // HUDX Smart Embed: Auto-height Resizing Script (React App)
+        function sendHUDXSmartEmbedHeight() {
+            const height = document.body.scrollHeight;
+            window.parent.postMessage(
+                { hudxSmartEmbedHeight: height },
+                "*"
+            );
+        }
 
-        sendHeight();
+        // Initial height
+        sendHUDXSmartEmbedHeight();
 
-        window.addEventListener("resize", sendHeight);
+        // Watch for DOM changes
+        const observer = new MutationObserver(sendHUDXSmartEmbedHeight);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
 
-        const observer = new MutationObserver(sendHeight);
-        observer.observe(document.body, { childList: true, subtree: true });
+        // Update on window resize
+        window.addEventListener("resize", sendHUDXSmartEmbedHeight);
 
         return () => {
-            window.removeEventListener("resize", sendHeight);
+            window.removeEventListener("resize", sendHUDXSmartEmbedHeight);
             observer.disconnect();
         };
     }, []);
