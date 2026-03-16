@@ -19,7 +19,12 @@ export const BlockActivityResults = ({ logEntry = "", selectedActivities = [], s
             </div>
 
             <div className="alex-block-results-input">
-                <p>{selectedActivities.join(' ')}</p>
+                <p>
+                    {selectedActivities
+                        .map(v => v.split("::")[1])   // ⭐ strip unique ID prefix
+                        .join(' ')
+                    }
+                </p>
             </div>
 
             <div className="alex-block-input-footer">
@@ -173,14 +178,14 @@ function ActivityForm() {
     const handleClear = () => {
         setFormData({ date: '', activity: '', tags: [], activities: '', other: '' });
         setLogEntry('');
-        setSelectedActivities([]);
+        setSelectedActivities([]);   // ⭐ now clears UI correctly
         setSelectedStaff('');
         setCheckedItems({});
         window.scrollTo(0, 0);
     };
 
     const handleCopy = () => {
-        const text = `${logEntry}\n${selectedActivities.join(' ')}\n\n${selectedStaff}`;
+        const text = `${logEntry}\n${selectedActivities.map(v => v.split("::")[1]).join(' ')}\n\n${selectedStaff}`;
         navigator.clipboard.writeText(text);
     };
 
@@ -212,13 +217,11 @@ function ActivityForm() {
             const isOpening = !prev[panel];
 
             setTimeout(() => {
-                // ⭐ Scroll to checklist
                 if (panel === 'checklist' && isOpening && checklistRef.current) {
                     const top = checklistRef.current.getBoundingClientRect().top + window.scrollY;
                     window.scrollTo({ top: top + 50, behavior: 'smooth' });
                 }
 
-                // ⭐ Scroll to results
                 if (panel === 'results' && isOpening && resultsRef.current) {
                     const top = resultsRef.current.getBoundingClientRect().top + window.scrollY;
                     window.scrollTo({ top: top + 50, behavior: 'smooth' });
@@ -254,34 +257,26 @@ function ActivityForm() {
                             window.open(
                                 "https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT",
                                 "_blank")}>
-                        Google Docs
+                        GDocs
                     </button>
 
-                    <button
-                        onClick={() => toggleVisibility('results')}
-                    >
+                    <button onClick={() => toggleVisibility('results')}>
                         Results
                     </button>
                 </div>
 
                 <div className="row">
-                    <button
-                        onClick={() => toggleVisibility('checklist')}
-                    >
+                    <button onClick={() => toggleVisibility('checklist')}>
                         Checklist
                     </button>
 
-                    <button
-                        onClick={() => window.location.href = "/results"}
-                    >
+                    <button onClick={() => window.location.href = "/results"}>
                         Test Page
                     </button>
                 </div>
             </div>
 
-            <form
-                onSubmit={handleSubmit}
-            >
+            <form onSubmit={handleSubmit}>
                 <div className="row">
 
                     <div className="alex-block-date column">
@@ -300,8 +295,10 @@ function ActivityForm() {
                         <label>Staff: {selectedStaff}</label>
                         <select
                             className="alex-block-staff-select"
+                            value={selectedStaff}
                             onChange={(e) => setSelectedStaff(e.target.value)}
                         >
+                            <option value="">Select Staff</option>
                             {staffListItems.map((s, i) => (
                                 <option key={i} value={s}>{s}</option>
                             ))}
@@ -334,8 +331,11 @@ function ActivityForm() {
 
                     <div className="alex-block-activities column">
                         <label>Activities:</label>
+
+                        {/* ⭐ FULLY CONTROLLED + UNIQUE IDs */}
                         <select
                             className="alex-block-activities-select"
+                            value={selectedActivities}
                             onChange={(e) =>
                                 setSelectedActivities(
                                     Array.from(e.target.selectedOptions).map(o => o.value)
@@ -346,7 +346,12 @@ function ActivityForm() {
                             {activityListItems.map((cat, i) => (
                                 <optgroup key={i} label={cat.category}>
                                     {cat.items.map((item, j) => (
-                                        <option key={j} value={item}>{item}</option>
+                                        <option
+                                            key={`${i}-${j}`}
+                                            value={`${i}-${j}::${item}`}   // ⭐ unique ID prefix
+                                        >
+                                            {item}
+                                        </option>
                                     ))}
                                 </optgroup>
                             ))}
