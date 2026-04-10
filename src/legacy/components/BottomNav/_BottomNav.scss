@@ -1,0 +1,110 @@
+@import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
+
+//BOTTOM NAVIGATION
+.alex-bottomnav {
+  background-color: $white;
+  position: fixed;
+  top: 0;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+
+  .alex-bottomnav-panel {
+    @include block-shadow;
+    height: calc(90vh - 150px);
+    overflow: scroll;
+    padding: 20px;
+    position: fixed;
+    top: 14px;
+    left: 20px;
+    width: calc(100% - 100px);
+    background: rgb(206, 243, 239, 0.98);
+
+    ul {
+      list-style-type: none;
+    }
+
+    div.alex-block-form {
+      position: relative;
+
+      textarea.alex-block-input {
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-size: $base-font-size-med;
+        padding: 14px;
+        position: fixed;
+        top: 7%;
+        right: 9%;
+        height: 70vh !important;
+        width: 30%;
+      }
+    }
+
+    div.alex-block-results {
+      padding: 14px;
+      width: 100%;
+
+      textarea.alex-block-results-input {
+        height: 35vh !important;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+/* ---------------------------------------------------------
+   INLINE CHECKLIST PANEL (replaces modal behavior)
+   --------------------------------------------------------- */
+
+.alex-inline-checklist-panel {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 20px;
+  margin: 0 0 20px 0;
+
+  background: rgba(206, 243, 239, 0.15);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  box-shadow: none !important;
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+}
+
+/* ---------------------------------------------------------
+   INLINE RESULTS PANEL (same treatment as checklist)
+   --------------------------------------------------------- */
+
+.alex-inline-results-panel {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 20px;
+  margin: 0 0 20px 0;
+
+  background: rgba(206, 243, 239, 0.15);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  box-shadow: none !important;
+}
+
+form div.alex-block-activities select {
+  overflow: scroll;
+}
+
+@media (min-width: 1024px) {
+  .alex-bottomnav {
+    width: 100%;
+  }
+}

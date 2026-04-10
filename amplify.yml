@@ -5,30 +5,14 @@ frontend:
       runtime-versions:
         nodejs: 20
       commands:
-        - echo Cloning repository...
-        - git clone https://github.com/sweimer/alex-activity-log.git
-        - echo ***REPO CLONED***...
-        - cd ./frontend
-        - echo ***Installing FE dependencies***...
-        - echo ***Clearing cache***...
-        - rm -rf node_modules
-        - npm install
-        - cd ../backend
-        - echo ***Installing BE dependencies***...
-        - echo ***Clearing cache***...
-        - rm -rf node_modules
-        - npm install
-        - cd ../frontend
-        - echo ***Installing COMPLETE***...
-        - echo ***Building frontend***...
+        - npm ci
+    build:
+      commands:
         - npm run build
-      build:
-        commands:
-          - echo ***Build COMPLETE***...
   artifacts:
-    baseDirectory: frontend/build
+    baseDirectory: dist
     files:
       - '**/*'
   cache:
     paths:
-      - frontend/node_modules/**/*
+      - node_modules/**/*

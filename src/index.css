@@ -1,0 +1,570 @@
+/* ============================================================
+   VARIABLES & RESET
+   ============================================================ */
+:root {
+  --bg:           #fdf8f3;
+  --dark:         #2c1810;
+  --accent:       #c4834a;
+  --accent-dark:  #a06030;
+  --muted:        #8a6a55;
+  --caption:      #a08070;
+  --success:      #7a9a6a;
+  --purple:       #9b6ea0;
+  --border:       #e8d8c8;
+  --input-border: #dcc9b8;
+  --white:        #ffffff;
+  --card-radius:  8px;
+  --font:         Georgia, 'Times New Roman', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app { min-height: 100vh; }
+
+.app-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--dark);
+  color: var(--white);
+  padding: 0 24px;
+}
+
+.header-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.header-subtitle {
+  font-size: 0.8rem;
+  color: #c8a88a;
+  margin-top: 2px;
+}
+
+.google-sign-in-btn {
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.google-sign-in-btn:hover { background: var(--accent-dark); }
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-name { font-size: 0.85rem; color: #c8a88a; }
+.sign-out-btn {
+  background: none;
+  border: 1px solid #c8a88a;
+  color: #c8a88a;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.sign-out-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--dark);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-caption {
+  font-size: 0.82rem;
+  color: var(--caption);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+/* ============================================================
+   FIELDS
+   ============================================================ */
+.field-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.field {
+  flex: 1;
+  min-width: 160px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: bold;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.field-caption {
+  font-size: 0.78rem;
+  color: var(--caption);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.text-input {
+  width: 100%;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  color: var(--dark);
+  background: var(--white);
+  transition: border-color 0.15s;
+}
+.text-input:focus { outline: none; border-color: var(--accent); }
+
+.date-display {
+  font-size: 1rem;
+  color: var(--dark);
+  padding: 8px 0;
+}
+
+/* ============================================================
+   PILLS
+   ============================================================ */
+.pill-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.pill {
+  border: 1px solid var(--input-border);
+  background: var(--white);
+  color: var(--muted);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pill:hover { border-color: var(--accent); color: var(--accent-dark); }
+.pill-active {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--white);
+}
+
+/* ============================================================
+   ROTATION
+   ============================================================ */
+.rotation-block {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.rotation-setup-label {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.rotation-display {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rotation-label {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.override-badge {
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+.override-btn {
+  background: none;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.override-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============================================================
+   TAGS
+   ============================================================ */
+.tag-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tag-btn {
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--muted);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tag-selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--white);
+}
+
+.tag-expected {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.tag-dot { color: var(--accent); }
+.tag-pencil { color: var(--purple); }
+
+.day-reminder {
+  font-size: 0.82rem;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+}
+
+.reminder-pending {
+  background: #fef3e2;
+  color: var(--accent-dark);
+  border: 1px solid #f5d9ae;
+}
+
+.reminder-done {
+  background: #eef4ea;
+  color: var(--success);
+  border: 1px solid #c8ddb8;
+}
+
+.reminder-tag-link {
+  background: none;
+  border: none;
+  color: var(--accent-dark);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* ============================================================
+   CUSTOM PANELS
+   ============================================================ */
+.custom-panel {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #fdf5ee;
+}
+
+.custom-panel-label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--muted);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.behavior-label { color: var(--purple); }
+
+.behavior-warning {
+  font-size: 0.8rem;
+  color: var(--purple);
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.custom-textarea {
+  width: 100%;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  padding: 10px;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  color: var(--dark);
+  background: var(--white);
+  resize: vertical;
+  margin-top: 8px;
+  transition: border-color 0.15s;
+}
+.custom-textarea:focus { outline: none; border-color: var(--accent); }
+
+.note-preview {
+  border: 1px dashed var(--accent);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--accent-dark);
+  margin-top: 4px;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   CHECKLIST
+   ============================================================ */
+.checklist-section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f7f0e8;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header-active {
+  background: var(--dark);
+  border-bottom-color: var(--dark);
+}
+
+.section-label {
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-header-active .section-label { color: var(--accent); }
+
+.section-count {
+  font-size: 0.72rem;
+  color: #c8a88a;
+}
+
+.section-items {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.checklist-checkbox {
+  margin-top: 3px;
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.item-text {
+  font-size: 0.88rem;
+  color: var(--dark);
+  line-height: 1.4;
+}
+
+.item-checked .item-text {
+  color: var(--accent-dark);
+}
+
+.section-note-input {
+  width: calc(100% - 28px);
+  margin: 4px 14px 12px;
+  border: none;
+  border-bottom: 1px solid var(--input-border);
+  background: transparent;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--muted);
+  padding: 4px 0;
+}
+.section-note-input:focus { outline: none; border-bottom-color: var(--accent); }
+
+/* ============================================================
+   GENERATE
+   ============================================================ */
+.generate-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.generate-btn {
+  flex: 1;
+  background: var(--dark);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 14px;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.generate-btn:hover:not(:disabled) { background: #3d2215; }
+.generate-btn-disabled { opacity: 0.45; cursor: not-allowed; }
+
+.clear-btn {
+  background: var(--white);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 20px;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============================================================
+   OUTPUT
+   ============================================================ */
+.output-card { padding: 0; overflow: hidden; }
+
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--dark);
+  padding: 12px 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.output-title {
+  font-size: 0.82rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.output-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background: var(--white);
+  color: var(--dark);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.action-btn:hover { background: #f0e8e0; }
+.action-btn-success { background: #eef4ea; color: var(--success); }
+.action-btn-disabled { opacity: 0.45; cursor: not-allowed; }
+.action-btn-clear { background: transparent; color: #c8a88a; }
+.action-btn-clear:hover { background: transparent; color: var(--accent); }
+
+.entry-text {
+  padding: 24px;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--dark);
+  white-space: pre-wrap;
+}
+
+.save-confirm {
+  margin: 0 24px 20px;
+  font-size: 0.85rem;
+  color: var(--success);
+}
+.save-confirm a { color: var(--success); }
+
+.save-error {
+  margin: 0 24px 20px;
+  font-size: 0.85rem;
+  color: #c0392b;
+}
