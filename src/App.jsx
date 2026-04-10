@@ -37,7 +37,7 @@ function MainApp() {
 
   // Staff
   const [dayType, setDayType] = useState('routine')
-  const [staffMode, setStaffMode] = useState('sponsor')
+  const [staffMode, setStaffMode] = useState('both')
   const [sponsorName, setSponsorName] = useState('Heather')
   const [reliefName, setReliefName] = useState('Scott')
 
