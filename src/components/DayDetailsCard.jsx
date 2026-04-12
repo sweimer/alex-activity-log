@@ -6,6 +6,8 @@ export default function DayDetailsCard({
   outfitToday, setOutfitToday,
   breakfastOffered, setBreakfastOffered,
   breakfastChose, setBreakfastChose,
+  cadOffered, setCadOffered,
+  cadChose, setCadChose,
   vanArrived, setVanArrived,
   vanReturned, setVanReturned,
   kiearraArrived, setKiearraArrived,
@@ -42,6 +44,18 @@ export default function DayDetailsCard({
         <div className="field">
           <label className="field-label">Alex Chose</label>
           <input className="text-input" value={breakfastChose} onChange={e => setBreakfastChose(e.target.value)} placeholder="e.g. oats" />
+        </div>
+      </div>
+
+      {/* Row 3 — CAD choices */}
+      <div className="field-row">
+        <div className="field">
+          <label className="field-label">CAD Choices Offered</label>
+          <input className="text-input" value={cadOffered} onChange={e => setCadOffered(e.target.value)} placeholder="e.g. beading or painting" />
+        </div>
+        <div className="field">
+          <label className="field-label">Alex Chose</label>
+          <input className="text-input" value={cadChose} onChange={e => setCadChose(e.target.value)} placeholder="e.g. beading" />
         </div>
       </div>
 

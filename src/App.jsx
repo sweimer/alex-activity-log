@@ -38,8 +38,17 @@ function MainApp() {
   // Staff
   const [dayType, setDayType] = useState('routine')
   const [staffMode, setStaffMode] = useState('both')
-  const [sponsorName, setSponsorName] = useState('Heather')
-  const [reliefName, setReliefName] = useState('Scott')
+  const [sponsorName, setSponsorName] = useState('Heather Weimer')
+  const [reliefName, setReliefName] = useState('Scott Weimer')
+
+  // Auto-set staffMode based on day of week:
+  // Thu (4), Fri (5), Sat (6) → Scott Weimer, Relief
+  // Sun (0), Mon (1), Tue (2), Wed (3) → Heather Weimer, Sponsor
+  useEffect(() => {
+    const [y, mo, d] = selectedISO.split('-').map(Number)
+    const dow = new Date(y, mo - 1, d).getDay()
+    setStaffMode([4, 5, 6].includes(dow) ? 'relief' : 'sponsor')
+  }, [selectedISO])
 
   // Rotation
   const { rotation, todayRole, isOverridden, initRotation, toggleOverride } = useRotation()
@@ -49,6 +58,8 @@ function MainApp() {
   const [outfitToday, setOutfitToday] = useState('')
   const [breakfastOffered, setBreakfastOffered] = useState('')
   const [breakfastChose, setBreakfastChose] = useState('')
+  const [cadOffered, setCadOffered] = useState('')
+  const [cadChose, setCadChose] = useState('')
   const [vanArrived, setVanArrived] = useState('')
   const [vanReturned, setVanReturned] = useState('')
   const [kiearraArrived, setKiearraArrived] = useState('')
@@ -139,6 +150,8 @@ function MainApp() {
         outfitToday,
         breakfastOffered,
         breakfastChose,
+        cadOffered,
+        cadChose,
         vanArrived,
         vanReturned,
         kiearraArrived,
@@ -188,6 +201,8 @@ function MainApp() {
     setOutfitToday('')
     setBreakfastOffered('')
     setBreakfastChose('')
+    setCadOffered('')
+    setCadChose('')
     setVanArrived('')
     setVanReturned('')
     setKiearraArrived('')
@@ -263,6 +278,8 @@ function MainApp() {
           outfitToday={outfitToday} setOutfitToday={setOutfitToday}
           breakfastOffered={breakfastOffered} setBreakfastOffered={setBreakfastOffered}
           breakfastChose={breakfastChose} setBreakfastChose={setBreakfastChose}
+          cadOffered={cadOffered} setCadOffered={setCadOffered}
+          cadChose={cadChose} setCadChose={setCadChose}
           vanArrived={vanArrived} setVanArrived={setVanArrived}
           vanReturned={vanReturned} setVanReturned={setVanReturned}
           kiearraArrived={kiearraArrived} setKiearraArrived={setKiearraArrived}
@@ -314,6 +331,8 @@ function MainApp() {
                 middayCustom={middayCustom}
                 afterLunchCustom={afterLunchCustom}
                 eveningCustom={eveningCustom}
+                cadOffered={cadOffered}
+                cadChose={cadChose}
               />
             ))}
 

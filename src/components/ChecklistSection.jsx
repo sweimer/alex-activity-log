@@ -1,6 +1,6 @@
 import React from 'react'
 
-function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom }) {
+function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose }) {
   return item
     .replace('__OUTFIT__', outfitToday || 'her outfit today')
     .replace('__KIEARRA_ARRIVED__', kiearraArrived || '___')
@@ -9,9 +9,11 @@ function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kie
     .replace('__MIDDAY_CUSTOM__', middayCustom || '___')
     .replace('__AFTER_LUNCH_CUSTOM__', afterLunchCustom || '___')
     .replace('__EVENING_CUSTOM__', eveningCustom || '___')
+    .replace(/__CAD_OFFERED__/g, cadOffered || '___')
+    .replace(/__CAD_CHOSE__/g, cadChose || '___')
 }
 
-export default function ChecklistSection({ section, checkedItems, onToggle, note, onNoteChange, outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom }) {
+export default function ChecklistSection({ section, checkedItems, onToggle, note, onNoteChange, outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose }) {
   const selectedCount = checkedItems ? checkedItems.size : 0
   const hasSelections = selectedCount > 0
 
@@ -33,7 +35,7 @@ export default function ChecklistSection({ section, checkedItems, onToggle, note
                 onChange={() => onToggle(section.id, item)}
                 className="checklist-checkbox"
               />
-              <span className="item-text">{resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom })}</span>
+              <span className="item-text">{resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose })}</span>
             </label>
           )
         })}

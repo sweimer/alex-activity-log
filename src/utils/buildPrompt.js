@@ -3,7 +3,7 @@ import { TAG_CONFIG } from '../constants/tags.js'
 /**
  * Assembles the user prompt string sent to Claude from all form state.
  */
-function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom }) {
+function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose }) {
   return item
     .replace('__OUTFIT__', outfitToday || 'her outfit today')
     .replace('__KIEARRA_ARRIVED__', kiearraArrived || '')
@@ -12,6 +12,8 @@ function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kie
     .replace('__MIDDAY_CUSTOM__', middayCustom || '')
     .replace('__AFTER_LUNCH_CUSTOM__', afterLunchCustom || '')
     .replace('__EVENING_CUSTOM__', eveningCustom || '')
+    .replace(/__CAD_OFFERED__/g, cadOffered || '')
+    .replace(/__CAD_CHOSE__/g, cadChose || '')
 }
 
 export function buildPrompt({
@@ -26,6 +28,8 @@ export function buildPrompt({
   outfitToday,
   breakfastOffered,
   breakfastChose,
+  cadOffered,
+  cadChose,
   vanArrived,
   vanReturned,
   kiearraArrived,
@@ -99,7 +103,7 @@ export function buildPrompt({
       if (!items || items.size === 0) continue
       lines.push(`[${sectionId.toUpperCase()}]`)
       for (const item of items) {
-        lines.push(`- ${resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom })}`)
+        lines.push(`- ${resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose })}`)
       }
       if (sectionNotes[sectionId]) {
         lines.push(`  NOTE: ${sectionNotes[sectionId]}`)

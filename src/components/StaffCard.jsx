@@ -81,7 +81,7 @@ export default function StaffCard({
               className="text-input"
               value={sponsorName}
               onChange={e => setSponsorName(e.target.value)}
-              placeholder="e.g. Scott"
+              placeholder="e.g. Scott Weimer"
             />
           </div>
         )}
@@ -92,7 +92,7 @@ export default function StaffCard({
               className="text-input"
               value={reliefName}
               onChange={e => setReliefName(e.target.value)}
-              placeholder="e.g. Heather"
+              placeholder="e.g. Heather Weimer"
             />
           </div>
         )}
