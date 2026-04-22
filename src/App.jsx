@@ -239,7 +239,7 @@ function MainApp() {
       <header className="app-header">
         <div className="header-inner">
           <div>
-            <div className="header-title">Alex's Log</div>
+            <div className="header-title">Alex's Daily Log</div>
             <div className="header-subtitle">Daily Activity Log</div>
           </div>
           <div className="header-auth">
