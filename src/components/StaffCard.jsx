@@ -3,11 +3,10 @@ import React from 'react'
 export default function StaffCard({
   dateLabel,
   selectedISO, setSelectedISO,
-  dayType, setDayType,
   staffMode, setStaffMode,
   sponsorName, setSponsorName,
   reliefName, setReliefName,
-  todayRole, isOverridden, initRotation, toggleOverride, rotation,
+  todayRole, isOverridden, toggleOverride,
 }) {
   return (
     <div className="card">
@@ -23,29 +22,6 @@ export default function StaffCard({
             onChange={e => setSelectedISO(e.target.value)}
           />
           <div className="date-display" style={{ marginTop: '6px', fontSize: '0.85rem', color: '#666' }}>{dateLabel}</div>
-        </div>
-      </div>
-
-      {/* Day Type */}
-      <div className="field-row">
-        <div className="field">
-          <label className="field-label">Day Type</label>
-          <div className="pill-group">
-            <button
-              type="button"
-              className={`pill ${dayType === 'routine' ? 'pill-active' : ''}`}
-              onClick={() => setDayType('routine')}
-            >
-              ✦ Routine Day
-            </button>
-            <button
-              type="button"
-              className={`pill ${dayType === 'nonroutine' ? 'pill-active' : ''}`}
-              onClick={() => setDayType('nonroutine')}
-            >
-              ✈ Non-Routine Day
-            </button>
-          </div>
         </div>
       </div>
 
@@ -98,27 +74,17 @@ export default function StaffCard({
         )}
       </div>
 
-      {/* Signature rotation */}
+      {/* Signature */}
       <div className="rotation-block">
-        {!rotation ? (
-          <div>
-            <p className="rotation-setup-label">To set up signature rotation — who signs today?</p>
-            <div className="pill-group">
-              <button type="button" className="pill" onClick={() => initRotation('Sponsor')}>Sponsor</button>
-              <button type="button" className="pill" onClick={() => initRotation('Relief')}>Relief</button>
-            </div>
-          </div>
-        ) : (
-          <div className="rotation-display">
-            <span className="rotation-label">
-              Today's signature: <strong>{todayRole}</strong>
-              {isOverridden && <span className="override-badge"> (overridden)</span>}
-            </span>
-            <button type="button" className="override-btn" onClick={toggleOverride}>
-              {isOverridden ? 'Restore rotation' : 'Override for today'}
-            </button>
-          </div>
-        )}
+        <div className="rotation-display">
+          <span className="rotation-label">
+            Today's signature: <strong>{todayRole}</strong>
+            {isOverridden && <span className="override-badge"> (overridden)</span>}
+          </span>
+          <button type="button" className="override-btn" onClick={toggleOverride}>
+            {isOverridden ? 'Restore' : 'Override'}
+          </button>
+        </div>
       </div>
     </div>
   )

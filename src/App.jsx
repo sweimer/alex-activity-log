@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import LegacyActivityForm from './legacy/LegacyActivityForm.jsx'
-import LegacyResultsPage from './legacy/LegacyResultsPage.jsx'
 import { useRotation } from './hooks/useRotation.js'
 import { useGoogleDocs } from './hooks/useGoogleDocs.js'
 import { CHECKLIST_SECTIONS } from './constants/sections.js'
 import { SYSTEM_PROMPT } from './constants/prompts.js'
 import { buildPrompt } from './utils/buildPrompt.js'
 import StaffCard from './components/StaffCard.jsx'
-import DayDetailsCard from './components/DayDetailsCard.jsx'
 import TagsCard from './components/TagsCard.jsx'
 import ChecklistSection from './components/ChecklistSection.jsx'
 import OutputPanel from './components/OutputPanel.jsx'
@@ -36,7 +33,6 @@ function MainApp() {
   const dateLabel = isoToLabel(selectedISO)
 
   // Staff
-  const [dayType, setDayType] = useState('routine')
   const [staffMode, setStaffMode] = useState('both')
   const [sponsorName, setSponsorName] = useState('Heather Weimer')
   const [reliefName, setReliefName] = useState('Scott Weimer')
@@ -47,11 +43,11 @@ function MainApp() {
   useEffect(() => {
     const [y, mo, d] = selectedISO.split('-').map(Number)
     const dow = new Date(y, mo - 1, d).getDay()
-    setStaffMode([4, 5, 6].includes(dow) ? 'relief' : 'sponsor')
+    setStaffMode('both')
   }, [selectedISO])
 
   // Rotation
-  const { rotation, todayRole, isOverridden, initRotation, toggleOverride } = useRotation()
+  const { todayRole, isOverridden, toggleOverride } = useRotation(selectedISO)
 
   // Day details
   const [wakeTime, setWakeTime] = useState('')
@@ -72,9 +68,6 @@ function MainApp() {
   // Tags
   const [selectedTags, setSelectedTags] = useState([])
   const [tagInputs, setTagInputs] = useState({})
-
-  // Non-routine
-  const [nonRoutineText, setNonRoutineText] = useState('')
 
   // Checklist
   const [checkedItems, setCheckedItems] = useState({}) // { sectionId: Set<string> }
@@ -128,9 +121,7 @@ function MainApp() {
   }
 
   // Can we generate?
-  const canGenerate = dayType === 'nonroutine'
-    ? nonRoutineText.trim().length > 0
-    : Object.values(checkedItems).some(s => s && s.size > 0)
+  const canGenerate = Object.values(checkedItems).some(s => s && s.size > 0)
 
   async function handleGenerate() {
     setGenerating(true)
@@ -160,8 +151,6 @@ function MainApp() {
         middayCustom,
         afterLunchCustom,
         eveningCustom,
-        dayType,
-        nonRoutineText,
         checkedItems,
         sectionNotes,
         additionalNotes,
@@ -195,8 +184,7 @@ function MainApp() {
   }
 
   function handleClear() {
-    setDayType('routine')
-    setStaffMode('sponsor')
+    setStaffMode('both')
     setWakeTime('')
     setOutfitToday('')
     setBreakfastOffered('')
@@ -213,7 +201,6 @@ function MainApp() {
     setEveningCustom('')
     setSelectedTags([])
     setTagInputs({})
-    setNonRoutineText('')
     setCheckedItems({})
     setSectionNotes({})
     setAdditionalNotes('')
@@ -261,33 +248,12 @@ function MainApp() {
         <StaffCard
           dateLabel={dateLabel}
           selectedISO={selectedISO} setSelectedISO={setSelectedISO}
-          dayType={dayType} setDayType={setDayType}
           staffMode={staffMode} setStaffMode={setStaffMode}
           sponsorName={sponsorName} setSponsorName={setSponsorName}
           reliefName={reliefName} setReliefName={setReliefName}
           todayRole={todayRole}
           isOverridden={isOverridden}
-          initRotation={initRotation}
           toggleOverride={toggleOverride}
-          rotation={rotation}
-        />
-
-        <DayDetailsCard
-          dayOfWeek={dayOfWeek}
-          wakeTime={wakeTime} setWakeTime={setWakeTime}
-          outfitToday={outfitToday} setOutfitToday={setOutfitToday}
-          breakfastOffered={breakfastOffered} setBreakfastOffered={setBreakfastOffered}
-          breakfastChose={breakfastChose} setBreakfastChose={setBreakfastChose}
-          cadOffered={cadOffered} setCadOffered={setCadOffered}
-          cadChose={cadChose} setCadChose={setCadChose}
-          vanArrived={vanArrived} setVanArrived={setVanArrived}
-          vanReturned={vanReturned} setVanReturned={setVanReturned}
-          kiearraArrived={kiearraArrived} setKiearraArrived={setKiearraArrived}
-          kiearraActivities={kiearraActivities} setKiearraActivities={setKiearraActivities}
-          kiearraReturned={kiearraReturned} setKiearraReturned={setKiearraReturned}
-          middayCustom={middayCustom} setMiddayCustom={setMiddayCustom}
-          afterLunchCustom={afterLunchCustom} setAfterLunchCustom={setAfterLunchCustom}
-          eveningCustom={eveningCustom} setEveningCustom={setEveningCustom}
         />
 
         <TagsCard
@@ -296,59 +262,69 @@ function MainApp() {
           tagInputs={tagInputs} setTagInputs={setTagInputs}
         />
 
-        {/* Non-routine panel */}
-        {dayType === 'nonroutine' && (
-          <div className="card">
-            <h2 className="card-title">Describe Alex's Day</h2>
-            <p className="card-caption">Write as much or as little as you know — where she went, who was there, how she did. Claude will shape it into a proper log entry.</p>
+        {/* Routine checklist */}
+        <div className="card">
+          <h2 className="card-title">Routine Checklist</h2>
+
+          {visibleSections.map(section => (
+            <ChecklistSection
+              key={section.id}
+              section={section}
+              checkedItems={checkedItems[section.id]}
+              onToggle={toggleItem}
+              note={sectionNotes[section.id]}
+              onNoteChange={setNote}
+              wakeTime={wakeTime}
+              setWakeTime={setWakeTime}
+              outfitToday={outfitToday}
+              setOutfitToday={setOutfitToday}
+              breakfastOffered={breakfastOffered}
+              setBreakfastOffered={setBreakfastOffered}
+              breakfastChose={breakfastChose}
+              setBreakfastChose={setBreakfastChose}
+              vanArrived={vanArrived}
+              setVanArrived={setVanArrived}
+              vanReturned={vanReturned}
+              setVanReturned={setVanReturned}
+              kiearraArrived={kiearraArrived}
+              setKiearraArrived={setKiearraArrived}
+              kiearraActivities={kiearraActivities}
+              setKiearraActivities={setKiearraActivities}
+              kiearraReturned={kiearraReturned}
+              setKiearraReturned={setKiearraReturned}
+              middayCustom={middayCustom}
+              setMiddayCustom={setMiddayCustom}
+              afterLunchCustom={afterLunchCustom}
+              setAfterLunchCustom={setAfterLunchCustom}
+              eveningCustom={eveningCustom}
+              setEveningCustom={setEveningCustom}
+              cadOffered={cadOffered}
+              setCadOffered={setCadOffered}
+              cadChose={cadChose}
+              setCadChose={setCadChose}
+              kiearraArrived={kiearraArrived}
+              kiearraActivities={kiearraActivities}
+              kiearraReturned={kiearraReturned}
+              middayCustom={middayCustom}
+              afterLunchCustom={afterLunchCustom}
+              eveningCustom={eveningCustom}
+              cadOffered={cadOffered}
+              cadChose={cadChose}
+            />
+          ))}
+
+          <div className="field" style={{ marginTop: '20px' }}>
+            <label className="field-label">Additional Notes</label>
+            <p className="field-caption">Weather, mood, a small detail that colored the day</p>
             <textarea
               className="custom-textarea"
-              rows={8}
-              placeholder="e.g. Alex traveled to Philadelphia with her family to visit her aunt Carol. They drove up Friday morning and stopped for lunch on the way. Alex did well in the car and was excited to see Carol..."
-              value={nonRoutineText}
-              onChange={e => setNonRoutineText(e.target.value)}
+              rows={3}
+              placeholder="e.g. It was a beautiful day so Sponsor prepared breakfast on the deck..."
+              value={additionalNotes}
+              onChange={e => setAdditionalNotes(e.target.value)}
             />
           </div>
-        )}
-
-        {/* Routine checklist */}
-        {dayType === 'routine' && (
-          <div className="card">
-            <h2 className="card-title">Routine Checklist</h2>
-
-            {visibleSections.map(section => (
-              <ChecklistSection
-                key={section.id}
-                section={section}
-                checkedItems={checkedItems[section.id]}
-                onToggle={toggleItem}
-                note={sectionNotes[section.id]}
-                onNoteChange={setNote}
-                outfitToday={outfitToday}
-                kiearraArrived={kiearraArrived}
-                kiearraActivities={kiearraActivities}
-                kiearraReturned={kiearraReturned}
-                middayCustom={middayCustom}
-                afterLunchCustom={afterLunchCustom}
-                eveningCustom={eveningCustom}
-                cadOffered={cadOffered}
-                cadChose={cadChose}
-              />
-            ))}
-
-            <div className="field" style={{ marginTop: '20px' }}>
-              <label className="field-label">Additional Notes</label>
-              <p className="field-caption">Weather, mood, a small detail that colored the day</p>
-              <textarea
-                className="custom-textarea"
-                rows={3}
-                placeholder="e.g. It was a beautiful day so Sponsor prepared breakfast on the deck..."
-                value={additionalNotes}
-                onChange={e => setAdditionalNotes(e.target.value)}
-              />
-            </div>
-          </div>
-        )}
+        </div>
 
         {/* Generate button */}
         <div className="generate-row">
@@ -385,8 +361,6 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainApp />} />
-        <Route path="/legacy" element={<LegacyActivityForm />} />
-        <Route path="/legacy/results" element={<LegacyResultsPage />} />
       </Routes>
     </BrowserRouter>
   )

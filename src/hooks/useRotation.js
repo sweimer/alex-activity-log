@@ -1,53 +1,22 @@
 import { useState } from 'react'
-import { getRoleForDate, todayISO } from '../utils/rotation.js'
 
-const STORAGE_KEY = 'alexLogRotation'
+// Sun(0)–Wed(3) → Sponsor, Thu(4)–Sat(6) → Relief
+function roleForISO(iso) {
+  const [y, m, d] = iso.split('-').map(Number)
+  const dow = new Date(y, m - 1, d).getDay()
+  return dow <= 3 ? 'Sponsor' : 'Relief'
+}
 
-export function useRotation() {
-  const [rotation, setRotation] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      return stored ? JSON.parse(stored) : null
-    } catch {
-      return null
-    }
-  })
-
+export function useRotation(selectedISO) {
   const [override, setOverride] = useState(null) // "Sponsor" | "Relief" | null
 
-  function initRotation(startRole) {
-    const data = {
-      startDate: todayISO(),
-      startRole,
-      sponsorDays: 4,
-      reliefDays: 3,
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    setRotation(data)
-    setOverride(null)
-  }
-
-  function toggleOverride() {
-    const base = getBaseRole()
-    setOverride(prev => {
-      if (prev !== null) return null // clear override
-      return base === 'Sponsor' ? 'Relief' : 'Sponsor'
-    })
-  }
-
-  function getBaseRole(date = todayISO()) {
-    if (!rotation) return null
-    return getRoleForDate(
-      rotation.startDate,
-      rotation.startRole,
-      rotation.sponsorDays,
-      rotation.reliefDays,
-      date
-    )
-  }
-
-  const todayRole = override ?? getBaseRole()
+  const baseRole = roleForISO(selectedISO)
+  const todayRole = override ?? baseRole
   const isOverridden = override !== null
 
-  return { rotation, todayRole, isOverridden, initRotation, toggleOverride }
+  function toggleOverride() {
+    setOverride(prev => (prev !== null ? null : baseRole === 'Sponsor' ? 'Relief' : 'Sponsor'))
+  }
+
+  return { todayRole, isOverridden, toggleOverride }
 }

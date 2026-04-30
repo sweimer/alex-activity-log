@@ -38,8 +38,6 @@ export function buildPrompt({
   middayCustom,
   afterLunchCustom,
   eveningCustom,
-  dayType,
-  nonRoutineText,
   checkedItems,   // { sectionId: Set<itemText> }
   sectionNotes,   // { sectionId: string }
   additionalNotes,
@@ -78,47 +76,41 @@ export function buildPrompt({
 
   lines.push('')
 
-  if (dayType === 'routine') {
-    // Day details
-    lines.push('[DAY DETAILS]')
-    if (wakeTime) lines.push(`Alex woke at: ${wakeTime}`)
-    if (breakfastOffered) lines.push(`Breakfast choices offered: ${breakfastOffered}`)
-    if (breakfastChose) lines.push(`Alex chose: ${breakfastChose}`)
-    if (vanArrived) lines.push(`Diversity van arrived: ${vanArrived}`)
-    if (vanReturned) lines.push(`Diversity van returned: ${vanReturned}`)
-    if (kiearraArrived) lines.push(`Kiearra arrived: ${kiearraArrived}`)
-    if (kiearraReturned) lines.push(`Kiearra returned: ${kiearraReturned}`)
+  // Day details
+  lines.push('[DAY DETAILS]')
+  if (wakeTime) lines.push(`Alex woke at: ${wakeTime}`)
+  if (breakfastOffered) lines.push(`Breakfast choices offered: ${breakfastOffered}`)
+  if (breakfastChose) lines.push(`Alex chose: ${breakfastChose}`)
+  if (vanArrived) lines.push(`Diversity van arrived: ${vanArrived}`)
+  if (vanReturned) lines.push(`Diversity van returned: ${vanReturned}`)
+  if (kiearraArrived) lines.push(`Kiearra arrived: ${kiearraArrived}`)
+  if (kiearraReturned) lines.push(`Kiearra returned: ${kiearraReturned}`)
+  lines.push('')
+
+  // Tag details
+  const tagDetailLines = buildTagDetails({ selectedTags, tagInputs, breakfastOffered, breakfastChose })
+  if (tagDetailLines.length) {
+    lines.push('[TAG DETAILS]')
+    lines.push(...tagDetailLines)
     lines.push('')
+  }
 
-    // Tag details
-    const tagDetailLines = buildTagDetails({ selectedTags, tagInputs, breakfastOffered, breakfastChose })
-    if (tagDetailLines.length) {
-      lines.push('[TAG DETAILS]')
-      lines.push(...tagDetailLines)
-      lines.push('')
+  // Checklist sections
+  for (const [sectionId, items] of Object.entries(checkedItems)) {
+    if (!items || items.size === 0) continue
+    lines.push(`[${sectionId.toUpperCase()}]`)
+    for (const item of items) {
+      lines.push(`- ${resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose })}`)
     }
+    if (sectionNotes[sectionId]) {
+      lines.push(`  NOTE: ${sectionNotes[sectionId]}`)
+    }
+    lines.push('')
+  }
 
-    // Checklist sections
-    for (const [sectionId, items] of Object.entries(checkedItems)) {
-      if (!items || items.size === 0) continue
-      lines.push(`[${sectionId.toUpperCase()}]`)
-      for (const item of items) {
-        lines.push(`- ${resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose })}`)
-      }
-      if (sectionNotes[sectionId]) {
-        lines.push(`  NOTE: ${sectionNotes[sectionId]}`)
-      }
-      lines.push('')
-    }
-
-    if (additionalNotes) {
-      lines.push('[ADDITIONAL NOTES]')
-      lines.push(additionalNotes)
-    }
-  } else {
-    // Non-routine
-    lines.push('[NON-ROUTINE DAY]')
-    lines.push(nonRoutineText)
+  if (additionalNotes) {
+    lines.push('[ADDITIONAL NOTES]')
+    lines.push(additionalNotes)
   }
 
   return lines.join('\n')

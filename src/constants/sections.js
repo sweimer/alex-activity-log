@@ -15,9 +15,9 @@ export const CHECKLIST_SECTIONS = [
     label: 'MORNING',
     items: [
       'Sponsor/Relief helped Alex get dressed and brush her teeth and hair.',
-      'Sponsor/Relief helped Alex brush her teeth and hair.',
       'Alex picked __OUTFIT__ from the outfits hanging outside her dresser.',
       'Sponsor/Relief helped Alex pick out an outfit from the ones hanging outside her dresser.',
+      'Sponsor/Relief helped Alex brush her teeth and hair.',
       'Alex put her shoes on the wrong feet and Sponsor/Relief helped her put them on right.',
       'Alex put her dress on backwards and Sponsor/Relief helped her put it on right.',
       'Alex cleaned her room and organized her shelves. Sponsor/Relief checked on Alex until she completed her chores.',
