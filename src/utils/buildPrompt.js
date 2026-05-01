@@ -130,10 +130,6 @@ function buildTagDetails({ selectedTags, tagInputs, breakfastOffered, breakfastC
       lines.push(`NEW SKILL: ${input.text}`)
     } else if (id === 'BEHAVIOR_ISSUE' && input?.text) {
       lines.push(`BEHAVIOR ISSUE: ${input.text}`)
-    } else if (id === 'OUTING' && input?.text) {
-      lines.push(`OUTING: ${input.text}`)
-    } else if (id === 'INTERACTION' && input?.text) {
-      lines.push(`INTERACTION: ${input.text}`)
     }
   }
   return lines

@@ -74,6 +74,36 @@ function MainApp() {
   const [sectionNotes, setSectionNotes] = useState({}) // { sectionId: string }
   const [additionalNotes, setAdditionalNotes] = useState('')
 
+  // Auto-check checklist items when their corresponding input fields are filled
+  const CAD_ITEM = 'Sponsor/Relief asked Alex if she wanted to work on a __CAD_OFFERED__ craft. Alex said yes and chose __CAD_CHOSE__. Sponsor/Relief set Alex up with __CAD_CHOSE__ in the family room and checked in on her as she worked.'
+  useEffect(() => {
+    const mappings = [
+      { sectionId: 'morning',     item: 'Alex picked __OUTFIT__ from the outfits hanging outside her dresser.',                         active: !!outfitToday.trim() },
+      { sectionId: 'breakfast',   item: 'Sponsor/Relief prepared breakfast, monitored Alex as she ate and administered AM meds.',        active: !!(breakfastOffered.trim() || breakfastChose.trim()) },
+      { sectionId: 'diversityVan', item: 'Van arrived to take Alex to Diversity.',                                                       active: !!vanArrived.trim() },
+      { sectionId: 'diversityVan', item: 'Van returned with Alex.',                                                                      active: !!vanReturned.trim() },
+      { sectionId: 'kiearra',     item: "Kiearra arrived to take Alex out for a girl's day.",                                            active: !!kiearraArrived.trim() },
+      { sectionId: 'kiearra',     item: '__KIEARRA_ACTIVITIES__',                                                                        active: !!kiearraActivities.trim() },
+      { sectionId: 'kiearra',     item: 'Kiearra returned Alex home.',                                                                   active: !!kiearraReturned.trim() },
+      { sectionId: 'midday',      item: '__MIDDAY_CUSTOM__',                                                                             active: !!middayCustom.trim() },
+      { sectionId: 'midday',      item: CAD_ITEM,                                                                                        active: !!(cadOffered.trim() || cadChose.trim()) },
+      { sectionId: 'afterLunch',  item: '__AFTER_LUNCH_CUSTOM__',                                                                        active: !!afterLunchCustom.trim() },
+      { sectionId: 'afterLunch',  item: CAD_ITEM,                                                                                        active: !!(cadOffered.trim() || cadChose.trim()) },
+      { sectionId: 'evening',     item: '__EVENING_CUSTOM__',                                                                            active: !!eveningCustom.trim() },
+      { sectionId: 'evening',     item: CAD_ITEM,                                                                                        active: !!(cadOffered.trim() || cadChose.trim()) },
+    ]
+    setCheckedItems(prev => {
+      const next = Object.fromEntries(Object.entries(prev).map(([k, v]) => [k, new Set(v)]))
+      for (const { sectionId, item, active } of mappings) {
+        if (active) {
+          if (!next[sectionId]) next[sectionId] = new Set()
+          next[sectionId].add(item)
+        }
+      }
+      return next
+    })
+  }, [outfitToday, breakfastOffered, breakfastChose, vanArrived, vanReturned, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose])
+
   // Generation
   const [generating, setGenerating] = useState(false)
   const [entry, setEntry] = useState('')

@@ -8,6 +8,4 @@ export const TAG_CONFIG = [
   { id: 'NEW_SKILL',            label: 'NEW SKILL',                expectedDays: [],           hasCustomInput: true },
   { id: 'FIRE_DRILL',           label: 'FIRE DRILL',               expectedDays: [],           hasCustomInput: false },
   { id: 'BEHAVIOR_ISSUE',       label: 'BEHAVIOR ISSUE',           expectedDays: [],           hasCustomInput: true },
-  { id: 'OUTING',               label: 'OUTING',                   expectedDays: [],           hasCustomInput: true },
-  { id: 'INTERACTION',          label: 'INTERACTION',              expectedDays: [],           hasCustomInput: true },
 ]
