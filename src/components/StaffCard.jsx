@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function StaffCard({
   dateLabel,
@@ -10,6 +10,8 @@ export default function StaffCard({
   nonRoutineDay, setNonRoutineDay,
   additionalPeople, setAdditionalPeople,
 }) {
+  const [showPeople, setShowPeople] = useState(false)
+
   function togglePerson(key) {
     setAdditionalPeople(prev => ({ ...prev, [key]: !prev[key] }))
   }
@@ -105,29 +107,38 @@ export default function StaffCard({
       {/* Additional people — only on non-routine days */}
       {nonRoutineDay && (
         <div className="field">
-          <label className="field-label">Additional People Present</label>
-          <div className="additional-people">
-            {[
-              { key: 'grandmaBetty', label: 'Grandma Betty' },
-              { key: 'grandpaDave',  label: 'Grandpa Dave' },
-              { key: 'grandpaBob',   label: 'Grandpa Bob' },
-            ].map(({ key, label }) => (
-              <label key={key} className="person-checkbox">
-                <input
-                  type="checkbox"
-                  checked={additionalPeople[key]}
-                  onChange={() => togglePerson(key)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
-            <input
-              className="text-input"
-              placeholder="Other (e.g. Aunt Sue)"
-              value={additionalPeople.other}
-              onChange={e => setAdditionalPeople(prev => ({ ...prev, other: e.target.value }))}
-            />
-          </div>
+          <button
+            type="button"
+            className="toggle-label-btn"
+            onClick={() => setShowPeople(p => !p)}
+          >
+            <span className="field-label">Additional People Present</span>
+            <span className="toggle-caret">{showPeople ? '▲' : '▼'}</span>
+          </button>
+          {showPeople && (
+            <div className="additional-people">
+              {[
+                { key: 'grandmaBetty', label: 'Grandma Betty' },
+                { key: 'grandpaDave',  label: 'Grandpa Dave' },
+                { key: 'grandpaBob',   label: 'Grandpa Bob' },
+              ].map(({ key, label }) => (
+                <label key={key} className="person-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={additionalPeople[key]}
+                    onChange={() => togglePerson(key)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+              <input
+                className="text-input"
+                placeholder="Other (e.g. Aunt Sue)"
+                value={additionalPeople.other}
+                onChange={e => setAdditionalPeople(prev => ({ ...prev, other: e.target.value }))}
+              />
+            </div>
+          )}
         </div>
       )}
 
