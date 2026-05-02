@@ -273,6 +273,12 @@ function MainApp() {
             <div className="header-subtitle">Daily Activity Log</div>
           </div>
           <div className="header-auth">
+            <a
+              className="header-gdrive-btn"
+              href="https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT"
+              target="_blank"
+              rel="noreferrer"
+            >GDrive</a>
             <button className="header-clear-btn" onClick={handleClear}>Clear</button>
             {googleUser ? (
               <div className="user-info">

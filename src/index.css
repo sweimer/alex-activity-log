@@ -102,6 +102,7 @@ body {
 }
 .sign-out-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+.header-gdrive-btn,
 .header-clear-btn {
   margin-right: 10px;
   background: none;
@@ -112,7 +113,9 @@ body {
   font-family: var(--font);
   font-size: 0.85rem;
   cursor: pointer;
+  text-decoration: none;
 }
+.header-gdrive-btn:hover,
 .header-clear-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ============================================================
