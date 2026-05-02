@@ -2,16 +2,16 @@
    VARIABLES & RESET
    ============================================================ */
 :root {
-  --bg:           #fdf8f3;
-  --dark:         #2c1810;
-  --accent:       #c4834a;
-  --accent-dark:  #a06030;
-  --muted:        #8a6a55;
-  --caption:      #a08070;
-  --success:      #7a9a6a;
-  --purple:       #9b6ea0;
-  --border:       #e8d8c8;
-  --input-border: #dcc9b8;
+  --bg:           #fdf5f7;
+  --dark:         #5c1a35;
+  --accent:       #c4507a;
+  --accent-dark:  #9e3060;
+  --muted:        #8a5570;
+  --caption:      #a07585;
+  --success:      #7a6a9a;
+  --purple:       #9b4fb0;
+  --border:       #e8d0da;
+  --input-border: #d8c0cc;
   --white:        #ffffff;
   --card-radius:  8px;
   --font:         Georgia, 'Times New Roman', serif;
@@ -102,6 +102,19 @@ body {
 }
 .sign-out-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+.header-clear-btn {
+  margin-right: 10px;
+  background: none;
+  border: 1px solid #c8a88a;
+  color: #c8a88a;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.header-clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 /* ============================================================
    CARDS
    ============================================================ */
@@ -175,6 +188,7 @@ body {
   transition: border-color 0.15s;
 }
 .text-input:focus { outline: none; border-color: var(--accent); }
+input[type="date"]::-webkit-calendar-picker-indicator { margin-right: 20px; }
 
 .date-display {
   font-size: 1rem;
@@ -420,6 +434,29 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.additional-people {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.person-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.person-checkbox input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .checklist-item {

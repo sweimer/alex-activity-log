@@ -7,7 +7,12 @@ export default function StaffCard({
   sponsorName, setSponsorName,
   reliefName, setReliefName,
   todayRole, isOverridden, toggleOverride,
+  nonRoutineDay, setNonRoutineDay,
+  additionalPeople, setAdditionalPeople,
 }) {
+  function togglePerson(key) {
+    setAdditionalPeople(prev => ({ ...prev, [key]: !prev[key] }))
+  }
   return (
     <div className="card">
       <h2 className="card-title">Staff &amp; Date</h2>
@@ -73,6 +78,58 @@ export default function StaffCard({
           </div>
         )}
       </div>
+
+      {/* Non-routine day toggle */}
+      <div className="field-row">
+        <div className="field">
+          <label className="field-label">Input Method</label>
+          <div className="pill-group">
+            <button
+              type="button"
+              className={`pill ${!nonRoutineDay ? 'pill-active' : ''}`}
+              onClick={() => setNonRoutineDay(false)}
+            >
+              Checklist
+            </button>
+            <button
+              type="button"
+              className={`pill ${nonRoutineDay ? 'pill-active' : ''}`}
+              onClick={() => setNonRoutineDay(true)}
+            >
+              Bullet points
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Additional people — only on non-routine days */}
+      {nonRoutineDay && (
+        <div className="field">
+          <label className="field-label">Additional People Present</label>
+          <div className="additional-people">
+            {[
+              { key: 'grandmaBetty', label: 'Grandma Betty' },
+              { key: 'grandpaDave',  label: 'Grandpa Dave' },
+              { key: 'grandpaBob',   label: 'Grandpa Bob' },
+            ].map(({ key, label }) => (
+              <label key={key} className="person-checkbox">
+                <input
+                  type="checkbox"
+                  checked={additionalPeople[key]}
+                  onChange={() => togglePerson(key)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+            <input
+              className="text-input"
+              placeholder="Other (e.g. Aunt Sue)"
+              value={additionalPeople.other}
+              onChange={e => setAdditionalPeople(prev => ({ ...prev, other: e.target.value }))}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Signature */}
       <div className="rotation-block">

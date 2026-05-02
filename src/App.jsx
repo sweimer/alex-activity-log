@@ -63,6 +63,16 @@ function MainApp() {
   const [afterLunchCustom, setAfterLunchCustom] = useState('')
   const [eveningCustom, setEveningCustom] = useState('')
 
+  // Non-routine day
+  const [nonRoutineDay, setNonRoutineDay] = useState(true)
+  const [nonRoutineNotes, setNonRoutineNotes] = useState('- ')
+  const [additionalPeople, setAdditionalPeople] = useState({
+    grandmaBetty: false,
+    grandpaDave: false,
+    grandpaBob: false,
+    other: '',
+  })
+
   // Tags
   const [selectedTags, setSelectedTags] = useState([])
 
@@ -148,7 +158,9 @@ function MainApp() {
   }
 
   // Can we generate?
-  const canGenerate = Object.values(checkedItems).some(s => s && s.size > 0)
+  const canGenerate = nonRoutineDay
+    ? nonRoutineNotes.trim().length > 0
+    : Object.values(checkedItems).some(s => s && s.size > 0)
 
   async function handleGenerate() {
     setGenerating(true)
@@ -162,6 +174,9 @@ function MainApp() {
         sponsorName,
         reliefName,
         signature: getSignature(),
+        nonRoutineDay,
+        nonRoutineNotes,
+        additionalPeople,
         selectedTags,
         wakeTime,
         outfitToday,
@@ -211,6 +226,9 @@ function MainApp() {
 
   function handleClear() {
     setStaffMode('both')
+    setNonRoutineDay(true)
+    setNonRoutineNotes('- ')
+    setAdditionalPeople({ grandmaBetty: false, grandpaDave: false, grandpaBob: false, other: '' })
     setWakeTime('')
     setOutfitToday('')
     setBreakfastOffered('')
@@ -255,6 +273,7 @@ function MainApp() {
             <div className="header-subtitle">Daily Activity Log</div>
           </div>
           <div className="header-auth">
+            <button className="header-clear-btn" onClick={handleClear}>Clear</button>
             {googleUser ? (
               <div className="user-info">
                 <span className="user-name">{googleUser.name}</span>
@@ -279,6 +298,8 @@ function MainApp() {
           todayRole={todayRole}
           isOverridden={isOverridden}
           toggleOverride={toggleOverride}
+          nonRoutineDay={nonRoutineDay} setNonRoutineDay={setNonRoutineDay}
+          additionalPeople={additionalPeople} setAdditionalPeople={setAdditionalPeople}
         />
 
         <TagsCard
@@ -286,10 +307,42 @@ function MainApp() {
           selectedTags={selectedTags} setSelectedTags={setSelectedTags}
         />
 
-        {/* Routine checklist */}
+        {/* Checklist or freeform notes */}
         <div className="card">
-          <h2 className="card-title">Routine Checklist</h2>
+          <h2 className="card-title">{nonRoutineDay ? 'Day Notes' : 'Routine Checklist'}</h2>
 
+          {nonRoutineDay ? (
+            <div className="field">
+              <p className="field-caption">Jot down bullet points of what happened today. The AI will turn them into a full log entry.</p>
+              <textarea
+                className="custom-textarea"
+                rows={10}
+                placeholder={"- Alex woke up around 8am\n- Grandma Betty made pancakes for breakfast\n- Alex and Grandpa Dave worked in the garden\n- ..."}
+                value={nonRoutineNotes}
+                onChange={e => setNonRoutineNotes(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    const el = e.target
+                    const { selectionStart, selectionEnd, value } = el
+                    const newValue = value.slice(0, selectionStart) + '\n- ' + value.slice(selectionEnd)
+                    setNonRoutineNotes(newValue)
+                    requestAnimationFrame(() => {
+                      el.selectionStart = el.selectionEnd = selectionStart + 3
+                      const totalLines = newValue.split('\n').length
+                      const cursorLine = newValue.slice(0, selectionStart + 3).split('\n').length
+                      const lineHeight = el.scrollHeight / totalLines
+                      const cursorBottom = cursorLine * lineHeight
+                      if (cursorBottom > el.scrollTop + el.clientHeight) {
+                        el.scrollTop = cursorBottom - el.clientHeight
+                      }
+                    })
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <>
           {visibleSections.map(section => (
             <ChecklistSection
               key={section.id}
@@ -340,6 +393,8 @@ function MainApp() {
               onChange={e => setAdditionalNotes(e.target.value)}
             />
           </div>
+            </>
+          )}
         </div>
 
         {/* Generate button */}

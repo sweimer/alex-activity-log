@@ -22,6 +22,9 @@ export function buildPrompt({
   sponsorName,
   reliefName,
   signature,
+  nonRoutineDay,
+  nonRoutineNotes,
+  additionalPeople,
   selectedTags,
   wakeTime,
   outfitToday,
@@ -56,6 +59,17 @@ export function buildPrompt({
 
   lines.push(`Signature: ${signature}`)
 
+  // Additional people (non-routine days)
+  const extraPeople = [
+    additionalPeople?.grandmaBetty && 'Grandma Betty',
+    additionalPeople?.grandpaDave  && 'Grandpa Dave',
+    additionalPeople?.grandpaBob   && 'Grandpa Bob',
+    additionalPeople?.other?.trim(),
+  ].filter(Boolean)
+  if (extraPeople.length) {
+    lines.push(`Additional people present: ${extraPeople.join(', ')}. Refer to them by name in the narrative when describing what they did.`)
+  }
+
   // Tags
   const tagLabels = selectedTags
     .map(id => {
@@ -66,6 +80,20 @@ export function buildPrompt({
   if (tagLabels.length) lines.push(`Tags: ${tagLabels.join(' ')}`)
 
   lines.push('')
+
+  // Non-routine day — freeform notes replace the checklist
+  if (nonRoutineDay) {
+    lines.push('[NON-ROUTINE DAY]')
+    lines.push('This was a non-routine day. Use the bullet points below to write the full log entry in the same format and voice as a routine day.')
+    lines.push('')
+    lines.push(nonRoutineNotes)
+    if (additionalNotes) {
+      lines.push('')
+      lines.push('[ADDITIONAL NOTES]')
+      lines.push(additionalNotes)
+    }
+    return lines.join('\n')
+  }
 
   // Day details
   lines.push('[DAY DETAILS]')

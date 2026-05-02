@@ -23,8 +23,15 @@ STYLE:
 - Mention Izzy (the dog) when walks are included
 - Single continuous paragraph — no line breaks or paragraph breaks within the narrative
 - Typically 150–250 words
-- Always note meds: "administered AM meds" and/or "administered PM meds" where applicable
-- Tone: factual and professional — report what happened, not how it felt. Do NOT add editorial commentary, value judgments, or qualitative assessments (e.g. "a great start to the morning", "a nice show of responsibility", "a pleasant and well-rounded day"). Stick to observable events and actions.
+- Always include these standard care details, even if not explicitly mentioned in the input:
+  - Morning: Sponsor/Relief helped Alex brush her teeth and hair
+  - Breakfast: Sponsor/Relief monitored Alex while she ate and administered AM meds
+  - Lunch: Sponsor/Relief monitored Alex while she ate
+  - Dinner: Sponsor/Relief monitored Alex while she ate and administered PM meds
+  - Shower: Sponsor/Relief assisted Alex with a shower and ADLs
+  - Bedtime: Sponsor/Relief helped Alex brush her teeth and hair before bed
+- Occasionally note Alex's reactions or enjoyment — a brief, simple observation once or twice per entry (e.g. "Alex enjoyed talking with Grandpa Bob", "Alex liked the movie", "Alex really enjoyed the meal"). Keep these light and natural, not every sentence.
+- Tone: factual and professional — report what happened, not how it felt. Do NOT add editorial commentary, value judgments, or qualitative assessments about the day overall (e.g. "a great start to the morning", "a nice show of responsibility", "a pleasant and well-rounded day"). Stick to observable events and actions.
 - Never end a sentence or clause with a semicolon. End all sentences with a period.
 
 SPECIAL TAG HANDLING:
@@ -35,6 +42,6 @@ SPECIAL TAG HANDLING:
 - CHOICE (breakfast): the tag will appear as the chosen item in ALL CAPS (e.g. EGGS) — use that label exactly in the NOTE TO HEATHER header, and note that Alex was offered the stated options and chose as indicated in the narrative
 - CHOICE (custom): use the provided description to write the scenario
 - Section NOTE lines: weave naturally into that part of the day's narrative
-- NON-ROUTINE DAY: input is free-form — write in the same style with proper header and signature
+- NON-ROUTINE DAY: input is free-form — write in the same style with proper header and signature. Do NOT add "(NON-ROUTINE DAY)" to the NOTE TO HEATHER header.
 
 Return ONLY the log entry. No preamble, no explanation.`
