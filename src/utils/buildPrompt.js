@@ -23,7 +23,6 @@ export function buildPrompt({
   reliefName,
   signature,
   selectedTags,
-  tagInputs,
   wakeTime,
   outfitToday,
   breakfastOffered,
@@ -57,20 +56,12 @@ export function buildPrompt({
 
   lines.push(`Signature: ${signature}`)
 
-  // Tags — breakfast CHOICE becomes (CHOSEN ITEM) and sorts first
-  const choiceInput = tagInputs['CHOICE']
-  const breakfastChoiceLabel = selectedTags.includes('CHOICE') && choiceInput?.mode === 'breakfast' && breakfastChose
-    ? breakfastChose.trim().toUpperCase()
-    : null
-
+  // Tags
   const tagLabels = selectedTags
     .map(id => {
-      if (id === 'CHOICE' && breakfastChoiceLabel) return { id, label: breakfastChoiceLabel, first: true }
       const t = TAG_CONFIG.find(t => t.id === id)
-      return { id, label: t ? t.label : id, first: false }
+      return `(${t ? t.label : id})`
     })
-    .sort((a, b) => (b.first ? 1 : 0) - (a.first ? 1 : 0))
-    .map(({ label }) => `(${label})`)
 
   if (tagLabels.length) lines.push(`Tags: ${tagLabels.join(' ')}`)
 
@@ -86,14 +77,6 @@ export function buildPrompt({
   if (kiearraArrived) lines.push(`Kiearra arrived: ${kiearraArrived}`)
   if (kiearraReturned) lines.push(`Kiearra returned: ${kiearraReturned}`)
   lines.push('')
-
-  // Tag details
-  const tagDetailLines = buildTagDetails({ selectedTags, tagInputs, breakfastOffered, breakfastChose })
-  if (tagDetailLines.length) {
-    lines.push('[TAG DETAILS]')
-    lines.push(...tagDetailLines)
-    lines.push('')
-  }
 
   // Checklist sections
   for (const [sectionId, items] of Object.entries(checkedItems)) {
@@ -116,21 +99,3 @@ export function buildPrompt({
   return lines.join('\n')
 }
 
-function buildTagDetails({ selectedTags, tagInputs, breakfastOffered, breakfastChose }) {
-  const lines = []
-  for (const id of selectedTags) {
-    const input = tagInputs[id]
-    if (id === 'CHOICE') {
-      if (input?.mode === 'breakfast') {
-        lines.push(`CHOICE: Alex was offered ${breakfastOffered || 'options'} and chose ${breakfastChose || 'one'}.`)
-      } else if (input?.text) {
-        lines.push(`CHOICE: ${input.text}`)
-      }
-    } else if (id === 'NEW_SKILL' && input?.text) {
-      lines.push(`NEW SKILL: ${input.text}`)
-    } else if (id === 'BEHAVIOR_ISSUE' && input?.text) {
-      lines.push(`BEHAVIOR ISSUE: ${input.text}`)
-    }
-  }
-  return lines
-}

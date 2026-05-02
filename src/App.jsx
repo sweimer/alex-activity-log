@@ -65,7 +65,6 @@ function MainApp() {
 
   // Tags
   const [selectedTags, setSelectedTags] = useState([])
-  const [tagInputs, setTagInputs] = useState({})
 
   // Checklist
   const [checkedItems, setCheckedItems] = useState({}) // { sectionId: Set<string> }
@@ -164,7 +163,6 @@ function MainApp() {
         reliefName,
         signature: getSignature(),
         selectedTags,
-        tagInputs,
         wakeTime,
         outfitToday,
         breakfastOffered,
@@ -228,7 +226,6 @@ function MainApp() {
     setAfterLunchCustom('')
     setEveningCustom('')
     setSelectedTags([])
-    setTagInputs({})
     setCheckedItems({})
     setSectionNotes({})
     setAdditionalNotes('')
