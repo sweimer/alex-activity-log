@@ -25,6 +25,7 @@ STYLE:
 - Typically 150–250 words
 - Always note meds: "administered AM meds" and/or "administered PM meds" where applicable
 - Tone: factual and professional — report what happened, not how it felt. Do NOT add editorial commentary, value judgments, or qualitative assessments (e.g. "a great start to the morning", "a nice show of responsibility", "a pleasant and well-rounded day"). Stick to observable events and actions.
+- Never end a sentence or clause with a semicolon. End all sentences with a period.
 
 SPECIAL TAG HANDLING:
 - BEHAVIOR ISSUE: write carefully and factually — what happened, how Alex responded, how it was managed. Reviewed by Heather.

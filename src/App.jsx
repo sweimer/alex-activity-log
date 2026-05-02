@@ -41,8 +41,6 @@ function MainApp() {
   // Thu (4), Fri (5), Sat (6) → Scott Weimer, Relief
   // Sun (0), Mon (1), Tue (2), Wed (3) → Heather Weimer, Sponsor
   useEffect(() => {
-    const [y, mo, d] = selectedISO.split('-').map(Number)
-    const dow = new Date(y, mo - 1, d).getDay()
     setStaffMode('both')
   }, [selectedISO])
 
@@ -289,7 +287,6 @@ function MainApp() {
         <TagsCard
           dayOfWeek={dayOfWeek}
           selectedTags={selectedTags} setSelectedTags={setSelectedTags}
-          tagInputs={tagInputs} setTagInputs={setTagInputs}
         />
 
         {/* Routine checklist */}
@@ -332,14 +329,6 @@ function MainApp() {
               setCadOffered={setCadOffered}
               cadChose={cadChose}
               setCadChose={setCadChose}
-              kiearraArrived={kiearraArrived}
-              kiearraActivities={kiearraActivities}
-              kiearraReturned={kiearraReturned}
-              middayCustom={middayCustom}
-              afterLunchCustom={afterLunchCustom}
-              eveningCustom={eveningCustom}
-              cadOffered={cadOffered}
-              cadChose={cadChose}
             />
           ))}
 
@@ -388,7 +377,7 @@ function MainApp() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/" element={<MainApp />} />
       </Routes>

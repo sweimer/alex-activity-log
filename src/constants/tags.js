@@ -4,8 +4,10 @@ export const TAG_CONFIG = [
   { id: 'CAD',                  label: 'CAD',                      expectedDays: [2, 4, 6],    hasCustomInput: false },
   { id: 'MEAL_PLAN',            label: 'MEAL PLAN and GROCERY SHOP', expectedDays: [0],         hasCustomInput: false },
   { id: 'SHOWER',               label: 'SHOWER',                   expectedDays: [0, 2, 4, 6], hasCustomInput: false },
-  { id: 'CHOICE',               label: 'CHOICE',                   expectedDays: [0,1,2,3,4,5,6], hasCustomInput: true },
-  { id: 'NEW_SKILL',            label: 'NEW SKILL',                expectedDays: [],           hasCustomInput: true },
+  { id: 'CHOICE',               label: 'CHOICE',                   expectedDays: [0,1,2,3,4,5,6], hasCustomInput: false },
+  { id: 'NEW_SKILL',            label: 'NEW SKILL',                expectedDays: [],           hasCustomInput: false },
   { id: 'FIRE_DRILL',           label: 'FIRE DRILL',               expectedDays: [],           hasCustomInput: false },
-  { id: 'BEHAVIOR_ISSUE',       label: 'BEHAVIOR ISSUE',           expectedDays: [],           hasCustomInput: true },
+  { id: 'BEHAVIOR_ISSUE',       label: 'BEHAVIOR ISSUE',           expectedDays: [],           hasCustomInput: false },
+  { id: 'OUTING',               label: 'OUTING',                   expectedDays: [],           hasCustomInput: false },
+  { id: 'INTERACTION',          label: 'INTERACTION',              expectedDays: [],           hasCustomInput: false },
 ]

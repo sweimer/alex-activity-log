@@ -55,7 +55,7 @@ export const CHECKLIST_SECTIONS = [
   },
   {
     id: 'midday',
-    label: 'MIDDAY',
+    label: 'AFTER BREAKFAST',
     items: [
       '__MIDDAY_CUSTOM__',
       'Sponsor/Relief and Alex took Izzy for a quick neighborhood walk.',
