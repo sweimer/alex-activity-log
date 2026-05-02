@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function OutputPanel({ entry, googleUser, saveStatus, onSave, onClear }) {
+export default function OutputPanel({ entry, onEntryChange, googleUser, saveStatus, onSave, onClear }) {
   const [copied, setCopied] = useState(false)
 
   function handleCopy() {
@@ -36,7 +36,12 @@ export default function OutputPanel({ entry, googleUser, saveStatus, onSave, onC
         </div>
       </div>
 
-      <div className="entry-text">{entry}</div>
+      <textarea
+        className="entry-text entry-editable"
+        value={entry}
+        onChange={e => onEntryChange(e.target.value)}
+        rows={12}
+      />
 
       {saveStatus && saveStatus !== 'saving' && saveStatus !== 'error' && (
         <div className="save-confirm">

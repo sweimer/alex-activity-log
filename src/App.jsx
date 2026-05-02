@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useRotation } from './hooks/useRotation.js'
 import { useGoogleDocs } from './hooks/useGoogleDocs.js'
 import { CHECKLIST_SECTIONS } from './constants/sections.js'
+import { TAG_CONFIG } from './constants/tags.js'
 import { SYSTEM_PROMPT } from './constants/prompts.js'
 import { buildPrompt } from './utils/buildPrompt.js'
 import StaffCard from './components/StaffCard.jsx'
@@ -111,12 +112,67 @@ function MainApp() {
     })
   }, [outfitToday, breakfastOffered, breakfastChose, vanArrived, vanReturned, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose])
 
+  // Tag suggestions
+  const [suggestedTags, setSuggestedTags] = useState([])
+  const [suggesting, setSuggesting] = useState(false)
+
+  async function handleSuggestTags() {
+    if (!nonRoutineNotes.trim() || nonRoutineNotes.trim() === '-') return
+    setSuggesting(true)
+    setSuggestedTags([])
+    try {
+      const tagList = TAG_CONFIG.map(t => t.id).join(', ')
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 100,
+          messages: [{
+            role: 'user',
+            content: `Given these daily activity notes, which of the following tags apply? Return only a JSON array of matching tag IDs, nothing else.\n\nAvailable tags: ${tagList}\n\nNotes:\n${nonRoutineNotes}`,
+          }],
+        }),
+      })
+      const data = await res.json()
+      const text = data.content?.[0]?.text ?? '[]'
+      const parsed = JSON.parse(text)
+      const valid = parsed.filter(id => TAG_CONFIG.some(t => t.id === id) && !selectedTags.includes(id))
+      setSuggestedTags(valid)
+    } catch (err) {
+      console.error('Tag suggestion error:', err)
+    } finally {
+      setSuggesting(false)
+    }
+  }
+
+  function acceptSuggestion(id) {
+    setSelectedTags(prev => [...prev, id])
+    setSuggestedTags(prev => prev.filter(t => t !== id))
+  }
+
+  function dismissSuggestion(id) {
+    setSuggestedTags(prev => prev.filter(t => t !== id))
+  }
+
   // Generation
   const [generating, setGenerating] = useState(false)
   const [entry, setEntry] = useState('')
 
   // Google
-  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs } = useGoogleDocs()
+  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate } = useGoogleDocs()
+  const [duplicateWarning, setDuplicateWarning] = useState(false)
+
+  useEffect(() => {
+    if (!googleUser) return
+    setDuplicateWarning(false)
+    checkDuplicateDate(selectedDate).then(isDupe => setDuplicateWarning(isDupe))
+  }, [selectedISO, googleUser])
 
   // Set up Google Token Client
   useEffect(() => {
@@ -225,9 +281,11 @@ function MainApp() {
   }
 
   function handleClear() {
+    if (!window.confirm('Clear all fields and start over?')) return
     setStaffMode('both')
     setNonRoutineDay(true)
     setNonRoutineNotes('- ')
+    setSuggestedTags([])
     setAdditionalPeople({ grandmaBetty: false, grandpaDave: false, grandpaBob: false, other: '' })
     setWakeTime('')
     setOutfitToday('')
@@ -298,6 +356,7 @@ function MainApp() {
         <StaffCard
           dateLabel={dateLabel}
           selectedISO={selectedISO} setSelectedISO={setSelectedISO}
+          duplicateWarning={duplicateWarning}
           staffMode={staffMode} setStaffMode={setStaffMode}
           sponsorName={sponsorName} setSponsorName={setSponsorName}
           reliefName={reliefName} setReliefName={setReliefName}
@@ -326,6 +385,7 @@ function MainApp() {
                 placeholder={"- Alex woke up around 8am\n- Grandma Betty made pancakes for breakfast\n- Alex and Grandpa Dave worked in the garden\n- ..."}
                 value={nonRoutineNotes}
                 onChange={e => setNonRoutineNotes(e.target.value)}
+                onBlur={handleSuggestTags}
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -346,6 +406,23 @@ function MainApp() {
                   }
                 }}
               />
+              {suggesting && <p className="suggestion-status">Suggesting tags...</p>}
+              {suggestedTags.length > 0 && (
+                <div className="suggestion-row">
+                  <span className="suggestion-label">Suggested tags:</span>
+                  {suggestedTags.map(id => {
+                    const tag = TAG_CONFIG.find(t => t.id === id)
+                    return (
+                      <span key={id} className="suggestion-chip">
+                        <button type="button" className="chip-add" onClick={() => acceptSuggestion(id)}>
+                          + {tag?.label ?? id}
+                        </button>
+                        <button type="button" className="chip-dismiss" onClick={() => dismissSuggestion(id)}>✕</button>
+                      </span>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -422,6 +499,7 @@ function MainApp() {
         {entry && (
           <OutputPanel
             entry={entry}
+            onEntryChange={setEntry}
             googleUser={googleUser}
             saveStatus={saveStatus}
             onSave={handleSave}

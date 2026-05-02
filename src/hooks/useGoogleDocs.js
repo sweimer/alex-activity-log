@@ -192,5 +192,24 @@ export function useGoogleDocs() {
     })
   }
 
-  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs }
+  async function checkDuplicateDate(dateObj) {
+    if (!accessToken) return false
+    try {
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+      const year = dateObj.getFullYear()
+      const docName = `${month}/${year} LOGS`
+      const docId = await findDoc(docName)
+      if (!docId) return false
+      const docRes = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+      const doc = await docRes.json()
+      const content = doc.body?.content ?? []
+      const newDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate())
+      const existing = parseEntryDates(content)
+      return existing.some(e => e.date.getTime() === newDate.getTime())
+    } catch {
+      return false
+    }
+  }
+
+  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate }
 }

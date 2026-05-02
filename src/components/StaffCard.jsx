@@ -9,6 +9,7 @@ export default function StaffCard({
   todayRole, isOverridden, toggleOverride,
   nonRoutineDay, setNonRoutineDay,
   additionalPeople, setAdditionalPeople,
+  duplicateWarning,
 }) {
   const [showWhoWasOn, setShowWhoWasOn] = useState(false)
   const [showNames, setShowNames] = useState(false)
@@ -32,6 +33,9 @@ export default function StaffCard({
             onChange={e => setSelectedISO(e.target.value)}
           />
           <div className="date-display" style={{ marginTop: '6px', fontSize: '0.85rem', color: '#666' }}>{dateLabel}</div>
+          {duplicateWarning && (
+            <div className="duplicate-warning">⚠ An entry for this date already exists in Google Docs.</div>
+          )}
         </div>
       </div>
 
