@@ -10,6 +10,9 @@ export default function StaffCard({
   nonRoutineDay, setNonRoutineDay,
   additionalPeople, setAdditionalPeople,
 }) {
+  const [showWhoWasOn, setShowWhoWasOn] = useState(false)
+  const [showNames, setShowNames] = useState(false)
+  const [showInputMethod, setShowInputMethod] = useState(false)
   const [showPeople, setShowPeople] = useState(false)
 
   function togglePerson(key) {
@@ -33,9 +36,12 @@ export default function StaffCard({
       </div>
 
       {/* Who Was On */}
-      <div className="field-row">
-        <div className="field">
-          <label className="field-label">Who Was On Today</label>
+      <div className="field">
+        <button type="button" className="toggle-label-btn" onClick={() => setShowWhoWasOn(p => !p)}>
+          <span className="field-label">Who Was On Today</span>
+          <span className="toggle-caret">{showWhoWasOn ? '▲' : '▼'}</span>
+        </button>
+        {showWhoWasOn && (
           <div className="pill-group">
             {[
               { id: 'sponsor', label: 'Sponsor only' },
@@ -52,39 +58,50 @@ export default function StaffCard({
               </button>
             ))}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Name fields */}
-      <div className="field-row">
-        {(staffMode === 'sponsor' || staffMode === 'both') && (
-          <div className="field">
-            <label className="field-label">Sponsor Name</label>
-            <input
-              className="text-input"
-              value={sponsorName}
-              onChange={e => setSponsorName(e.target.value)}
-              placeholder="e.g. Scott Weimer"
-            />
-          </div>
-        )}
-        {(staffMode === 'relief' || staffMode === 'both') && (
-          <div className="field">
-            <label className="field-label">Relief Name</label>
-            <input
-              className="text-input"
-              value={reliefName}
-              onChange={e => setReliefName(e.target.value)}
-              placeholder="e.g. Heather Weimer"
-            />
+      <div className="field">
+        <button type="button" className="toggle-label-btn" onClick={() => setShowNames(p => !p)}>
+          <span className="field-label">Staff Names</span>
+          <span className="toggle-caret">{showNames ? '▲' : '▼'}</span>
+        </button>
+        {showNames && (
+          <div className="field-row">
+            {(staffMode === 'sponsor' || staffMode === 'both') && (
+              <div className="field">
+                <label className="field-label">Sponsor Name</label>
+                <input
+                  className="text-input"
+                  value={sponsorName}
+                  onChange={e => setSponsorName(e.target.value)}
+                  placeholder="e.g. Scott Weimer"
+                />
+              </div>
+            )}
+            {(staffMode === 'relief' || staffMode === 'both') && (
+              <div className="field">
+                <label className="field-label">Relief Name</label>
+                <input
+                  className="text-input"
+                  value={reliefName}
+                  onChange={e => setReliefName(e.target.value)}
+                  placeholder="e.g. Heather Weimer"
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Non-routine day toggle */}
-      <div className="field-row">
-        <div className="field">
-          <label className="field-label">Input Method</label>
+      {/* Input method */}
+      <div className="field">
+        <button type="button" className="toggle-label-btn" onClick={() => setShowInputMethod(p => !p)}>
+          <span className="field-label">Input Method</span>
+          <span className="toggle-caret">{showInputMethod ? '▲' : '▼'}</span>
+        </button>
+        {showInputMethod && (
           <div className="pill-group">
             <button
               type="button"
@@ -101,7 +118,7 @@ export default function StaffCard({
               Bullet points
             </button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Additional people — only on non-routine days */}

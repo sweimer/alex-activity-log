@@ -452,6 +452,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { margin-right: 20px; }
   color: var(--muted);
 }
 
+.toggle-label-btn + .pill-group { margin-bottom: 12px; }
+
 .additional-people {
   display: flex;
   flex-direction: column;
