@@ -333,6 +333,12 @@ function MainApp() {
           <div className="header-auth">
             <a
               className="header-gdrive-btn"
+              href="https://calendar.google.com/calendar/u/0?cid=Z3Q5YnUyZzU3dmp0amZwcmswcjloY2MycGtAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ"
+              target="_blank"
+              rel="noreferrer"
+            >GCal</a>
+            <a
+              className="header-gdrive-btn"
               href="https://drive.google.com/drive/folders/1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT"
               target="_blank"
               rel="noreferrer"
