@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function OutputPanel({ entry, onEntryChange, googleUser, saveStatus, onSave, onClear }) {
+export default function OutputPanel({ entry, onEntryChange, googleUser, saveStatus, onSave, onClear, addToCalendar, setAddToCalendar, calendarStatus }) {
   const [copied, setCopied] = useState(false)
 
   function handleCopy() {
@@ -58,6 +58,22 @@ export default function OutputPanel({ entry, onEntryChange, googleUser, saveStat
       )}
       {saveStatus === 'error' && (
         <div className="save-error">There was a problem saving to Google Docs. Please try again.</div>
+      )}
+
+      {googleUser && (
+        <div className="calendar-toggle">
+          <label className="person-checkbox">
+            <input
+              type="checkbox"
+              checked={addToCalendar}
+              onChange={e => setAddToCalendar(e.target.checked)}
+            />
+            <span>Add meals to Google Calendar</span>
+          </label>
+          {calendarStatus === 'saving' && <span className="calendar-status">Adding meals to calendar...</span>}
+          {calendarStatus === 'done'   && <span className="calendar-status calendar-done">✓ Meals added to calendar</span>}
+          {calendarStatus === 'error'  && <span className="calendar-status calendar-error">Problem saving to calendar. Please try again.</span>}
+        </div>
       )}
     </div>
   )

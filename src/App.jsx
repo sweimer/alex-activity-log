@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useRotation } from './hooks/useRotation.js'
 import { useGoogleDocs } from './hooks/useGoogleDocs.js'
+import { useGoogleCalendar } from './hooks/useGoogleCalendar.js'
 import { CHECKLIST_SECTIONS } from './constants/sections.js'
 import { TAG_CONFIG } from './constants/tags.js'
 import { SYSTEM_PROMPT } from './constants/prompts.js'
@@ -140,7 +141,8 @@ function MainApp() {
         }),
       })
       const data = await res.json()
-      const text = data.content?.[0]?.text ?? '[]'
+      const raw = data.content?.[0]?.text ?? '[]'
+      const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim()
       const parsed = JSON.parse(text)
       const valid = parsed.filter(id => TAG_CONFIG.some(t => t.id === id) && !selectedTags.includes(id))
       setSuggestedTags(valid)
@@ -166,7 +168,19 @@ function MainApp() {
 
   // Google
   const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate } = useGoogleDocs()
+  const { saveMealsToCalendar } = useGoogleCalendar(accessToken)
   const [duplicateWarning, setDuplicateWarning] = useState(false)
+  const [addToCalendar, setAddToCalendar] = useState(false)
+  const [calendarStatus, setCalendarStatus] = useState(null) // null | 'saving' | 'done' | 'error'
+
+  // Trigger calendar save after a successful Google Docs save
+  useEffect(() => {
+    if (!addToCalendar || !saveStatus || typeof saveStatus !== 'object' || !saveStatus.docId) return
+    setCalendarStatus('saving')
+    saveMealsToCalendar(entry, selectedDate, !!vanArrived)
+      .then(() => setCalendarStatus('done'))
+      .catch(err => { console.error('Calendar save error:', err); setCalendarStatus('error') })
+  }, [saveStatus])
 
   useEffect(() => {
     if (!googleUser) return
@@ -179,7 +193,7 @@ function MainApp() {
     if (!window.google) return
     const client = window.google.accounts.oauth2.initTokenClient({
       client_id: GOOGLE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile',
+      scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar.events',
       callback: handleGoogleSuccess,
     })
     window._googleTokenClient = client
@@ -307,6 +321,7 @@ function MainApp() {
     setAdditionalNotes('')
     setEntry('')
     setSaveStatus(null)
+    setCalendarStatus(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -510,6 +525,9 @@ function MainApp() {
             saveStatus={saveStatus}
             onSave={handleSave}
             onClear={handleClear}
+            addToCalendar={addToCalendar}
+            setAddToCalendar={setAddToCalendar}
+            calendarStatus={calendarStatus}
           />
         )}
       </main>

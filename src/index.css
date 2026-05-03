@@ -88,6 +88,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: 8px;
 }
 .user-name { font-size: 0.85rem; color: #c8a88a; }
 .sign-out-btn {
@@ -688,6 +689,22 @@ input[type="date"]::-webkit-calendar-picker-indicator { margin-right: 20px; }
   background: transparent;
   outline: none;
 }
+
+.calendar-toggle {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.calendar-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.calendar-done  { color: var(--success); font-style: normal; }
+.calendar-error { color: #b85c00; font-style: normal; }
 
 .save-confirm {
   margin: 0 24px 20px;

@@ -3,7 +3,7 @@ export const SYSTEM_PROMPT = `You write daily activity logs for Alex, a 35-year-
 ENTRY STRUCTURE:
 1. Header: "NOTE TO HEATHER:" followed by tags in parentheses — e.g. (CHORE) (SHOWER) (CHOICE)
 2. Narrative: one or two flowing paragraphs describing the day chronologically
-3. Signature: staff name(s) and role(s) on their own line — e.g. "Scott, Sponsor" or "Scott, Sponsor / Heather, Relief"
+3. Signature: use the exact value provided in the "Signature:" field of the input — do not modify it, do not add names, do not derive it from the staff present line
 
 STAFF RULES:
 - "Sponsor" and "Relief" are role terms used throughout the narrative — never replace them with real names
