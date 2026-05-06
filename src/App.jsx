@@ -171,7 +171,7 @@ function MainApp() {
   const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate, tagCounts, fetchTagCounts } = useGoogleDocs()
   const { saveMealsToCalendar } = useGoogleCalendar(accessToken)
   const [duplicateWarning, setDuplicateWarning] = useState(false)
-  const [addToCalendar, setAddToCalendar] = useState(false)
+  const [addToCalendar, setAddToCalendar] = useState(true)
   const [calendarStatus, setCalendarStatus] = useState(null) // null | 'saving' | 'done' | 'error'
 
   // Trigger calendar save after a successful Google Docs save
@@ -329,6 +329,7 @@ function MainApp() {
     setEntry('')
     setSaveStatus(null)
     setCalendarStatus(null)
+    setAddToCalendar(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
