@@ -1,6 +1,18 @@
 import { useState, useCallback } from 'react'
+import { TAG_CONFIG } from '../constants/tags.js'
 
 const FOLDER_ID = '1WouU-VuYWgM4Cl4ZeGkEV9vyhqVYPCOT'
+
+const TRACKED_IDS = ['CHORE', 'CAD', 'MEAL_PLAN', 'SHOWER', 'NEW_SKILL', 'FIRE_DRILL', 'BEHAVIOR_ISSUE', 'OUTING', 'INTERACTION']
+
+function daysOfWeekInMonth(year, month, dows) {
+  const daysInMonth = new Date(year, month, 0).getDate()
+  let count = 0
+  for (let d = 1; d <= daysInMonth; d++) {
+    if (dows.includes(new Date(year, month - 1, d).getDay())) count++
+  }
+  return count
+}
 const DOC_HEADER = 'This Support Log belongs to: Alexandra Stevenson ID #33562 ISP Start: 05/01/25 Ends: 05/31/25 Blue Ridge Sponsored Residential/Daily Support Log'
 
 // Matches "M/D/YYYY - DAYNAME" at the start of a paragraph, e.g. "4/3/2026 - FRIDAY"
@@ -43,6 +55,8 @@ export function useGoogleDocs() {
   const [accessToken, setAccessToken] = useState(null)
   const [saveStatus, setSaveStatus] = useState(null)
   // saveStatus: null | 'saving' | { docId, docName, insertedInMiddle } | 'error'
+  const [tagCounts, setTagCounts] = useState(null)
+  // tagCounts: null | 'loading' | 'error' | { counts: {}, expected: {}, monthLabel: string }
 
   const handleGoogleSuccess = useCallback((tokenResponse) => {
     setAccessToken(tokenResponse.access_token)
@@ -192,6 +206,47 @@ export function useGoogleDocs() {
     })
   }
 
+  async function fetchTagCounts(year, month) {
+    if (!accessToken) return
+    setTagCounts('loading')
+    try {
+      const docName = `${String(month).padStart(2, '0')}/${year} LOGS`
+      const docId = await findDoc(docName)
+      const monthLabel = new Date(year, month - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+
+      const counts = Object.fromEntries(TRACKED_IDS.map(id => [id, 0]))
+
+      if (docId) {
+        const docRes = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+        const doc = await docRes.json()
+        const paragraphs = (doc.body?.content ?? [])
+          .filter(el => el.paragraph)
+          .map(el => (el.paragraph.elements ?? []).map(e => e.textRun?.content ?? '').join(''))
+
+        const noteLines = paragraphs.filter(p => p.includes('NOTE TO HEATHER:'))
+
+        for (const id of TRACKED_IDS) {
+          const tag = TAG_CONFIG.find(t => t.id === id)
+          if (!tag) continue
+          counts[id] = noteLines.filter(l => l.includes(`(${tag.label})`)).length
+        }
+      }
+
+      const expected = {}
+      for (const id of TRACKED_IDS) {
+        const tag = TAG_CONFIG.find(t => t.id === id)
+        if (tag?.expectedDays.length) {
+          expected[id] = daysOfWeekInMonth(year, month, tag.expectedDays)
+        }
+      }
+
+      setTagCounts({ counts, expected, monthLabel })
+    } catch (err) {
+      console.error('Tag counts error:', err)
+      setTagCounts('error')
+    }
+  }
+
   async function checkDuplicateDate(dateObj) {
     if (!accessToken) return false
     try {
@@ -211,5 +266,5 @@ export function useGoogleDocs() {
     }
   }
 
-  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate }
+  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate, tagCounts, fetchTagCounts }
 }

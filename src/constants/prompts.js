@@ -34,6 +34,9 @@ STYLE:
 - Tone: factual and professional — report what happened, not how it felt. Do NOT add editorial commentary, value judgments, or qualitative assessments about the day overall (e.g. "a great start to the morning", "a nice show of responsibility", "a pleasant and well-rounded day"). Stick to observable events and actions.
 - Never end a sentence or clause with a semicolon. End all sentences with a period.
 
+SHORTHAND EXPANSIONS (non-routine day notes only):
+- "-firedril" means: "Sponsor/Relief ran a fire drill, helped Alex respond to the alarm and helped Alex evacuate to the meeting place in the front yard." If the bullet immediately following "-firedril" is a qualifier about the fire drill (e.g. Alex was slow to respond, had to be prompted), incorporate it naturally into the fire drill sentence rather than treating it as a separate event.
+
 SPECIAL TAG HANDLING:
 - BEHAVIOR ISSUE: write carefully and factually — what happened, how Alex responded, how it was managed. Reviewed by Heather.
 - OUTING: weave in specific places and activities from the description provided

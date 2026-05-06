@@ -149,6 +149,44 @@ body {
 }
 
 /* ============================================================
+   TAG TRACKER
+   ============================================================ */
+.tracker-group {
+  margin-bottom: 16px;
+}
+.tracker-group:last-child { margin-bottom: 0; }
+
+.tracker-group-label {
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--caption);
+  margin-bottom: 6px;
+}
+
+.tracker-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+.tracker-row:last-child { border-bottom: none; }
+
+.tracker-tag { color: var(--dark); }
+
+.tracker-count {
+  font-weight: bold;
+  min-width: 60px;
+  text-align: right;
+}
+.tracker-expected { font-weight: normal; color: var(--caption); }
+.tracker-met   { color: var(--success); }
+.tracker-behind { color: var(--accent); }
+
+/* ============================================================
    FIELDS
    ============================================================ */
 .field-row {

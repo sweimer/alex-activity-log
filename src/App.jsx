@@ -11,6 +11,7 @@ import StaffCard from './components/StaffCard.jsx'
 import TagsCard from './components/TagsCard.jsx'
 import ChecklistSection from './components/ChecklistSection.jsx'
 import OutputPanel from './components/OutputPanel.jsx'
+import TagTrackerCard from './components/TagTrackerCard.jsx'
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY
@@ -167,7 +168,7 @@ function MainApp() {
   const [entry, setEntry] = useState('')
 
   // Google
-  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate } = useGoogleDocs()
+  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate, tagCounts, fetchTagCounts } = useGoogleDocs()
   const { saveMealsToCalendar } = useGoogleCalendar(accessToken)
   const [duplicateWarning, setDuplicateWarning] = useState(false)
   const [addToCalendar, setAddToCalendar] = useState(false)
@@ -187,6 +188,11 @@ function MainApp() {
     setDuplicateWarning(false)
     checkDuplicateDate(selectedDate).then(isDupe => setDuplicateWarning(isDupe))
   }, [selectedISO, googleUser])
+
+  useEffect(() => {
+    if (!accessToken) return
+    fetchTagCounts(selectedDate.getFullYear(), selectedDate.getMonth() + 1)
+  }, [accessToken, selectedDate.getFullYear(), selectedDate.getMonth()])
 
   // Set up Google Token Client
   useEffect(() => {
@@ -286,6 +292,7 @@ function MainApp() {
       const data = await res.json()
       if (data.error) throw new Error(data.error.message || JSON.stringify(data.error))
       setEntry(data.content?.[0]?.text ?? 'No response received.')
+      if (accessToken) fetchTagCounts(selectedDate.getFullYear(), selectedDate.getMonth() + 1)
     } catch (err) {
       console.error(err)
       setEntry('Error generating entry. Please try again.')
@@ -412,12 +419,18 @@ function MainApp() {
                     e.preventDefault()
                     const el = e.target
                     const { selectionStart, selectionEnd, value } = el
-                    const newValue = value.slice(0, selectionStart) + '\n- ' + value.slice(selectionEnd)
+                    const lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1
+                    const currentLine = value.slice(lineStart, selectionStart).trim()
+                    const isBehaviorIssue = currentLine.toLowerCase() === '- behavior issue'
+                    const insertion = isBehaviorIssue
+                      ? '\n- What prompted the behavior issue.\n- Describe Alex\'s behavior.\n- How was it resolved.\n- '
+                      : '\n- '
+                    const newValue = value.slice(0, selectionStart) + insertion + value.slice(selectionEnd)
                     setNonRoutineNotes(newValue)
                     requestAnimationFrame(() => {
-                      el.selectionStart = el.selectionEnd = selectionStart + 3
+                      el.selectionStart = el.selectionEnd = selectionStart + insertion.length
                       const totalLines = newValue.split('\n').length
-                      const cursorLine = newValue.slice(0, selectionStart + 3).split('\n').length
+                      const cursorLine = newValue.slice(0, selectionStart + insertion.length).split('\n').length
                       const lineHeight = el.scrollHeight / totalLines
                       const cursorBottom = cursorLine * lineHeight
                       if (cursorBottom > el.scrollTop + el.clientHeight) {
@@ -530,6 +543,8 @@ function MainApp() {
             calendarStatus={calendarStatus}
           />
         )}
+
+        {googleUser && <TagTrackerCard tagCounts={tagCounts} />}
       </main>
     </div>
   )
