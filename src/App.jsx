@@ -5,11 +5,14 @@ import { useGoogleDocs } from './hooks/useGoogleDocs.js'
 import { useGoogleCalendar } from './hooks/useGoogleCalendar.js'
 import { CHECKLIST_SECTIONS } from './constants/sections.js'
 import { TAG_CONFIG } from './constants/tags.js'
+import { ISP_SECTIONS } from './constants/ispItems.js'
 import { SYSTEM_PROMPT } from './constants/prompts.js'
 import { buildPrompt } from './utils/buildPrompt.js'
 import StaffCard from './components/StaffCard.jsx'
 import TagsCard from './components/TagsCard.jsx'
 import ChecklistSection from './components/ChecklistSection.jsx'
+import DailyNotesChecklist from './components/DailyNotesChecklist.jsx'
+import MenuCard from './components/MenuCard.jsx'
 import OutputPanel from './components/OutputPanel.jsx'
 import TagTrackerCard from './components/TagTrackerCard.jsx'
 
@@ -18,6 +21,41 @@ const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY
 
 function toISO(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+const BREAKFAST_OPTIONS = [
+  'Eggs and meat',
+  'Oatmeal and fruit',
+  'Yogurt and fruit',
+  'Avocado toast',
+  'Cereal and toast',
+  'French toast',
+  'Pancakes',
+  'Sausage and biscuits',
+]
+
+function dailyBreakfast(isoDate) {
+  const hash = isoDate.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  return BREAKFAST_OPTIONS[hash % BREAKFAST_OPTIONS.length]
+}
+
+const WEEKEND_LUNCH_OPTIONS = [
+  'Soup and crackers',
+  'Sandwich and chips',
+  'Grilled cheese and chips',
+  'Pepperoni rolls',
+  'Salad',
+  'Yogurt and fruit',
+  'Pizza',
+  'Quesadillas',
+]
+
+function dailyLunch(isoDate) {
+  const [y, m, d] = isoDate.split('-').map(Number)
+  const dow = new Date(y, m - 1, d).getDay()
+  if (dow >= 1 && dow <= 5) return 'Lunch at Diversity'
+  const hash = isoDate.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  return WEEKEND_LUNCH_OPTIONS[hash % WEEKEND_LUNCH_OPTIONS.length]
 }
 
 function isoToLabel(iso) {
@@ -47,6 +85,7 @@ function MainApp() {
     setStaffMode('both')
   }, [selectedISO])
 
+
   // Rotation
   const { todayRole, isOverridden, toggleOverride } = useRotation(selectedISO)
 
@@ -66,8 +105,51 @@ function MainApp() {
   const [afterLunchCustom, setAfterLunchCustom] = useState('')
   const [eveningCustom, setEveningCustom] = useState('')
 
-  // Non-routine day
-  const [nonRoutineDay, setNonRoutineDay] = useState(true)
+  // Input mode: 'daily-notes' | 'bullets' | 'routine'
+  const [inputMode, setInputMode] = useState('daily-notes')
+
+  // ISP Daily Notes state — all items checked by default
+  const [ispChecked, setIspChecked] = useState(() =>
+    Object.fromEntries(ISP_SECTIONS.flatMap(s => s.items.map(i => [i.id, i.defaultChecked !== false])))
+  )
+  const [ispResponses, setIspResponses] = useState(() =>
+    Object.fromEntries(ISP_SECTIONS.flatMap(s => s.items.map(i => [i.id, i.defaultResponse])))
+  )
+
+  // Check Laundry on Saturdays; Shopping and Banking on Sundays
+  useEffect(() => {
+    setIspChecked(prev => ({
+      ...prev,
+      laundry:  dayOfWeek === 6,
+      shopping: dayOfWeek === 0,
+      banking:  dayOfWeek === 0,
+    }))
+  }, [dayOfWeek])
+
+  // Check Disaster Drill on December 1st
+  useEffect(() => {
+    const [, mo, d] = selectedISO.split('-').map(Number)
+    setIspChecked(prev => ({ ...prev, 'disaster-drill': mo === 12 && d === 1 }))
+  }, [selectedISO])
+
+  // Smoke Detector follows Fire Drill
+  useEffect(() => {
+    setIspChecked(prev => ({ ...prev, 'smoke-detector': !!prev['fire-drill'] }))
+  }, [ispChecked['fire-drill']])
+
+  // Update meal defaults when date changes
+  useEffect(() => {
+    setMenuBreakfast(dailyBreakfast(selectedISO))
+    setMenuLunch(dailyLunch(selectedISO))
+  }, [selectedISO])
+
+  // Today's Menu
+  const [menuBreakfast, setMenuBreakfast] = useState(() => dailyBreakfast(selectedISO))
+  const [menuLunch, setMenuLunch] = useState(() => dailyLunch(selectedISO))
+  const [menuDinner, setMenuDinner] = useState('')
+  const [menuSnack, setMenuSnack] = useState('')
+
+  // Bullet points mode
   const [nonRoutineNotes, setNonRoutineNotes] = useState('- ')
   const [additionalPeople, setAdditionalPeople] = useState({
     grandmaBetty: false,
@@ -119,6 +201,7 @@ function MainApp() {
   const [suggesting, setSuggesting] = useState(false)
 
   async function handleSuggestTags() {
+    if (inputMode !== 'bullets') return
     if (!nonRoutineNotes.trim() || nonRoutineNotes.trim() === '-') return
     setSuggesting(true)
     setSuggestedTags([])
@@ -168,14 +251,34 @@ function MainApp() {
   const [entry, setEntry] = useState('')
 
   // Google
-  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, checkDuplicateDate, tagCounts, fetchTagCounts } = useGoogleDocs()
-  const { saveMealsToCalendar } = useGoogleCalendar(accessToken)
+  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts } = useGoogleDocs()
+  const { saveMealsToCalendar, saveDailyMenuToCalendar } = useGoogleCalendar(accessToken)
   const [duplicateWarning, setDuplicateWarning] = useState(false)
   const [addToCalendar, setAddToCalendar] = useState(true)
-  const [calendarStatus, setCalendarStatus] = useState(null) // null | 'saving' | 'done' | 'error'
+  const [calendarStatus, setCalendarStatus] = useState(null)    // null | 'saving' | 'done' | 'error'
+  const [checklistStatus, setChecklistStatus] = useState(null)  // null | 'saving' | 'done' | 'error'
+  const [checkedThisMonth, setCheckedThisMonth] = useState(new Set())
+  const [checkedThisQuarter, setCheckedThisQuarter] = useState(new Set())
+  const [checkedThisWeek, setCheckedThisWeek] = useState(new Set())
 
-  // Trigger calendar save after a successful Google Docs save
+  // Fetch which periodic items have already been logged (for NEEDED indicators)
+  const selectedYYYYMM = selectedISO.slice(0, 7)
   useEffect(() => {
+    if (inputMode !== 'daily-notes' || !googleUser) return
+    Promise.all([
+      fetchCheckedThisMonth(selectedDate),
+      fetchCheckedThisQuarter(selectedDate),
+      fetchCheckedThisWeek(selectedDate),
+    ]).then(([monthly, quarterly, weekly]) => {
+      setCheckedThisMonth(monthly)
+      setCheckedThisQuarter(quarterly)
+      setCheckedThisWeek(weekly)
+    }).catch(() => {})
+  }, [selectedISO, inputMode, googleUser])
+
+  // Trigger calendar save after a successful Google Docs save (not for daily-notes)
+  useEffect(() => {
+    if (inputMode === 'daily-notes') return
     if (!addToCalendar || !saveStatus || typeof saveStatus !== 'object' || !saveStatus.docId) return
     setCalendarStatus('saving')
     saveMealsToCalendar(entry, selectedDate, !!vanArrived)
@@ -183,11 +286,26 @@ function MainApp() {
       .catch(err => { console.error('Calendar save error:', err); setCalendarStatus('error') })
   }, [saveStatus])
 
+  // After a successful daily-notes save, refresh coverage so NEEDED indicators update
   useEffect(() => {
-    if (!googleUser) return
+    if (inputMode !== 'daily-notes') return
+    if (!saveStatus || typeof saveStatus !== 'object' || !saveStatus.docId) return
+    Promise.all([
+      fetchCheckedThisMonth(selectedDate),
+      fetchCheckedThisQuarter(selectedDate),
+      fetchCheckedThisWeek(selectedDate),
+    ]).then(([monthly, quarterly, weekly]) => {
+      setCheckedThisMonth(monthly)
+      setCheckedThisQuarter(quarterly)
+      setCheckedThisWeek(weekly)
+    }).catch(() => {})
+  }, [saveStatus])
+
+  useEffect(() => {
+    if (!googleUser || inputMode === 'daily-notes') return
     setDuplicateWarning(false)
     checkDuplicateDate(selectedDate).then(isDupe => setDuplicateWarning(isDupe))
-  }, [selectedISO, googleUser])
+  }, [selectedISO, googleUser, inputMode])
 
   useEffect(() => {
     if (!accessToken) return
@@ -234,15 +352,69 @@ function MainApp() {
   }
 
   // Can we generate?
-  const canGenerate = nonRoutineDay
-    ? nonRoutineNotes.trim().length > 0
-    : Object.values(checkedItems).some(s => s && s.size > 0)
+  const canGenerate =
+    inputMode === 'daily-notes' ? Object.values(ispChecked).some(Boolean) :
+    inputMode === 'bullets'     ? nonRoutineNotes.trim().length > 0 :
+    Object.values(checkedItems).some(s => s && s.size > 0)
 
   async function handleGenerate() {
-    setGenerating(true)
     setEntry('')
     setSaveStatus(null)
 
+    if (inputMode === 'daily-notes') {
+      setCalendarStatus(null)
+      const lines = []
+      const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' })
+      const dateStr = `${selectedDate.getMonth() + 1}/${selectedDate.getDate()}/${selectedDate.getFullYear()}`
+      lines.push(`Daily Notes for: ${dayName}, ${dateStr}`)
+      lines.push('ISP Dates: from 10/1/26 - 9/30/27')
+      lines.push('Provider: Blue Ridge  Service: Sponsored-Residential')
+      if (menuBreakfast || menuLunch || menuDinner || menuSnack) {
+        const parts = []
+        if (menuBreakfast) parts.push(`Breakfast: ${menuBreakfast}`)
+        if (menuLunch)     parts.push(`Lunch: ${menuLunch}`)
+        if (menuDinner)    parts.push(`Dinner: ${menuDinner}`)
+        if (menuSnack)     parts.push(`Snack: ${menuSnack}`)
+        lines.push(parts.join('  |  '))
+      }
+      lines.push('')
+      for (const section of ISP_SECTIONS) {
+        lines.push(section.label.toUpperCase())
+        for (const item of section.items) {
+          const checked = !!ispChecked[item.id]
+          const response = checked ? (ispResponses[item.id] ?? item.defaultResponse) : 'N/A'
+          if (checked) {
+            lines.push(`✓  ${item.label} (${item.freq})`)
+            lines.push(`   ${response}`)
+          } else {
+            lines.push(`○  ${item.label} (${item.freq}) — N/A`)
+          }
+        }
+        lines.push('')
+      }
+      lines.push(`Sponsor: ${sponsorName}  ____________________________    ___________`)
+      lines.push(`Relief Staff: ${reliefName}  ____________________________    ___________`)
+      setEntry(lines.join('\n'))
+
+      if (accessToken) {
+        setCalendarStatus('saving')
+        setChecklistStatus('saving')
+
+        saveDailyMenuToCalendar(
+          { breakfast: menuBreakfast, lunch: menuLunch, dinner: menuDinner, snack: menuSnack },
+          selectedDate
+        )
+          .then(() => setCalendarStatus('done'))
+          .catch(err => { console.error('Calendar error:', err); setCalendarStatus('error') })
+
+        saveToChecklist(ispChecked, selectedDate)
+          .then(() => setChecklistStatus('done'))
+          .catch(err => { console.error('Checklist error:', err); setChecklistStatus('error') })
+      }
+      return
+    }
+
+    setGenerating(true)
     try {
       const prompt = buildPrompt({
         dateLabel,
@@ -250,7 +422,7 @@ function MainApp() {
         sponsorName,
         reliefName,
         signature: getSignature(),
-        nonRoutineDay,
+        inputMode,
         nonRoutineNotes,
         additionalPeople,
         selectedTags,
@@ -270,6 +442,8 @@ function MainApp() {
         eveningCustom,
         checkedItems,
         sectionNotes,
+        ispChecked,
+        ispResponses,
         additionalNotes,
       })
 
@@ -304,7 +478,13 @@ function MainApp() {
   function handleClear() {
     if (!window.confirm('Clear all fields and start over?')) return
     setStaffMode('both')
-    setNonRoutineDay(true)
+    setInputMode('daily-notes')
+    setIspChecked(Object.fromEntries(ISP_SECTIONS.flatMap(s => s.items.map(i => [i.id, i.defaultChecked !== false]))))
+    setIspResponses(Object.fromEntries(ISP_SECTIONS.flatMap(s => s.items.map(i => [i.id, i.defaultResponse]))))
+    setMenuBreakfast(dailyBreakfast(selectedISO))
+    setMenuLunch(dailyLunch(selectedISO))
+    setMenuDinner('')
+    setMenuSnack('')
     setNonRoutineNotes('- ')
     setSuggestedTags([])
     setAdditionalPeople({ grandmaBetty: false, grandpaDave: false, grandpaBob: false, other: '' })
@@ -329,12 +509,17 @@ function MainApp() {
     setEntry('')
     setSaveStatus(null)
     setCalendarStatus(null)
+    setChecklistStatus(null)
     setAddToCalendar(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function handleSave() {
-    saveToGoogleDocs(entry, selectedDate)
+    if (inputMode === 'daily-notes') {
+      saveAsDailyNotes(ispChecked, ispResponses, selectedDate, sponsorName, reliefName, { breakfast: menuBreakfast, lunch: menuLunch, dinner: menuDinner, snack: menuSnack })
+    } else {
+      saveToGoogleDocs(entry, selectedDate)
+    }
   }
 
   // Visible checklist sections based on day
@@ -392,20 +577,55 @@ function MainApp() {
           todayRole={todayRole}
           isOverridden={isOverridden}
           toggleOverride={toggleOverride}
-          nonRoutineDay={nonRoutineDay} setNonRoutineDay={setNonRoutineDay}
+          inputMode={inputMode} setInputMode={setInputMode}
           additionalPeople={additionalPeople} setAdditionalPeople={setAdditionalPeople}
         />
 
-        <TagsCard
+        {inputMode !== 'daily-notes' && <TagsCard
           dayOfWeek={dayOfWeek}
           selectedTags={selectedTags} setSelectedTags={setSelectedTags}
-        />
+        />}
 
-        {/* Checklist or freeform notes */}
+        {inputMode === 'daily-notes' && (
+          <MenuCard
+            breakfast={menuBreakfast} setBreakfast={setMenuBreakfast}
+            lunch={menuLunch}         setLunch={setMenuLunch}
+            dinner={menuDinner}       setDinner={setMenuDinner}
+            snack={menuSnack}         setSnack={setMenuSnack}
+          />
+        )}
+
+        {/* Input panel */}
         <div className="card">
-          <h2 className="card-title">{nonRoutineDay ? 'Day Notes' : 'Routine Checklist'}</h2>
+          <h2 className="card-title">
+            {inputMode === 'daily-notes' ? 'Daily Notes' : inputMode === 'bullets' ? 'Day Notes' : 'Routine Checklist'}
+          </h2>
 
-          {nonRoutineDay ? (
+          {inputMode === 'daily-notes' && (
+            <>
+              <DailyNotesChecklist
+                ispChecked={ispChecked}
+                ispResponses={ispResponses}
+                onToggle={(id, defaultResponse) => {
+                  setIspChecked(prev => {
+                    const next = { ...prev, [id]: !prev[id] }
+                    if (next[id] && !ispResponses[id]) {
+                      setIspResponses(r => ({ ...r, [id]: defaultResponse }))
+                    }
+                    return next
+                  })
+                }}
+                onResponseChange={(id, value) => setIspResponses(prev => ({ ...prev, [id]: value }))}
+                checkedThisMonth={checkedThisMonth}
+                checkedThisQuarter={checkedThisQuarter}
+                checkedThisWeek={checkedThisWeek}
+                selectedYear={selectedDate.getFullYear()}
+                onSetDate={setSelectedISO}
+              />
+            </>
+          )}
+
+          {inputMode === 'bullets' && (
             <div className="field">
               <p className="field-caption">Jot down bullet points of what happened today. The AI will turn them into a full log entry.</p>
               <textarea
@@ -459,58 +679,59 @@ function MainApp() {
                 </div>
               )}
             </div>
-          ) : (
-            <>
-          {visibleSections.map(section => (
-            <ChecklistSection
-              key={section.id}
-              section={section}
-              checkedItems={checkedItems[section.id]}
-              onToggle={toggleItem}
-              note={sectionNotes[section.id]}
-              onNoteChange={setNote}
-              wakeTime={wakeTime}
-              setWakeTime={setWakeTime}
-              outfitToday={outfitToday}
-              setOutfitToday={setOutfitToday}
-              breakfastOffered={breakfastOffered}
-              setBreakfastOffered={setBreakfastOffered}
-              breakfastChose={breakfastChose}
-              setBreakfastChose={setBreakfastChose}
-              vanArrived={vanArrived}
-              setVanArrived={setVanArrived}
-              vanReturned={vanReturned}
-              setVanReturned={setVanReturned}
-              kiearraArrived={kiearraArrived}
-              setKiearraArrived={setKiearraArrived}
-              kiearraActivities={kiearraActivities}
-              setKiearraActivities={setKiearraActivities}
-              kiearraReturned={kiearraReturned}
-              setKiearraReturned={setKiearraReturned}
-              middayCustom={middayCustom}
-              setMiddayCustom={setMiddayCustom}
-              afterLunchCustom={afterLunchCustom}
-              setAfterLunchCustom={setAfterLunchCustom}
-              eveningCustom={eveningCustom}
-              setEveningCustom={setEveningCustom}
-              cadOffered={cadOffered}
-              setCadOffered={setCadOffered}
-              cadChose={cadChose}
-              setCadChose={setCadChose}
-            />
-          ))}
+          )}
 
-          <div className="field" style={{ marginTop: '20px' }}>
-            <label className="field-label">Additional Notes</label>
-            <p className="field-caption">Weather, mood, a small detail that colored the day</p>
-            <textarea
-              className="custom-textarea"
-              rows={3}
-              placeholder="e.g. It was a beautiful day so Sponsor prepared breakfast on the deck..."
-              value={additionalNotes}
-              onChange={e => setAdditionalNotes(e.target.value)}
-            />
-          </div>
+          {inputMode === 'routine' && (
+            <>
+              {visibleSections.map(section => (
+                <ChecklistSection
+                  key={section.id}
+                  section={section}
+                  checkedItems={checkedItems[section.id]}
+                  onToggle={toggleItem}
+                  note={sectionNotes[section.id]}
+                  onNoteChange={setNote}
+                  wakeTime={wakeTime}
+                  setWakeTime={setWakeTime}
+                  outfitToday={outfitToday}
+                  setOutfitToday={setOutfitToday}
+                  breakfastOffered={breakfastOffered}
+                  setBreakfastOffered={setBreakfastOffered}
+                  breakfastChose={breakfastChose}
+                  setBreakfastChose={setBreakfastChose}
+                  vanArrived={vanArrived}
+                  setVanArrived={setVanArrived}
+                  vanReturned={vanReturned}
+                  setVanReturned={setVanReturned}
+                  kiearraArrived={kiearraArrived}
+                  setKiearraArrived={setKiearraArrived}
+                  kiearraActivities={kiearraActivities}
+                  setKiearraActivities={setKiearraActivities}
+                  kiearraReturned={kiearraReturned}
+                  setKiearraReturned={setKiearraReturned}
+                  middayCustom={middayCustom}
+                  setMiddayCustom={setMiddayCustom}
+                  afterLunchCustom={afterLunchCustom}
+                  setAfterLunchCustom={setAfterLunchCustom}
+                  eveningCustom={eveningCustom}
+                  setEveningCustom={setEveningCustom}
+                  cadOffered={cadOffered}
+                  setCadOffered={setCadOffered}
+                  cadChose={cadChose}
+                  setCadChose={setCadChose}
+                />
+              ))}
+              <div className="field" style={{ marginTop: '20px' }}>
+                <label className="field-label">Additional Notes</label>
+                <p className="field-caption">Weather, mood, a small detail that colored the day</p>
+                <textarea
+                  className="custom-textarea"
+                  rows={3}
+                  placeholder="e.g. It was a beautiful day so Sponsor prepared breakfast on the deck..."
+                  value={additionalNotes}
+                  onChange={e => setAdditionalNotes(e.target.value)}
+                />
+              </div>
             </>
           )}
         </div>
@@ -542,10 +763,12 @@ function MainApp() {
             addToCalendar={addToCalendar}
             setAddToCalendar={setAddToCalendar}
             calendarStatus={calendarStatus}
+            showCalendar={inputMode !== 'daily-notes'}
+            checklistStatus={checklistStatus}
           />
         )}
 
-        {googleUser && <TagTrackerCard tagCounts={tagCounts} />}
+        {googleUser && inputMode !== 'daily-notes' && <TagTrackerCard tagCounts={tagCounts} />}
       </main>
     </div>
   )

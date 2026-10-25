@@ -64,11 +64,12 @@ export function useGoogleCalendar(accessToken) {
     return data.items?.[0] ?? null
   }
 
-  async function upsertEvent(dateObj, startHour, startMin, endHour, endMin, title) {
+  async function upsertEvent(dateObj, startHour, startMin, endHour, endMin, title, extra = {}) {
     const event = {
       summary: title,
       start: { dateTime: dateTimeStr(dateObj, startHour, startMin), timeZone: TZ },
       end:   { dateTime: dateTimeStr(dateObj, endHour, endMin),   timeZone: TZ },
+      ...extra,
     }
 
     const existing = await findExistingEvent(dateObj, startHour, startMin, endHour, endMin)
@@ -122,5 +123,14 @@ export function useGoogleCalendar(accessToken) {
     }
   }
 
-  return { saveMealsToCalendar }
+  async function saveDailyMenuToCalendar(menu, dateObj) {
+    const { breakfast, lunch, dinner, snack } = menu
+
+    if (breakfast) await upsertEvent(dateObj, 7, 0, 7, 30, `Breakfast: ${breakfast}`)
+    if (lunch)     await upsertEvent(dateObj, 12, 0, 12, 30, `Lunch: ${lunch}`)
+    if (dinner)    await upsertEvent(dateObj, 17, 0, 17, 30, `Dinner: ${dinner}`)
+    if (snack)     await upsertEvent(dateObj, 14, 0, 14, 30, `Snack: ${snack}`)
+  }
+
+  return { saveMealsToCalendar, saveDailyMenuToCalendar }
 }

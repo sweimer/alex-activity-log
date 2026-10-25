@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function OutputPanel({ entry, onEntryChange, googleUser, saveStatus, onSave, onClear, addToCalendar, setAddToCalendar, calendarStatus }) {
+export default function OutputPanel({ entry, onEntryChange, googleUser, saveStatus, onSave, onClear, addToCalendar, setAddToCalendar, calendarStatus, showCalendar = true, checklistStatus }) {
   const [copied, setCopied] = useState(false)
 
   function handleCopy() {
@@ -60,19 +60,24 @@ export default function OutputPanel({ entry, onEntryChange, googleUser, saveStat
         <div className="save-error">There was a problem saving to Google Docs. Please try again.</div>
       )}
 
-      {googleUser && (
+      {googleUser && (showCalendar || calendarStatus || checklistStatus) && (
         <div className="calendar-toggle">
-          <label className="person-checkbox">
-            <input
-              type="checkbox"
-              checked={addToCalendar}
-              onChange={e => setAddToCalendar(e.target.checked)}
-            />
-            <span>Add meals to Google Calendar</span>
-          </label>
+          {showCalendar && (
+            <label className="person-checkbox">
+              <input
+                type="checkbox"
+                checked={addToCalendar}
+                onChange={e => setAddToCalendar(e.target.checked)}
+              />
+              <span>Add meals to Google Calendar</span>
+            </label>
+          )}
           {calendarStatus === 'saving' && <span className="calendar-status">Adding meals to calendar...</span>}
           {calendarStatus === 'done'   && <span className="calendar-status calendar-done">✓ Meals added to calendar</span>}
           {calendarStatus === 'error'  && <span className="calendar-status calendar-error">Problem saving to calendar. Please try again.</span>}
+          {checklistStatus === 'saving' && <span className="calendar-status">Updating monthly checklist...</span>}
+          {checklistStatus === 'done'   && <span className="calendar-status calendar-done">✓ Monthly checklist updated</span>}
+          {checklistStatus === 'error'  && <span className="calendar-status calendar-error">Checklist update failed. Please try again.</span>}
         </div>
       )}
     </div>

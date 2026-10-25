@@ -1,8 +1,5 @@
 import { TAG_CONFIG } from '../constants/tags.js'
-
-/**
- * Assembles the user prompt string sent to Claude from all form state.
- */
+import { ISP_SECTIONS } from '../constants/ispItems.js'
 function resolveItem(item, { outfitToday, kiearraArrived, kiearraActivities, kiearraReturned, middayCustom, afterLunchCustom, eveningCustom, cadOffered, cadChose }) {
   return item
     .replace('__OUTFIT__', outfitToday || 'her outfit today')
@@ -22,7 +19,7 @@ export function buildPrompt({
   sponsorName,
   reliefName,
   signature,
-  nonRoutineDay,
+  inputMode,       // 'daily-notes' | 'bullets' | 'routine'
   nonRoutineNotes,
   additionalPeople,
   selectedTags,
@@ -40,8 +37,10 @@ export function buildPrompt({
   middayCustom,
   afterLunchCustom,
   eveningCustom,
-  checkedItems,   // { sectionId: Set<itemText> }
-  sectionNotes,   // { sectionId: string }
+  checkedItems,    // { sectionId: Set<itemText> }
+  sectionNotes,    // { sectionId: string }
+  ispChecked,      // { [itemId]: boolean }
+  ispResponses,    // { [itemId]: string }
   additionalNotes,
 }) {
   const lines = []
@@ -81,8 +80,30 @@ export function buildPrompt({
 
   lines.push('')
 
-  // Non-routine day — freeform notes replace the checklist
-  if (nonRoutineDay) {
+  // Daily Notes (ISP checklist) mode
+  if (inputMode === 'daily-notes') {
+    lines.push('[ISP DAILY NOTES]')
+    lines.push('Use the completed ISP items and responses below to write a full narrative log entry in the same format and voice as a routine day.')
+    lines.push('')
+    for (const section of ISP_SECTIONS) {
+      const checked = section.items.filter(item => ispChecked[item.id])
+      if (checked.length === 0) continue
+      lines.push(`[${section.label.toUpperCase()}]`)
+      for (const item of checked) {
+        const response = ispResponses[item.id] ?? item.defaultResponse
+        lines.push(`- ${item.label} (${item.freq}): ${response}`)
+      }
+      lines.push('')
+    }
+    if (additionalNotes) {
+      lines.push('[ADDITIONAL NOTES]')
+      lines.push(additionalNotes)
+    }
+    return lines.join('\n')
+  }
+
+  // Bullet points mode
+  if (inputMode === 'bullets') {
     lines.push('[NON-ROUTINE DAY]')
     lines.push('This was a non-routine day. Use the bullet points below to write the full log entry in the same format and voice as a routine day.')
     lines.push('')

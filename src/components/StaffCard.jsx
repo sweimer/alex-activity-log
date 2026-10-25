@@ -7,7 +7,7 @@ export default function StaffCard({
   sponsorName, setSponsorName,
   reliefName, setReliefName,
   todayRole, isOverridden, toggleOverride,
-  nonRoutineDay, setNonRoutineDay,
+  inputMode, setInputMode,
   additionalPeople, setAdditionalPeople,
   duplicateWarning,
 }) {
@@ -107,26 +107,26 @@ export default function StaffCard({
         </button>
         {showInputMethod && (
           <div className="pill-group">
-            <button
-              type="button"
-              className={`pill ${!nonRoutineDay ? 'pill-active' : ''}`}
-              onClick={() => setNonRoutineDay(false)}
-            >
-              Checklist
-            </button>
-            <button
-              type="button"
-              className={`pill ${nonRoutineDay ? 'pill-active' : ''}`}
-              onClick={() => setNonRoutineDay(true)}
-            >
-              Bullet points
-            </button>
+            {[
+              { id: 'daily-notes', label: 'Daily Notes' },
+              { id: 'bullets',     label: 'Bullet points' },
+              { id: 'routine',     label: 'Checklist' },
+            ].map(opt => (
+              <button
+                key={opt.id}
+                type="button"
+                className={`pill ${inputMode === opt.id ? 'pill-active' : ''}`}
+                onClick={() => setInputMode(opt.id)}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
         )}
       </div>
 
-      {/* Additional people — only on non-routine days */}
-      {nonRoutineDay && (
+      {/* Additional people — shown for daily-notes and bullet modes */}
+      {inputMode !== 'routine' && (
         <div className="field">
           <button
             type="button"

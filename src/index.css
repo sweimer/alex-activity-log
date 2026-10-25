@@ -756,3 +756,129 @@ input[type="date"]::-webkit-calendar-picker-indicator { margin-right: 20px; }
   font-size: 0.85rem;
   color: #c0392b;
 }
+
+/* ============================================================
+   ISP DAILY NOTES CHECKLIST
+   ============================================================ */
+.isp-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.isp-section-header {
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--caption);
+  padding: 6px 0 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+
+.isp-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.isp-row {
+  border-bottom: 1px solid var(--border);
+}
+.isp-row:last-child { border-bottom: none; }
+.isp-row-checked { background: #fdf0f5; }
+
+.isp-col-check {
+  width: 28px;
+  padding: 6px 4px 6px 0;
+  vertical-align: middle;
+}
+.isp-col-check input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.isp-col-label {
+  padding: 6px 8px 6px 2px;
+  font-size: 0.85rem;
+  color: var(--dark);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.isp-freq {
+  font-size: 0.72rem;
+  color: var(--caption);
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.isp-needed {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d97706;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.isp-freq-as-needed {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  background: #16a34a;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.isp-add-dec01 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  background: #2563eb;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.isp-add-dec01:hover {
+  background: #1d4ed8;
+}
+
+.isp-col-response {
+  width: 42%;
+  padding: 4px 0 4px 4px;
+  vertical-align: middle;
+}
+
+.isp-na {
+  font-size: 0.8rem;
+  color: var(--caption);
+  font-style: italic;
+}
+
+.isp-response-input {
+  width: 100%;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  padding: 4px 7px;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  color: var(--dark);
+  background: var(--white);
+  resize: none;
+  overflow: hidden;
+  line-height: 1.4;
+}
+.isp-response-input:focus { outline: none; border-color: var(--accent); }
