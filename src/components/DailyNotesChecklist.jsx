@@ -1,6 +1,13 @@
 import React from 'react'
 import { ISP_SECTIONS } from '../constants/ispItems.js'
 
+const EyeIcon = () => (
+  <svg className="isp-needs-review" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+)
+
 const MONTHLY_FREQS = new Set(['monthly'])
 const QUARTERLY_FREQS = new Set(['quarterly', '5/year'])
 const WEEKLY_FREQS = new Set(['weekly', 'weekly/as needed'])
@@ -35,6 +42,7 @@ export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle
                       />
                     </td>
                     <td className="isp-col-label">
+                      {item.needsReview && <EyeIcon />}
                       {item.label}
                       {isAsNeeded
                         ? <span className="isp-freq-as-needed">AS NEEDED</span>

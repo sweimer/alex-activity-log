@@ -7,12 +7,14 @@ export const ISP_SECTIONS = [
         id: 'community-leisure',
         label: 'Community and Leisure Activities',
         freq: 'daily',
+        needsReview: true,
         defaultResponse: 'Alex participated in community and leisure activities at Diversity today.',
       },
       {
         id: 'coping-skills',
         label: 'Encouraged to use coping skills if feeling anxious',
         freq: 'daily',
+        needsReview: true,
         defaultResponse: 'Alex was encouraged to use her coping skills when feeling anxious.',
       },
     ],
@@ -114,6 +116,7 @@ export const ISP_SECTIONS = [
         id: 'dressing',
         label: 'Dressing',
         freq: 'daily',
+        needsReview: true,
         defaultResponse: 'Alex was assisted with dressing.',
       },
       {
@@ -138,6 +141,7 @@ export const ISP_SECTIONS = [
         id: 'housekeeping',
         label: 'House-Keeping',
         freq: 'daily',
+        needsReview: true,
         defaultResponse: 'Alex helped keep her room clean, make her bed, clear table after dining and other daily housekeeping tasks as needed.',
       },
       {
@@ -186,6 +190,7 @@ export const ISP_SECTIONS = [
         label: 'UIR initiated?',
         freq: 'PRN',
         defaultChecked: false,
+        needsReview: true,
         defaultResponse: 'An Unusual Incident Report was initiated by Sponsor or Relief for ...',
       },
       {
@@ -193,6 +198,7 @@ export const ISP_SECTIONS = [
         label: 'First Aid Provided',
         freq: 'PRN',
         defaultChecked: false,
+        needsReview: true,
         defaultResponse: 'First aid was provided to Alex for ...',
       },
       {
@@ -200,18 +206,21 @@ export const ISP_SECTIONS = [
         label: 'CPR',
         freq: 'PRN',
         defaultChecked: false,
+        needsReview: true,
         defaultResponse: 'CPR was administered for ...',
       },
       {
         id: 'transportation',
         label: 'Transportation',
         freq: 'as needed',
+        needsReview: true,
         defaultResponse: 'Transportation was provided as needed.',
       },
       {
         id: 'emotional-outbursts',
         label: 'Support to avoid emotional outbursts',
         freq: 'daily',
+        needsReview: true,
         defaultResponse: 'Support was provided to help Alex avoid emotional outbursts.',
       },
       {
