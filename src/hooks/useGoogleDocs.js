@@ -357,7 +357,7 @@ export function useGoogleDocs() {
     const docFtr =
       `\nKey (The use of any code requires a log entry):  Initials = support provided,  Circled initials = support provided/notation in log,  C = chose not to participate,  A = individual not present,\n` +
       `Printed Name:  Heather Weimer                  Initials: _______  Date: _______\n` +
-      `Printed Name:  Scott Weimer                    Initials: _______  Date: _______\n` +
+      `Printed Name:  Scott Weimer                       Initials: _______  Date: _______\n` +
       `These checklists belong to: _____  ID# ___    ISP Start: 10/01/2026  End:  9/30/2027    Revision: ______\n` +
       `VA ISP Checklist    rev. 4.1.15`
 
@@ -432,6 +432,31 @@ export function useGoogleDocs() {
         },
       })
     }
+
+    // ── Header: CENTER alignment + text styles ──────────────────────────────
+    const _hl1 = `SP Initial Checklist for:   Alexandra Stevenson   SP Dates: from   10/1/26 - 9/30/27\n`
+    const _hl2 = `Month: ${monthName}   Year: ${year}   Provider: Blue Ridge  Service: Sponsored-Residential\n`
+    const _p1End = 1 + _hl1.length    // 86
+    const _p2End = _p1End + 1         // 87 (blank para)
+    const _p3End = _p2End + _hl2.length
+
+    requests.push({ updateParagraphStyle: { range: { startIndex: 1, endIndex: _p2End }, paragraphStyle: { alignment: 'CENTER' }, fields: 'alignment' } })
+    requests.push({ updateParagraphStyle: { range: { startIndex: _p2End, endIndex: _p3End }, paragraphStyle: { alignment: 'CENTER' }, fields: 'alignment' } })
+    // "Alexandra Stevenson": bold + underline (offset 28 from start = idx 29, length 19)
+    requests.push({ updateTextStyle: { range: { startIndex: 29, endIndex: 48 }, textStyle: { bold: true, underline: true }, fields: 'bold,underline' } })
+    // "10/1/26 - 9/30/27\n": bold + italic (offset 67 = idx 68, through end of para 1)
+    requests.push({ updateTextStyle: { range: { startIndex: 68, endIndex: _p1End }, textStyle: { bold: true, italic: true }, fields: 'bold,italic' } })
+
+    // ── Footer: underline names + bold last two lines ────────────────────────
+    const ftrStart = endIdx + cumLen
+    // Heather Weimer: ftrStart+208, length 14
+    requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 208, endIndex: ftrStart + 222 }, textStyle: { underline: true }, fields: 'underline' } })
+    // Scott Weimer + 4 spaces: ftrStart+288, length 16
+    requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 288, endIndex: ftrStart + 304 }, textStyle: { underline: true }, fields: 'underline' } })
+    // "These checklists belong to...": ftrStart+356, length 105
+    requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 356, endIndex: ftrStart + 461 }, textStyle: { bold: true }, fields: 'bold' } })
+    // "VA ISP Checklist    rev. 4.1.15\n": ftrStart+461, length 32
+    requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 461, endIndex: ftrStart + 493 }, textStyle: { bold: true }, fields: 'bold' } })
 
     const bFinal = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
       method: 'POST',
@@ -512,7 +537,7 @@ export function useGoogleDocs() {
       const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' })
       const dateStr = `${dateObj.getMonth() + 1}/${dateObj.getDate()}/${dateObj.getFullYear()}`
       const docOnceHeader = isFirstEntry
-        ? 'ISP Dates: from 10/1/26 - 9/30/27\nProvider: Blue Ridge  Service: Sponsored-Residential\n'
+        ? 'ISP Dates: from 10/1/26 - 9/30/27                     \nProvider: Blue Ridge  Service: Sponsored-Residential\x0b\n'
         : ''
       const firstLine = `Daily Notes for: ${dayName}, ${dateStr}\n`
       const headerText = docOnceHeader + firstLine
@@ -573,9 +598,7 @@ export function useGoogleDocs() {
       const tableRows = tableEl.table.tableRows
       const tableEndIndex = tableEl.endIndex
 
-      // Footer — label only under relief staff, left-aligned under the name
-      const reliefNameIndent = ' '.repeat('Relief Staff: '.length)
-      const footerText = `\nSponsor: ${sponsorName}  ____________________________    ___________\nRelief Staff: ${reliefName}  ____________________________    ___________\n${reliefNameIndent}(sign and date by writer of note)\n`
+      const footerText = `\nSponsor: ${sponsorName}  ____________________________    ___________\nRelief Staff: ${reliefName}  ____________________________    ___________\n(sign and date by writer of note)\n`
 
       // BatchUpdate 2: footer (highest index first), then cells HIGH→LOW, then optional page break
       const requests = []
@@ -645,6 +668,29 @@ export function useGoogleDocs() {
           },
         })
       }
+
+      // ── First-entry header: CENTER + bold+underline on date ─────────────────
+      if (isFirstEntry) {
+        const _ispLine = 'ISP Dates: from 10/1/26 - 9/30/27                     \n'
+        const _provLine = 'Provider: Blue Ridge  Service: Sponsored-Residential\x0b\n'
+        const _ispEnd = insertAt + _ispLine.length   // 56
+        const _provEnd = _ispEnd + _provLine.length  // 110
+        requests.push({ updateParagraphStyle: { range: { startIndex: insertAt, endIndex: _ispEnd }, paragraphStyle: { alignment: 'CENTER' }, fields: 'alignment' } })
+        requests.push({ updateParagraphStyle: { range: { startIndex: _ispEnd, endIndex: _provEnd }, paragraphStyle: { alignment: 'CENTER' }, fields: 'alignment' } })
+        // "10/1/26 - 9/30/27                     \n": bold + underline
+        requests.push({ updateTextStyle: { range: { startIndex: insertAt + 16, endIndex: _ispEnd }, textStyle: { bold: true, underline: true }, fields: 'bold,underline' } })
+      }
+
+      // ── Footer: bold name prefixes + "(sign and date)" ───────────────────────
+      const ftrStart = tableEndIndex + cumLen
+      const sLen = sponsorName.length
+      const rLen = reliefName.length
+      // "Sponsor: " + name + " " bold
+      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 1, endIndex: ftrStart + 11 + sLen }, textStyle: { bold: true }, fields: 'bold' } })
+      // "Relief Staff: " + name + " " bold
+      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 56 + sLen, endIndex: ftrStart + 71 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
+      // "(sign and date by writer of note)\n" bold
+      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 116 + sLen + rLen, endIndex: ftrStart + 150 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
 
       const batchRes2 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
         method: 'POST',
@@ -719,5 +765,290 @@ export function useGoogleDocs() {
     return combined
   }
 
-  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts }
+  async function createWaterTempDoc(docId, month, year) {
+    const monthName = new Date(year, month - 1, 1).toLocaleDateString('en-US', { month: 'long' })
+    const NUM_COLS = 4
+    const COL_WIDTHS = [40, 200, 160, 140]  // 540pt total = 612pt letter - 72pt margins
+    const BLUE = { red: 0, green: 0, blue: 128 / 255 }  // #000080
+
+    const b1 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: [{
+          updateDocumentStyle: {
+            documentStyle: {
+              marginTop:    { magnitude: 36, unit: 'PT' },
+              marginBottom: { magnitude: 36, unit: 'PT' },
+              marginLeft:   { magnitude: 36, unit: 'PT' },
+              marginRight:  { magnitude: 36, unit: 'PT' },
+            },
+            fields: 'marginTop,marginBottom,marginLeft,marginRight',
+          },
+        }],
+      }),
+    })
+    if (!b1.ok) throw new Error(await b1.text())
+
+    const bTable = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ insertTable: { rows: 32, columns: NUM_COLS, location: { index: 1 } } }] }),
+    })
+    if (!bTable.ok) throw new Error(await bTable.text())
+
+    // Line 1 has 3 segments with different font sizes (matching original doc)
+    const hdrL1p1 = `Water Temperature Log                 `  // 14pt
+    const hdrL1p2 = `Individual Service Record`               // 10pt
+    const hdrL1p3 = `                             Blue Ridge Residential Services\n`  // 8pt
+    const hdrLine1 = hdrL1p1 + hdrL1p2 + hdrL1p3
+    const hdrLine2 = `Bath/Shower water temperature shall not exceed 110 °F and not less than 100 °F.\n`
+    const hdrLine3 = `Location: Weimer Home     Individual Name: Alexandra Stevenson\n`
+    const hdrLine4 = `Month: ${monthName}   Year: ${year}\n`
+    const hdrText = hdrLine1 + hdrLine2 + '\n' + hdrLine3 + '\n' + hdrLine4
+
+    // Start positions of each line (body index 1 after insertion)
+    const hdrL2Start = 1 + hdrLine1.length
+    const hdrL3Start = hdrL2Start + hdrLine2.length + 1
+    const hdrL4Start = hdrL3Start + hdrLine3.length + 1
+
+    const bHdr = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ insertText: { location: { index: 1 }, text: hdrText } }] }),
+    })
+    if (!bHdr.ok) throw new Error(await bHdr.text())
+
+    const docRes = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc = await docRes.json()
+    const bodyContent = doc.body?.content ?? []
+    const tableEl = bodyContent.find(el => el.table)
+    if (!tableEl) throw new Error('Water temp table not found')
+    const lastEl = bodyContent[bodyContent.length - 1]
+    const endIdx = Math.max(1, (lastEl?.endIndex ?? 2) - 1)
+
+    const ftrText =
+      `\nStaff initials _______    = Printed Name: Heather Weimer\n` +
+      `Staff initials _______    = Printed Name: Scott Weimer`
+
+    const requests = []
+    requests.push({ insertText: { location: { index: endIdx }, text: ftrText } })
+
+    const tableStartIdx = tableEl.startIndex
+    COL_WIDTHS.forEach((w, i) => {
+      requests.push({
+        updateTableColumnProperties: {
+          tableStartLocation: { index: tableStartIdx },
+          columnIndices: [i],
+          tableColumnProperties: { widthType: 'FIXED_WIDTH', width: { magnitude: w, unit: 'PT' } },
+          fields: 'widthType,width',
+        },
+      })
+    })
+
+    const tableRows = tableEl.table.tableRows
+    const hdrCells = ['Day', 'Type of Bathing', 'Water Temperature', 'Staff\nInitials']
+    const allInsertions = []
+
+    for (let r = tableRows.length - 1; r >= 0; r--) {
+      const row = tableRows[r]
+      for (let c = NUM_COLS - 1; c >= 0; c--) {
+        const text = r === 0 ? hdrCells[c] : c === 0 ? String(r) : null
+        if (!text) continue
+        const cellIdx = row.tableCells[c]?.content?.[0]?.startIndex
+        if (cellIdx == null) continue
+        allInsertions.push({ cellIdx, textLen: text.length, isHeader: r === 0, isDayCol: r > 0 && c === 0 })
+        requests.push({ insertText: { location: { index: cellIdx }, text } })
+      }
+    }
+
+    const sortedAsc = [...allInsertions].sort((a, b) => a.cellIdx - b.cellIdx)
+    let cumLen = 0
+    const shiftMap = new Map()
+    for (const { cellIdx, textLen } of sortedAsc) { shiftMap.set(cellIdx, cumLen); cumLen += textLen }
+    const totalCellChars = cumLen
+
+    // Helper: cumulative shift for any index not in shiftMap (e.g. empty cells)
+    const shiftBelow = (targetIdx) => {
+      let s = 0
+      for (const { cellIdx, textLen } of sortedAsc) { if (cellIdx < targetIdx) s += textLen; else break }
+      return s
+    }
+
+    const TNR = { fontFamily: 'Times New Roman' }
+
+    for (const { cellIdx, textLen, isHeader, isDayCol } of allInsertions) {
+      const finalStart = cellIdx + (shiftMap.get(cellIdx) ?? 0)
+      if (isHeader) {
+        requests.push({
+          updateTextStyle: {
+            range: { startIndex: finalStart, endIndex: finalStart + textLen },
+            textStyle: { bold: true, weightedFontFamily: TNR },
+            fields: 'bold,weightedFontFamily',
+          },
+        })
+      }
+      if (isDayCol) {
+        requests.push({
+          updateTextStyle: {
+            range: { startIndex: finalStart, endIndex: finalStart + textLen },
+            textStyle: { weightedFontFamily: TNR },
+            fields: 'weightedFontFamily',
+          },
+        })
+      }
+      if (isHeader || isDayCol) {
+        requests.push({
+          updateParagraphStyle: {
+            range: { startIndex: finalStart, endIndex: finalStart + textLen },
+            paragraphStyle: { alignment: 'CENTER' },
+            fields: 'alignment',
+          },
+        })
+      }
+    }
+
+    // Center water temperature column (c=2, r>0) — empty cells, indices shift from lower insertions
+    for (let r = 1; r < tableRows.length; r++) {
+      const origIdx = tableRows[r].tableCells[2]?.content?.[0]?.startIndex
+      if (origIdx == null) continue
+      const finalIdx = origIdx + shiftBelow(origIdx)
+      requests.push({
+        updateParagraphStyle: {
+          range: { startIndex: finalIdx, endIndex: finalIdx + 1 },
+          paragraphStyle: { alignment: 'CENTER' },
+          fields: 'alignment',
+        },
+      })
+    }
+
+    // Center lines 2–4 of the doc header
+    for (const [start, len] of [
+      [hdrL2Start, hdrLine2.length],
+      [hdrL3Start, hdrLine3.length],
+      [hdrL4Start, hdrLine4.length],
+    ]) {
+      requests.push({
+        updateParagraphStyle: {
+          range: { startIndex: start, endIndex: start + len },
+          paragraphStyle: { alignment: 'CENTER' },
+          fields: 'alignment',
+        },
+      })
+    }
+
+    // Line 1: 3-segment styling (14pt / 10pt / 8pt, all #000080 bold underline)
+    for (const [start, len, size] of [
+      [1,                                        hdrL1p1.length, 14],
+      [1 + hdrL1p1.length,                       hdrL1p2.length, 10],
+      [1 + hdrL1p1.length + hdrL1p2.length,      hdrL1p3.length,  8],
+    ]) {
+      requests.push({
+        updateTextStyle: {
+          range: { startIndex: start, endIndex: start + len },
+          textStyle: { bold: true, underline: true, fontSize: { magnitude: size, unit: 'PT' }, foregroundColor: { color: { rgbColor: BLUE } } },
+          fields: 'bold,underline,fontSize,foregroundColor',
+        },
+      })
+    }
+
+    // Line 2: italic 12pt
+    requests.push({
+      updateTextStyle: {
+        range: { startIndex: hdrL2Start, endIndex: hdrL2Start + hdrLine2.length },
+        textStyle: { italic: false, fontSize: { magnitude: 12, unit: 'PT' }, backgroundColor: { color: { rgbColor: { red: 1, green: 1, blue: 0 } } } },
+        fields: 'italic,fontSize,backgroundColor',
+      },
+    })
+
+    // Line 3: "Location: " bold / "Weimer Home" bold+underline / "     Individual Name: " bold / "Alexandra Stevenson\n" bold+underline — all Times New Roman
+    const l3 = hdrL3Start
+    for (const [off, len, style] of [
+      [0,  10, { bold: true, weightedFontFamily: TNR }],
+      [10, 11, { bold: true, underline: true, weightedFontFamily: TNR }],
+      [21, 22, { bold: true, weightedFontFamily: TNR }],
+      [43, hdrLine3.length - 43, { bold: true, underline: true, weightedFontFamily: TNR }],
+    ]) {
+      const fields = Object.keys(style).join(',')
+      requests.push({ updateTextStyle: { range: { startIndex: l3 + off, endIndex: l3 + off + len }, textStyle: style, fields } })
+    }
+
+    // Line 4: "Month: " bold / monthName bold+underline / "   Year: " bold / year bold+underline — all Times New Roman
+    const l4 = hdrL4Start
+    const mnLen = monthName.length
+    const yrLen = String(year).length
+    for (const [off, len, style] of [
+      [0,             7,     { bold: true, weightedFontFamily: TNR }],
+      [7,             mnLen, { bold: true, underline: true, weightedFontFamily: TNR }],
+      [7 + mnLen,     9,     { bold: true, weightedFontFamily: TNR }],
+      [7 + mnLen + 9, yrLen, { bold: true, underline: true, weightedFontFamily: TNR }],
+    ]) {
+      const fields = Object.keys(style).join(',')
+      requests.push({ updateTextStyle: { range: { startIndex: l4 + off, endIndex: l4 + off + len }, textStyle: style, fields } })
+    }
+
+    // Footer: underline the two names (positions relative to footer start after all cell insertions)
+    const ftrStart = endIdx + totalCellChars
+    // "\n" + "Staff... Printed Name: "(42) + "Heather Weimer\n"(15) + "Staff..."(42) + "Scott Weimer"(12)
+    requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 43, endIndex: ftrStart + 58 }, textStyle: { underline: true }, fields: 'underline' } })
+    requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 101, endIndex: ftrStart + 113 }, textStyle: { underline: true }, fields: 'underline' } })
+
+    const bFinal = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests }),
+    })
+    if (!bFinal.ok) throw new Error(await bFinal.text())
+  }
+
+  async function saveToWaterTempLog(bathingType, waterTemp, dateObj) {
+    if (!accessToken) return
+    if (!bathingType && !waterTemp) return
+
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+    const year = dateObj.getFullYear()
+    const day = dateObj.getDate()
+    const docName = `${month}/${year}-DailyWaterTempLog`
+
+    let docId = await findDoc(docName)
+    if (!docId) {
+      docId = await createDoc(docName)
+      await createWaterTempDoc(docId, Number(month), year)
+    }
+
+    const docRes = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc = await docRes.json()
+    const tableEl = (doc.body?.content ?? []).find(el => el.table)
+    if (!tableEl) throw new Error('Water temp table not found')
+
+    const row = tableEl.table.tableRows[day]
+    if (!row) throw new Error(`Row for day ${day} not found`)
+
+    const cells = [
+      { col: 2, text: waterTemp ? `${waterTemp}°F` : '' },
+      { col: 1, text: bathingType === 'shower' ? '☐ Bath   ☑ Shower' : '☑ Bath   ☐ Shower' },
+    ].filter(c => c.text)
+
+    const requests = cells
+      .map(({ col, text }) => {
+        const cellIdx = row.tableCells[col]?.content?.[0]?.startIndex
+        if (cellIdx == null) return null
+        return { insertText: { location: { index: cellIdx }, text } }
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.insertText.location.index - a.insertText.location.index)
+
+    if (!requests.length) return { docId, docName }
+
+    const r = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests }),
+    })
+    if (!r.ok) throw new Error(await r.text())
+
+    return { docId, docName }
+  }
+
+  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, saveToWaterTempLog, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts }
 }
