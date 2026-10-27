@@ -674,6 +674,7 @@ function MainApp() {
                 checkedThisMonth={checkedThisMonth}
                 checkedThisQuarter={checkedThisQuarter}
                 checkedThisWeek={checkedThisWeek}
+                selectedDate={selectedDate}
                 selectedYear={selectedDate.getFullYear()}
                 onSetDate={setSelectedISO}
               />

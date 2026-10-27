@@ -224,6 +224,7 @@ export const ISP_SECTIONS = [
         freq: 'as needed',
         needsReview: true,
         defaultResponse: 'Transportation was provided by the Diversity van and by Sponsor and Relief to appointments and community activities.',
+        weekendResponse: 'Transportation was provided by Sponsor and Relief to community activities.',
       },
       {
         id: 'emotional-outbursts',

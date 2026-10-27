@@ -13,7 +13,10 @@ const QUARTERLY_FREQS = new Set(['quarterly', '5/year'])
 const WEEKLY_FREQS = new Set(['weekly', 'weekly/as needed'])
 const AS_NEEDED_FREQS = new Set(['as needed', 'PRN'])
 
-export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle, onResponseChange, bathingData = { type: 'bath', temp: '' }, onBathingChange, bmData = { time: '', type: '', notes: '' }, onBmChange, checkedThisMonth = new Set(), checkedThisQuarter = new Set(), checkedThisWeek = new Set(), selectedYear, onSetDate }) {
+export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle, onResponseChange, bathingData = { type: 'bath', temp: '' }, onBathingChange, bmData = { time: '', type: '', notes: '' }, onBmChange, checkedThisMonth = new Set(), checkedThisQuarter = new Set(), checkedThisWeek = new Set(), selectedDate, selectedYear, onSetDate }) {
+  const isWeekend = selectedDate && (selectedDate.getDay() === 0 || selectedDate.getDay() === 6)
+  const getDefault = (item) => (isWeekend && item.weekendResponse) ? item.weekendResponse : item.defaultResponse
+
   return (
     <div className="isp-checklist">
       {ISP_SECTIONS.map(section => (
@@ -23,7 +26,7 @@ export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle
             <tbody>
               {section.items.map(item => {
                 const checked = !!ispChecked[item.id]
-                const response = ispResponses[item.id] ?? item.defaultResponse
+                const response = ispResponses[item.id] ?? getDefault(item)
                 const isPeriodic = item.defaultChecked === false
                 const needed = isPeriodic && (
                   (MONTHLY_FREQS.has(item.freq) && !checkedThisMonth.has(item.id)) ||
@@ -38,7 +41,7 @@ export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={() => onToggle(item.id, item.defaultResponse)}
+                        onChange={() => onToggle(item.id, getDefault(item))}
                       />
                     </td>
                     <td className="isp-col-label">
