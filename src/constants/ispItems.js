@@ -165,7 +165,7 @@ export const ISP_SECTIONS = [
         label: 'Shopping',
         freq: 'weekly/as needed',
         defaultChecked: false,
-        defaultResponse: 'Alex assisted in pushing cart and carrying groceries as needed.',
+        defaultResponse: 'Alex assisted in pushing cart and carrying groceries to her ability.',
       },
       {
         id: 'meal-plan',
