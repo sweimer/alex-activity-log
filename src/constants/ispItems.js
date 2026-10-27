@@ -9,6 +9,7 @@ export const ISP_SECTIONS = [
         freq: 'daily',
         needsReview: true,
         defaultResponse: 'Alex participated in community and leisure activities at Diversity today.',
+        weekendResponse: 'Alex participated in community and leisure activities with Sponsor and Relief today.',
       },
       {
         id: 'coping-skills',
