@@ -132,6 +132,22 @@ function MainApp() {
     setIspChecked(prev => ({ ...prev, 'disaster-drill': mo === 12 && d === 1 }))
   }, [selectedISO])
 
+  // Auto-check Bathing on odd days (1, 3, 5 …); re-randomize temp on date change
+  useEffect(() => {
+    const d = Number(selectedISO.split('-')[2])
+    setIspChecked(prev => ({ ...prev, bathing: d % 2 === 1 }))
+    setBathingData(prev => ({ ...prev, temp: randomBathTemp() }))
+  }, [selectedISO])
+
+  // Auto-check Bowel Movement ~every 2–3 days using a date-seeded hash (non-strict pattern)
+  useEffect(() => {
+    const [y, mo, d] = selectedISO.split('-').map(Number)
+    const seed = y * 366 + mo * 31 + d
+    const r = Math.abs(Math.sin(seed * 12.9898 + 78.233))
+    setIspChecked(prev => ({ ...prev, 'bowel-movement': r < 0.4 }))
+    setBmData({ time: '', type: '', notes: '' })
+  }, [selectedISO])
+
   // Smoke Detector follows Fire Drill
   useEffect(() => {
     setIspChecked(prev => ({ ...prev, 'smoke-detector': !!prev['fire-drill'] }))
@@ -251,12 +267,18 @@ function MainApp() {
   const [entry, setEntry] = useState('')
 
   // Google
-  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts } = useGoogleDocs()
+  const { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, saveToWaterTempLog, saveToBMChart, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts } = useGoogleDocs()
   const { saveMealsToCalendar, saveDailyMenuToCalendar } = useGoogleCalendar(accessToken)
   const [duplicateWarning, setDuplicateWarning] = useState(false)
   const [addToCalendar, setAddToCalendar] = useState(true)
-  const [calendarStatus, setCalendarStatus] = useState(null)    // null | 'saving' | 'done' | 'error'
-  const [checklistStatus, setChecklistStatus] = useState(null)  // null | 'saving' | 'done' | 'error'
+  const [calendarStatus, setCalendarStatus] = useState(null)      // null | 'saving' | 'done' | 'error'
+  const [checklistStatus, setChecklistStatus] = useState(null)    // null | 'saving' | 'done' | 'error'
+  const [waterTempStatus, setWaterTempStatus] = useState(null)    // null | 'saving' | 'done' | 'error'
+  const [bmStatus, setBmStatus] = useState(null)                  // null | 'saving' | 'done' | 'error'
+  const [bmData, setBmData] = useState({ time: '', type: '', notes: '' })
+  const BATH_TEMPS = [102, 103, 104]
+  const randomBathTemp = () => String(BATH_TEMPS[Math.floor(Math.random() * BATH_TEMPS.length)])
+  const [bathingData, setBathingData] = useState({ type: 'shower', temp: randomBathTemp() })
   const [checkedThisMonth, setCheckedThisMonth] = useState(new Set())
   const [checkedThisQuarter, setCheckedThisQuarter] = useState(new Set())
   const [checkedThisWeek, setCheckedThisWeek] = useState(new Set())
@@ -382,10 +404,17 @@ function MainApp() {
         lines.push(section.label.toUpperCase())
         for (const item of section.items) {
           const checked = !!ispChecked[item.id]
-          const response = checked ? (ispResponses[item.id] ?? item.defaultResponse) : 'N/A'
           if (checked) {
             lines.push(`✓  ${item.label} (${item.freq})`)
-            lines.push(`   ${response}`)
+            if (item.id === 'bowel-movement') {
+              const parts = []
+              if (bmData.time) parts.push(`Time: ${bmData.time}`)
+              if (bmData.type) parts.push(`Type ${bmData.type}`)
+              if (bmData.notes) parts.push(bmData.notes)
+              lines.push(`   ${parts.length ? parts.join('. ') : 'BM noted.'}`)
+            } else {
+              lines.push(`   ${ispResponses[item.id] ?? item.defaultResponse}`)
+            }
           } else {
             lines.push(`○  ${item.label} (${item.freq}) — N/A`)
           }
@@ -410,6 +439,23 @@ function MainApp() {
         saveToChecklist(ispChecked, selectedDate)
           .then(() => setChecklistStatus('done'))
           .catch(err => { console.error('Checklist error:', err); setChecklistStatus('error') })
+
+        if (ispChecked['bathing'] && (bathingData.type || bathingData.temp)) {
+          setWaterTempStatus('saving')
+          saveToWaterTempLog(bathingData.type, bathingData.temp, selectedDate)
+            .then(() => setWaterTempStatus('done'))
+            .catch(err => { console.error('Water temp error:', err); setWaterTempStatus('error') })
+        }
+
+        if (ispChecked['bowel-movement'] && (bmData.time || bmData.type || bmData.notes)) {
+          setBmStatus('saving')
+          saveToBMChart(bmData.time, bmData.type, bmData.notes, selectedDate)
+            .then(() => setBmStatus('done'))
+            .catch(err => { console.error('BM chart error:', err); setBmStatus('error') })
+        } else if (!ispChecked['bowel-movement']) {
+          saveToBMChart('N/A', '', '', selectedDate)
+            .catch(err => console.error('BM chart N/A error:', err))
+        }
       }
       return
     }
@@ -506,6 +552,8 @@ function MainApp() {
     setCheckedItems({})
     setSectionNotes({})
     setAdditionalNotes('')
+    setBmData({ time: '', type: '', notes: '' })
+    setBmStatus(null)
     setEntry('')
     setSaveStatus(null)
     setCalendarStatus(null)
@@ -616,6 +664,10 @@ function MainApp() {
                   })
                 }}
                 onResponseChange={(id, value) => setIspResponses(prev => ({ ...prev, [id]: value }))}
+                bathingData={bathingData}
+                onBathingChange={(field, value) => setBathingData(prev => ({ ...prev, [field]: value }))}
+                bmData={bmData}
+                onBmChange={(field, value) => setBmData(prev => ({ ...prev, [field]: value }))}
                 checkedThisMonth={checkedThisMonth}
                 checkedThisQuarter={checkedThisQuarter}
                 checkedThisWeek={checkedThisWeek}

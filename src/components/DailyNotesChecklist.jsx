@@ -13,7 +13,7 @@ const QUARTERLY_FREQS = new Set(['quarterly', '5/year'])
 const WEEKLY_FREQS = new Set(['weekly', 'weekly/as needed'])
 const AS_NEEDED_FREQS = new Set(['as needed', 'PRN'])
 
-export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle, onResponseChange, checkedThisMonth = new Set(), checkedThisQuarter = new Set(), checkedThisWeek = new Set(), selectedYear, onSetDate }) {
+export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle, onResponseChange, bathingData = { type: 'bath', temp: '' }, onBathingChange, bmData = { time: '', type: '', notes: '' }, onBmChange, checkedThisMonth = new Set(), checkedThisQuarter = new Set(), checkedThisWeek = new Set(), selectedYear, onSetDate }) {
   return (
     <div className="isp-checklist">
       {ISP_SECTIONS.map(section => (
@@ -60,7 +60,64 @@ export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle
                       )}
                     </td>
                     <td className="isp-col-response">
-                      {checked ? (
+                      {checked && item.id === 'bathing' && (
+                        <div className="bathing-fields">
+                          <label className="bathing-type-label">
+                            <input type="radio" name="bathing-type" value="bath"
+                              checked={bathingData.type === 'bath'}
+                              onChange={() => onBathingChange('type', 'bath')} />
+                            Bath
+                          </label>
+                          <label className="bathing-type-label">
+                            <input type="radio" name="bathing-type" value="shower"
+                              checked={bathingData.type === 'shower'}
+                              onChange={() => onBathingChange('type', 'shower')} />
+                            Shower
+                          </label>
+                          <input
+                            type="number"
+                            className="bathing-temp-input"
+                            min="100" max="110"
+                            placeholder="°F"
+                            value={bathingData.temp}
+                            onChange={e => onBathingChange('temp', e.target.value)}
+                          />
+                          {bathingData.temp && (Number(bathingData.temp) < 100 || Number(bathingData.temp) > 110) && (
+                            <span className="bathing-temp-warn">Must be 100–110°F</span>
+                          )}
+                        </div>
+                      )}
+                      {checked && item.id === 'bowel-movement' ? (
+                        <div className="bm-fields">
+                          <input
+                            type="time"
+                            className="bm-time-input"
+                            value={bmData.time}
+                            onChange={e => onBmChange('time', e.target.value)}
+                          />
+                          <select
+                            className="bm-type-select"
+                            value={bmData.type}
+                            onChange={e => onBmChange('type', e.target.value)}
+                          >
+                            <option value="">Type...</option>
+                            <option value="1">1 — Separate hard lumps</option>
+                            <option value="2">2 — Sausage-shaped, lumpy</option>
+                            <option value="3">3 — Sausage with cracks</option>
+                            <option value="4">4 — Smooth sausage/snake</option>
+                            <option value="5">5 — Soft blobs, clear edges</option>
+                            <option value="6">6 — Fluffy, mushy</option>
+                            <option value="7">7 — Watery, no solid pieces</option>
+                          </select>
+                          <input
+                            type="text"
+                            className="bm-notes-input"
+                            placeholder="Notes..."
+                            value={bmData.notes}
+                            onChange={e => onBmChange('notes', e.target.value)}
+                          />
+                        </div>
+                      ) : checked ? (
                         <textarea
                           className="isp-response-input"
                           value={response}

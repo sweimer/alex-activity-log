@@ -1,6 +1,15 @@
 import { useState, useCallback } from 'react'
 import { TAG_CONFIG } from '../constants/tags.js'
 import { ISP_SECTIONS } from '../constants/ispItems.js'
+import bmImg1 from '../assets/bm/BMType01.png'
+import bmImg2 from '../assets/bm/BMType02.png'
+import bmImg3 from '../assets/bm/BMType03.png'
+import bmImg4 from '../assets/bm/BMType04.png'
+import bmImg5 from '../assets/bm/BMType05.png'
+import bmImg6 from '../assets/bm/BMType06.png'
+import bmImg7 from '../assets/bm/BMType07.png'
+
+const BM_IMAGE_URLS = [bmImg1, bmImg2, bmImg3, bmImg4, bmImg5, bmImg6, bmImg7]
 
 // Item map: item ID → { sectionIdx (which table), rowIdx (row within that table, 1-based) }
 // Row 0 of each table is the "Support Activities | 1 | … | 31" column header
@@ -1001,6 +1010,459 @@ export function useGoogleDocs() {
     if (!bFinal.ok) throw new Error(await bFinal.text())
   }
 
+  async function createBMChartDoc(docId, month, year) {
+    const monthName = new Date(year, month - 1, 1).toLocaleDateString('en-US', { month: 'long' })
+    const TITLE_BLUE = { red: 11 / 255, green: 83 / 255, blue: 148 / 255 }
+    const TNR = { fontFamily: 'Times New Roman' }
+    const ARIAL = { fontFamily: 'Arial' }
+    const MAIN_COLS = 5
+    const MAIN_COL_WIDTHS = [50.4, 49.5, 67.5, 270, 72]
+    const MAIN_HEADERS = ['Date', 'Time', 'BM Type*', 'Notes', 'Staff\nInitials']
+    const KEY_COLS = 3
+    const KEY_COL_WIDTHS = [50.4, 364.5, 94.5]
+    const KEY_HEADERS = ['Type', 'Description', 'Image']
+    const BRISTOL = [
+      ['1', 'Separate hard lumps, like nuts'],
+      ['2', 'Sausage-shaped but lumpy'],
+      ['3', 'Like a sausage or snake but with cracks on its surface'],
+      ['4', 'Like a sausage or snake, smooth and soft'],
+      ['5', 'Soft blobs with clear-cut edges'],
+      ['6', 'Fluffy pieces with ragged edges, a mushy stool'],
+      ['7', 'Watery, no solid pieces'],
+    ]
+
+    const b1 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: [{ updateDocumentStyle: {
+          documentStyle: {
+            marginTop:    { magnitude: 36, unit: 'PT' },
+            marginBottom: { magnitude: 36, unit: 'PT' },
+            marginLeft:   { magnitude: 36, unit: 'PT' },
+            marginRight:  { magnitude: 36, unit: 'PT' },
+          },
+          fields: 'marginTop,marginBottom,marginLeft,marginRight',
+        } }],
+      }),
+    })
+    if (!b1.ok) throw new Error(await b1.text())
+
+    const b2 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ insertTable: { rows: 32, columns: MAIN_COLS, location: { index: 1 } } }] }),
+    })
+    if (!b2.ok) throw new Error(await b2.text())
+
+    const titleLine = `Bowel Movement Chart${' '.repeat(71)}Blue Ridge Residential Services\n\n`
+    const hdrText = titleLine + `Individual Name:   Alexandra Stevenson   Month: ${monthName}   Year: ${year}\n`
+    const b3 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ insertText: { location: { index: 1 }, text: hdrText } }] }),
+    })
+    if (!b3.ok) throw new Error(await b3.text())
+
+    const docRes1 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc1 = await docRes1.json()
+    const lastEl1 = (doc1.body?.content ?? [])[doc1.body.content.length - 1]
+    const endIdx1 = Math.max(1, (lastEl1?.endIndex ?? 2) - 1)
+
+    const postText = `\nInitials ______ = Printed Name: Heather Weimer\nInitials ______ = Printed Name: Scott Weimer\n\n*BM Type Key:\n`
+    const b4 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ insertText: { location: { index: endIdx1 }, text: postText } }] }),
+    })
+    if (!b4.ok) throw new Error(await b4.text())
+
+    const docRes2 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc2 = await docRes2.json()
+    const lastEl2 = (doc2.body?.content ?? [])[doc2.body.content.length - 1]
+    const endIdx2 = Math.max(1, (lastEl2?.endIndex ?? 2) - 1)
+
+    const b5 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{ insertTable: { rows: 8, columns: KEY_COLS, location: { index: endIdx2 } } }] }),
+    })
+    if (!b5.ok) throw new Error(await b5.text())
+
+    const docRes3 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc3 = await docRes3.json()
+    const bodyContent3 = doc3.body?.content ?? []
+    const tables3 = bodyContent3.filter(el => el.table)
+    const mainTable = tables3[0]
+    const keyTable = tables3[1]
+    if (!mainTable || !keyTable) throw new Error('BM tables not found after creation')
+    const findPara = (prefix) => bodyContent3.find(el => {
+      if (!el.paragraph) return false
+      return (el.paragraph.elements ?? []).map(e => e.textRun?.content ?? '').join('').startsWith(prefix)
+    })
+    const initialsParas = bodyContent3.filter(el => {
+      if (!el.paragraph) return false
+      return (el.paragraph.elements ?? []).map(e => e.textRun?.content ?? '').join('').startsWith('Initials ______')
+    })
+    const bmKeyPara = findPara('*BM Type Key:')
+
+    const insertReqs = []
+    const allInsertions = []
+
+    const mainRows = mainTable.table.tableRows
+    for (let r = mainRows.length - 1; r >= 0; r--) {
+      for (let c = MAIN_COLS - 1; c >= 0; c--) {
+        let text = null
+        if (r === 0) text = MAIN_HEADERS[c]
+        if (!text) continue
+        const cellIdx = mainRows[r].tableCells[c]?.content?.[0]?.startIndex
+        if (cellIdx == null) continue
+        allInsertions.push({ cellIdx, text, table: 'main', r, c })
+      }
+    }
+
+    const keyRows = keyTable.table.tableRows
+    for (let r = keyRows.length - 1; r >= 0; r--) {
+      for (let c = KEY_COLS - 1; c >= 0; c--) {
+        let text = null
+        if (r === 0) text = KEY_HEADERS[c]
+        else if (c === 0) text = BRISTOL[r - 1][0]
+        else if (c === 1) text = BRISTOL[r - 1][1]
+        if (!text) continue
+        const cellIdx = keyRows[r].tableCells[c]?.content?.[0]?.startIndex
+        if (cellIdx == null) continue
+        allInsertions.push({ cellIdx, text, table: 'key', r, c })
+      }
+    }
+
+    // Sort ALL insertions globally HIGH→LOW so requests don't invalidate each other's indices
+    for (const { cellIdx, text } of [...allInsertions].sort((a, b) => b.cellIdx - a.cellIdx)) {
+      insertReqs.push({ insertText: { location: { index: cellIdx }, text } })
+    }
+
+    const sortedAsc = [...allInsertions].sort((a, b) => a.cellIdx - b.cellIdx)
+    let cumLen = 0
+    const shiftMap = new Map()
+    for (const { cellIdx, text } of sortedAsc) { shiftMap.set(cellIdx, cumLen); cumLen += text.length }
+
+    const shiftBelow = (targetIdx) => {
+      let s = 0
+      for (const { cellIdx, text } of sortedAsc) { if (cellIdx < targetIdx) s += text.length; else break }
+      return s
+    }
+
+    // Column widths must be set BEFORE bInsert — after bInsert the key table
+    // startIndex shifts by the sum of chars inserted into the main table, making
+    // the doc3 index stale. Setting widths here while doc3 is current avoids that.
+    const colWidthReqs = []
+    MAIN_COL_WIDTHS.forEach((w, i) => colWidthReqs.push({
+      updateTableColumnProperties: {
+        tableStartLocation: { index: mainTable.startIndex },
+        columnIndices: [i],
+        tableColumnProperties: { widthType: 'FIXED_WIDTH', width: { magnitude: w, unit: 'PT' } },
+        fields: 'widthType,width',
+      },
+    }))
+    KEY_COL_WIDTHS.forEach((w, i) => colWidthReqs.push({
+      updateTableColumnProperties: {
+        tableStartLocation: { index: keyTable.startIndex },
+        columnIndices: [i],
+        tableColumnProperties: { widthType: 'FIXED_WIDTH', width: { magnitude: w, unit: 'PT' } },
+        fields: 'widthType,width',
+      },
+    }))
+    const bCols = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: colWidthReqs }),
+    })
+    if (!bCols.ok) {
+      const errText = await bCols.text()
+      console.error('BM chart bCols failed:', errText)
+      throw new Error(errText)
+    }
+
+    const styleReqs = []
+
+    for (const { cellIdx, text, table, r, c } of allInsertions) {
+      const finalStart = cellIdx + (shiftMap.get(cellIdx) ?? 0)
+      const finalEnd = finalStart + text.length
+      const isMainHeader = table === 'main' && r === 0
+      const isMainDay = table === 'main' && r > 0 && c === 0
+      const isKeyHeader = table === 'key' && r === 0
+      const isKeyType = table === 'key' && r > 0 && c === 0
+      const isKeyDesc = table === 'key' && r > 0 && c === 1
+
+      if (isMainHeader) {
+        styleReqs.push({
+          updateTextStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            textStyle: { weightedFontFamily: TNR },
+            fields: 'weightedFontFamily',
+          },
+        })
+        styleReqs.push({
+          updateParagraphStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            paragraphStyle: { alignment: 'CENTER' },
+            fields: 'alignment',
+          },
+        })
+      }
+      if (isKeyHeader) {
+        styleReqs.push({
+          updateTextStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            textStyle: { bold: true, weightedFontFamily: TNR },
+            fields: 'bold,weightedFontFamily',
+          },
+        })
+        styleReqs.push({
+          updateParagraphStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            paragraphStyle: { alignment: 'CENTER' },
+            fields: 'alignment',
+          },
+        })
+      }
+      if (isMainDay) {
+        styleReqs.push({
+          updateParagraphStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            paragraphStyle: { alignment: 'CENTER' },
+            fields: 'alignment',
+          },
+        })
+      }
+      if (isKeyType) {
+        styleReqs.push({
+          updateTextStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            textStyle: { bold: true },
+            fields: 'bold',
+          },
+        })
+        styleReqs.push({
+          updateParagraphStyle: {
+            range: { startIndex: finalStart, endIndex: finalEnd },
+            paragraphStyle: { alignment: 'CENTER' },
+            fields: 'alignment',
+          },
+        })
+      }
+    }
+
+    // Title: single line, full-width underline
+    // [1, 92]  = "Bowel Movement Chart" + 71 spaces — bold, underline, 14pt, TITLE_BLUE
+    // [92, 123] = "Blue Ridge Residential Services" — underline, 8pt, TITLE_BLUE, no bold
+    styleReqs.push({
+      updateParagraphStyle: {
+        range: { startIndex: 1, endIndex: 1 + titleLine.length },
+        paragraphStyle: { spaceBelow: { magnitude: 0, unit: 'PT' } },
+        fields: 'spaceBelow',
+      },
+    })
+    styleReqs.push({
+      updateTextStyle: {
+        range: { startIndex: 1, endIndex: 92 },
+        textStyle: { bold: true, underline: true, fontSize: { magnitude: 14, unit: 'PT' }, weightedFontFamily: TNR, foregroundColor: { color: { rgbColor: TITLE_BLUE } } },
+        fields: 'bold,underline,fontSize,weightedFontFamily,foregroundColor',
+      },
+    })
+    styleReqs.push({
+      updateTextStyle: {
+        range: { startIndex: 92, endIndex: 123 },
+        textStyle: { bold: false, underline: true, fontSize: { magnitude: 8, unit: 'PT' }, weightedFontFamily: TNR, foregroundColor: { color: { rgbColor: TITLE_BLUE } } },
+        fields: 'bold,underline,fontSize,weightedFontFamily,foregroundColor',
+      },
+    })
+
+    // Individual name line: labels bold TNR, values underline-only TNR
+    // hdrText = "Individual Name:   Alexandra Stevenson   Month: ${monthName}   Year: ${year}\n"
+    // label offsets (0-based from individual line start): "Individual Name:" @0, "Month:" @41, "Year:" @(48+mLen+3)
+    const _tlLen = titleLine.length
+    const _nameStart = 1 + _tlLen + 19   // "Individual Name:   " = 19
+    const _nameEnd = _nameStart + 19
+    const _mnStart = _nameEnd + 10       // "   Month: " = 10
+    const _mnEnd = _mnStart + monthName.length
+    const _yrStart = _mnEnd + 9          // "   Year: " = 9
+    const _yrEnd = _yrStart + String(year).length
+    // Labels: "Individual Name:", "Month:", "Year:" — bold TNR
+    for (const [s, e] of [
+      [1 + _tlLen, 1 + _tlLen + 16],   // "Individual Name:"
+      [_mnStart - 7, _mnStart - 1],    // "Month:" (within "   Month: ")
+      [_yrStart - 6, _yrStart - 1],    // "Year:" (within "   Year: ")
+    ]) {
+      styleReqs.push({
+        updateTextStyle: {
+          range: { startIndex: s, endIndex: e },
+          textStyle: { bold: true, weightedFontFamily: TNR },
+          fields: 'bold,weightedFontFamily',
+        },
+      })
+    }
+    // Values: name, monthName, year — underline-only TNR
+    for (const [s, e] of [[_nameStart, _nameEnd], [_mnStart, _mnEnd], [_yrStart, _yrEnd]]) {
+      styleReqs.push({
+        updateTextStyle: {
+          range: { startIndex: s, endIndex: e },
+          textStyle: { underline: true, weightedFontFamily: TNR },
+          fields: 'underline,weightedFontFamily',
+        },
+      })
+    }
+
+    // Initials lines: "Initials" bold, "Printed Name:" bold, name underline
+    // Line structure: "Initials" (8) + " ______ = " (10) + "Printed Name:" (13) + " " (1) + name
+    for (const para of initialsParas) {
+      const initShift = shiftBelow(para.startIndex)
+      const initStart = para.startIndex + initShift
+      const initLen = para.endIndex - para.startIndex - 1
+      if (initLen < 32) continue
+      styleReqs.push({ updateTextStyle: { range: { startIndex: initStart, endIndex: initStart + 8 }, textStyle: { bold: true }, fields: 'bold' } })
+      styleReqs.push({ updateTextStyle: { range: { startIndex: initStart + 18, endIndex: initStart + 31 }, textStyle: { bold: true }, fields: 'bold' } })
+      styleReqs.push({ updateTextStyle: { range: { startIndex: initStart + 32, endIndex: initStart + initLen }, textStyle: { underline: true }, fields: 'underline' } })
+    }
+
+    // *BM Type Key: bold TNR
+    if (bmKeyPara) {
+      const keyShift = shiftBelow(bmKeyPara.startIndex)
+      const keyStart = bmKeyPara.startIndex + keyShift
+      const keyLen = bmKeyPara.endIndex - bmKeyPara.startIndex - 1
+      styleReqs.push({
+        updateTextStyle: {
+          range: { startIndex: keyStart, endIndex: keyStart + keyLen },
+          textStyle: { bold: true, weightedFontFamily: TNR },
+          fields: 'bold,weightedFontFamily',
+        },
+      })
+    }
+
+    const bInsert = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: insertReqs }),
+    })
+    if (!bInsert.ok) {
+      const errText = await bInsert.text()
+      console.error('BM chart bInsert failed:', errText)
+      throw new Error(errText)
+    }
+
+    const bStyle = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: styleReqs }),
+    })
+    if (!bStyle.ok) {
+      const errText = await bStyle.text()
+      console.error('BM chart bStyle failed:', errText)
+      throw new Error(errText)
+    }
+
+    // Insert images into key table — best-effort, does not block data write
+    insertBMImages(docId).catch(err => console.error('BM image insert failed:', err))
+  }
+
+  async function insertBMImages(docId) {
+    // Use the app's own publicly served Vite assets as image URIs — no Drive upload needed.
+    // Skipped in local dev since localhost isn't publicly reachable by the Docs API.
+    const origin = window.location.origin
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.')) {
+      console.log('BM images skipped in local dev — assets not publicly accessible')
+      return
+    }
+
+    const docRes4 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc4 = await docRes4.json()
+    const keyTable4 = (doc4.body?.content ?? []).filter(el => el.table)[1]
+    if (!keyTable4) throw new Error('Key table not found for image insertion')
+
+    const imageReqs = []
+    for (let r = 1; r <= 7; r++) {
+      const cell = keyTable4.table.tableRows[r]?.tableCells[2]
+      const cellIdx = cell?.content?.[0]?.startIndex
+      if (cellIdx == null) continue
+      imageReqs.push({
+        insertInlineImage: {
+          location: { index: cellIdx },
+          uri: `${origin}${BM_IMAGE_URLS[r - 1]}`,
+          objectSize: {
+            height: { magnitude: 28, unit: 'PT' },
+            width:  { magnitude: 75, unit: 'PT' },
+          },
+        },
+      })
+    }
+    imageReqs.sort((a, b) => b.insertInlineImage.location.index - a.insertInlineImage.location.index)
+
+    if (imageReqs.length) {
+      const b6 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requests: imageReqs }),
+      })
+      if (!b6.ok) throw new Error(await b6.text())
+    }
+  }
+
+  async function saveToBMChart(time, type, notes, dateObj, createIfMissing = true) {
+    if (!accessToken) return
+    if (!time && !type && !notes) return
+
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+    const year = dateObj.getFullYear()
+    const day = dateObj.getDate()
+    const docName = `${month}/${year}-DailyBMChart`
+
+    let docId = await findDoc(docName)
+    if (!docId) {
+      if (!createIfMissing) return
+      docId = await createDoc(docName)
+      await createBMChartDoc(docId, Number(month), year)
+    }
+
+    const docRes = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}`)
+    const doc = await docRes.json()
+    const tableEl = (doc.body?.content ?? []).find(el => el.table)
+    if (!tableEl) throw new Error('BM chart table not found')
+
+    const row = tableEl.table.tableRows[day]
+    if (!row) throw new Error(`Row for day ${day} not found`)
+
+    const cells = [
+      { col: 3, text: notes },
+      { col: 2, text: type },
+      { col: 1, text: time },
+      { col: 0, text: String(day) },
+    ].filter(c => c.text)
+
+    const requests = cells
+      .map(({ col, text }) => {
+        const cellIdx = row.tableCells[col]?.content?.[0]?.startIndex
+        if (cellIdx == null) return null
+        return { insertText: { location: { index: cellIdx }, text } }
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.insertText.location.index - a.insertText.location.index)
+
+    if (!requests.length) return { docId, docName }
+
+    console.log('BM data write — day:', day, 'cells:', cells.map(c => `col${c.col}=${c.text}`))
+    const r = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests }),
+    })
+    if (!r.ok) {
+      const errText = await r.text()
+      console.error('BM data write failed:', errText)
+      throw new Error(errText)
+    }
+
+    return { docId, docName }
+  }
+
   async function saveToWaterTempLog(bathingType, waterTemp, dateObj) {
     if (!accessToken) return
     if (!bathingType && !waterTemp) return
@@ -1050,5 +1512,5 @@ export function useGoogleDocs() {
     return { docId, docName }
   }
 
-  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, saveToWaterTempLog, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts }
+  return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, saveToWaterTempLog, saveToBMChart, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts }
 }
