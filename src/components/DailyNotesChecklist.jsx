@@ -104,6 +104,7 @@ export default function DailyNotesChecklist({ ispChecked, ispResponses, onToggle
                             onChange={e => onBmChange('type', e.target.value)}
                           >
                             <option value="">Type...</option>
+                            <option value="?">? — Could not confirm</option>
                             <option value="1">1 — Separate hard lumps</option>
                             <option value="2">2 — Sausage-shaped, lumpy</option>
                             <option value="3">3 — Sausage with cracks</option>
