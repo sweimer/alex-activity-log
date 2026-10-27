@@ -1488,7 +1488,7 @@ export function useGoogleDocs() {
 
     const cells = [
       { col: 2, text: waterTemp ? `${waterTemp}°F` : '' },
-      { col: 1, text: bathingType === 'shower' ? '☐ Bath   ☑ Shower' : '☑ Bath   ☐ Shower' },
+      { col: 1, text: bathingType === 'N/A' ? 'N/A' : bathingType === 'shower' ? '☐ Bath   ☑ Shower' : '☑ Bath   ☐ Shower' },
     ].filter(c => c.text)
 
     const requests = cells

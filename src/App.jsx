@@ -445,6 +445,9 @@ function MainApp() {
           saveToWaterTempLog(bathingData.type, bathingData.temp, selectedDate)
             .then(() => setWaterTempStatus('done'))
             .catch(err => { console.error('Water temp error:', err); setWaterTempStatus('error') })
+        } else if (!ispChecked['bathing']) {
+          saveToWaterTempLog('N/A', '', selectedDate)
+            .catch(err => console.error('Water temp N/A error:', err))
         }
 
         if (ispChecked['bowel-movement'] && (bmData.time || bmData.type || bmData.notes)) {
