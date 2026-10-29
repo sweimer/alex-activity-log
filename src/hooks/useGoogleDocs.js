@@ -613,10 +613,9 @@ export function useGoogleDocs() {
       const dow = dateObj.getDay()
       const sigDate = `${month}/${String(dateObj.getDate()).padStart(2, '0')}/${dateObj.getFullYear()}`
       const scottSigns = dow >= 4
-      const sponsorDateStr = scottSigns ? ' '.repeat(10) : sigDate
-      const reliefDateStr  = scottSigns ? sigDate        : ' '.repeat(10)
-      const sigSpaces = ' '.repeat(28)
-      const footerText = `\nSponsor: ${sponsorName}  ${sigSpaces}    ${sponsorDateStr}\n\nRelief Staff: ${reliefName}  ${sigSpaces}    ${reliefDateStr}\n\n(sign and date by writer of note)\n`
+      const sponsorDateStr = scottSigns ? '' : sigDate
+      const reliefDateStr  = scottSigns ? sigDate : ''
+      const footerText = `\nSponsor: ${sponsorName}  ${sponsorDateStr}\nRelief Staff: ${reliefName}  ${reliefDateStr}\n(sign and date by writer of note)\n`
 
       // BatchUpdate 2: footer (highest index first), then cells HIGH→LOW, then optional page break
       const requests = []
@@ -700,30 +699,20 @@ export function useGoogleDocs() {
       }
 
       // ── Footer styling ────────────────────────────────────────────────────────
-      // Layout (both signing cases identical — blank lines + fixed 10-char dates):
-      //   ftrStart+0:          \n (leading blank)
-      //   ftrStart+1:          Sponsor line (54+sLen chars)  → ends at ftrStart+54+sLen
-      //   ftrStart+55+sLen:    \n (blank between Sponsor and Relief)
-      //   ftrStart+56+sLen:    Relief line (59+rLen chars)   → ends at ftrStart+114+sLen+rLen
-      //   ftrStart+115+sLen+rLen: \n (blank before sign-date)
-      //   ftrStart+116+sLen+rLen: (sign and date by writer of note)\n  (34 chars)
+      // Layout: \n + Sponsor line + Relief line + sign-date line
+      //   Heather signs: Sponsor = 22+sLen chars, Relief = 17+rLen chars
+      //   Scott signs:   Sponsor = 12+sLen chars, Relief = 27+rLen chars
+      //   In both cases: (sign and date) starts at ftrStart+40+sLen+rLen (totals match)
       const ftrStart = tableEndIndex + cumLen
       const sLen = sponsorName.length
       const rLen = reliefName.length
       // Bold: "Sponsor: " + name + " "
       requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 1, endIndex: ftrStart + 11 + sLen }, textStyle: { bold: true }, fields: 'bold' } })
-      // Bold: "Relief Staff: " + name + " "
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 56 + sLen, endIndex: ftrStart + 71 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
-      // Bold: "(sign and date by writer of note)\n"
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 116 + sLen + rLen, endIndex: ftrStart + 150 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
-      // Underline: Sponsor signature area (28 spaces at ftrStart+12+sLen)
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 12 + sLen, endIndex: ftrStart + 40 + sLen }, textStyle: { underline: true }, fields: 'underline' } })
-      // Underline: Sponsor date area (10 chars at ftrStart+44+sLen)
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 44 + sLen, endIndex: ftrStart + 54 + sLen }, textStyle: { underline: true }, fields: 'underline' } })
-      // Underline: Relief signature area (28 spaces at ftrStart+72+sLen+rLen)
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 72 + sLen + rLen, endIndex: ftrStart + 100 + sLen + rLen }, textStyle: { underline: true }, fields: 'underline' } })
-      // Underline: Relief date area (10 chars at ftrStart+104+sLen+rLen)
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 104 + sLen + rLen, endIndex: ftrStart + 114 + sLen + rLen }, textStyle: { underline: true }, fields: 'underline' } })
+      // Bold: "Relief Staff: " + name + " " — Relief line offset differs by who signs (date on Sponsor vs Relief line)
+      const reliefLineStart = scottSigns ? ftrStart + 13 + sLen : ftrStart + 23 + sLen
+      requests.push({ updateTextStyle: { range: { startIndex: reliefLineStart, endIndex: reliefLineStart + 15 + rLen }, textStyle: { bold: true }, fields: 'bold' } })
+      // Bold: "(sign and date by writer of note)\n" — always at ftrStart+40+sLen+rLen
+      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 40 + sLen + rLen, endIndex: ftrStart + 74 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
 
       const batchRes2 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
         method: 'POST',
@@ -732,9 +721,11 @@ export function useGoogleDocs() {
       })
       if (!batchRes2.ok) throw new Error(await batchRes2.text())
 
-      // Scott (Relief) signs Thu/Fri/Sat → underscore start in Relief line; Heather (Sponsor) signs Sun–Wed → Sponsor line
+      // Image goes after the 2 spaces following the name, before the date
+      // Heather (Sponsor): ftrStart + 1 + "Sponsor: " (9) + sLen + "  " (2) = ftrStart+12+sLen
+      // Scott (Relief):    reliefLineStart + "Relief Staff: " (14) + rLen + "  " (2) = reliefLineStart+16+rLen
       const sigIndex = scottSigns
-        ? ftrStart + 72 + sLen + rLen
+        ? reliefLineStart + 16 + rLen
         : ftrStart + 12 + sLen
       insertDailyNotesSignature(docId, sigIndex, scottSigns)
         .catch(err => console.error('Signature insert failed:', err))
