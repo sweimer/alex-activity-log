@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react'
 import { TAG_CONFIG } from '../constants/tags.js'
 import { ISP_SECTIONS } from '../constants/ispItems.js'
+import sigSW from '../assets/signatures/SignatureSW.png'
+import sigHW from '../assets/signatures/signatureHW.png'
 import bmImg1 from '../assets/bm/BMType01.png'
 import bmImg2 from '../assets/bm/BMType02.png'
 import bmImg3 from '../assets/bm/BMType03.png'
@@ -702,10 +704,11 @@ export function useGoogleDocs() {
       const rLen = reliefName.length
       // "Sponsor: " + name + " " bold
       requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 1, endIndex: ftrStart + 11 + sLen }, textStyle: { bold: true }, fields: 'bold' } })
-      // "Relief Staff: " + name + " " bold
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 56 + sLen, endIndex: ftrStart + 71 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
-      // "(sign and date by writer of note)\n" bold
-      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 116 + sLen + rLen, endIndex: ftrStart + 150 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
+      // "Relief Staff: " + name + " " bold — Relief line starts 1 char later when Scott signs (sponsorDate is 11 vs 10 chars)
+      const reliefBoldStart = ftrStart + (scottSigns ? 56 : 55) + sLen
+      requests.push({ updateTextStyle: { range: { startIndex: reliefBoldStart, endIndex: reliefBoldStart + 15 + rLen }, textStyle: { bold: true }, fields: 'bold' } })
+      // "(sign and date by writer of note)\n" bold — always at ftrStart+115+sLen+rLen (11+10 = same total date chars)
+      requests.push({ updateTextStyle: { range: { startIndex: ftrStart + 115 + sLen + rLen, endIndex: ftrStart + 149 + sLen + rLen }, textStyle: { bold: true }, fields: 'bold' } })
 
       const batchRes2 = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
         method: 'POST',
@@ -713,6 +716,13 @@ export function useGoogleDocs() {
         body: JSON.stringify({ requests }),
       })
       if (!batchRes2.ok) throw new Error(await batchRes2.text())
+
+      // Scott (Relief) signs Thu/Fri/Sat → underscore start in Relief line; Heather (Sponsor) signs Sun–Wed → Sponsor line
+      const sigIndex = scottSigns
+        ? ftrStart + 72 + sLen + rLen
+        : ftrStart + 12 + sLen
+      insertDailyNotesSignature(docId, sigIndex, scottSigns)
+        .catch(err => console.error('Signature insert failed:', err))
 
       setSaveStatus({ docId, docName })
     } catch (err) {
@@ -1516,6 +1526,30 @@ export function useGoogleDocs() {
     if (!r.ok) throw new Error(await r.text())
 
     return { docId, docName }
+  }
+
+  async function insertDailyNotesSignature(docId, sigIndex, scottSigns) {
+    const origin = window.location.origin
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.')) {
+      console.log('Signature insert skipped in local dev')
+      return
+    }
+    const sigUrl = `${origin}${scottSigns ? sigSW : sigHW}`
+    const r = await gFetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests: [{
+        insertInlineImage: {
+          location: { index: sigIndex },
+          uri: sigUrl,
+          objectSize: {
+            height: { magnitude: 20, unit: 'PT' },
+            width:  { magnitude: 50, unit: 'PT' },
+          },
+        },
+      }] }),
+    })
+    if (!r.ok) throw new Error(await r.text())
   }
 
   return { googleUser, accessToken, saveStatus, setSaveStatus, handleGoogleSuccess, signOut, saveToGoogleDocs, saveAsDailyNotes, saveToChecklist, saveToWaterTempLog, saveToBMChart, fetchCheckedThisMonth, fetchCheckedThisQuarter, fetchCheckedThisWeek, checkDuplicateDate, tagCounts, fetchTagCounts }
