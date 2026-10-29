@@ -607,7 +607,13 @@ export function useGoogleDocs() {
       const tableRows = tableEl.table.tableRows
       const tableEndIndex = tableEl.endIndex
 
-      const footerText = `\nSponsor: ${sponsorName}  ____________________________    ___________\nRelief Staff: ${reliefName}  ____________________________    ___________\n(sign and date by writer of note)\n`
+      // Thu(4)/Fri(5)/Sat(6) → Scott (Relief) signs; Sun(0)/Mon(1)/Tue(2)/Wed(3) → Heather (Sponsor) signs
+      const dow = dateObj.getDay()
+      const sigDate = `${month}/${String(dateObj.getDate()).padStart(2, '0')}/${dateObj.getFullYear()}`
+      const scottSigns = dow >= 4
+      const sponsorDate = scottSigns ? '___________' : sigDate
+      const reliefDate  = scottSigns ? sigDate       : '___________'
+      const footerText = `\nSponsor: ${sponsorName}  ____________________________    ${sponsorDate}\nRelief Staff: ${reliefName}  ____________________________    ${reliefDate}\n(sign and date by writer of note)\n`
 
       // BatchUpdate 2: footer (highest index first), then cells HIGH→LOW, then optional page break
       const requests = []
