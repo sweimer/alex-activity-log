@@ -1543,8 +1543,8 @@ export function useGoogleDocs() {
           location: { index: sigIndex },
           uri: sigUrl,
           objectSize: {
-            height: { magnitude: 20, unit: 'PT' },
-            width:  { magnitude: 50, unit: 'PT' },
+            height: { magnitude: 38.88, unit: 'PT' },
+            width:  { magnitude: 95.76, unit: 'PT' },
           },
         },
       }] }),
